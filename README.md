@@ -7,15 +7,40 @@ Digital textbook subscription platform (Next.js App Router, TypeScript, Tailwind
     npm run dev        # http://localhost:3000
     npm run build && npm start
 
-## Status (Phase 1 + public pages)
+## Status
 | Area | Status |
 |---|---|
-| Brand tokens, typography, logo assets, shared components | Working |
-| Homepage, About, How it works, Pricing, Support | Working (static content) |
-| Catalogue search + subject filter, Molecular Atlas page | Working against `src/lib/catalogue.ts` (moves to database) |
-| Pricing ($11.99/month, one subscription = one book) | Display only: `src/lib/plans.ts`; Stripe will be the source of truth |
-| Auth, dashboard, reader, admin, Stripe checkout/webhooks, Supabase, email | Not built |
-| Support contact form, author bio, support email, legal pages | Placeholders (TODO owner) |
+| Public site, catalogue, pricing, info pages | Working |
+| Sign-up / sign-in (email, Google, Microsoft), sessions, route protection | **Built, needs Supabase configured** |
+| Student dashboard (library, subscription status, billing portal link, sign out) | **Built, needs Supabase + Stripe configured** |
+| Stripe Checkout, Customer Portal, signature-verified idempotent webhook | **Built, needs Stripe configured** |
+| Server-side entitlement check + signed launch token for the Molecular Atlas module | **Built, needs keys + module URL** |
+| Unit tests (webhook idempotency, access rules, tokens, redirect/CSRF guards) | 43 passing |
+| NOT yet tested against live Supabase/Stripe | Do the checklist below before launch |
+| Reader inside this site, admin area, Resend emails, PostHog, Sentry, support form | Not built |
+
+## Setup (in order)
+1. **Supabase**: create a project. SQL editor: run `supabase/migrations/0001_init.sql`.
+   - Authentication > URL Configuration: Site URL = `NEXT_PUBLIC_SITE_URL`; add Redirect URL `NEXT_PUBLIC_SITE_URL/auth/callback`.
+   - Authentication > Providers: enable Email, Google (needs a Google Cloud OAuth client) and Azure (Microsoft; needs an Entra app registration). Callback URL for both is shown in the Supabase provider screen.
+   - Decide whether "Confirm email" stays on (recommended).
+2. **Stripe**: Products > create "Molecular Atlas" with a recurring monthly price of $11.99 (set your currency). Copy the `price_...` id to `STRIPE_PRICE_MOLECULAR_ATLAS`.
+   - Developers > Webhooks > add endpoint `NEXT_PUBLIC_SITE_URL/api/stripe/webhook` for: `checkout.session.completed`, `customer.subscription.created|updated|deleted|paused|resumed`, `invoice.paid`, `invoice.payment_failed`. Copy the signing secret to `STRIPE_WEBHOOK_SECRET`.
+   - Settings > Billing > Customer portal: enable cancellation and payment-method updates.
+3. **Keys for the textbook module**: `node scripts/generate-module-keys.mjs`. Put the private key in `APEX_MODULE_PRIVATE_KEY`; give the module agent the public key or `/.well-known/jwks.json`.
+4. **Render**: new Web Service from this repo. Build `npm ci && npm run build`, start `npm start`, add every variable from `.env.example`.
+5. Make yourself admin (admin screens come later): `update public.profiles set role='admin' where email='you@example.com';`
+
+## Pre-launch test checklist (use Stripe test mode first)
+- [ ] Register by email, confirm email, sign in/out. Try Google and Microsoft.
+- [ ] Subscribe with test card 4242 4242 4242 4242; dashboard shows the book within seconds.
+- [ ] Failed payment (card 4000 0000 0000 0341) removes access once Stripe marks the subscription past_due.
+- [ ] Cancel in the billing portal; access ends at the period end.
+- [ ] Open `/dashboard` signed out: redirected to sign-in. Open `/read/molecular-atlas` without a subscription: refused.
+- [ ] Stripe CLI `stripe trigger` / resend an event: second delivery is acknowledged and ignored.
+
+## Access rules
+Access = subscription status `active` or `trialing` AND period not ended. `past_due`, `unpaid`, `canceled`, `incomplete` get no access. Access is decided only on the server from webhook-confirmed data, never from the checkout redirect.
 
 ## Owner-editable content (until the admin area exists)
 - Book details / description: `src/lib/catalogue.ts`
