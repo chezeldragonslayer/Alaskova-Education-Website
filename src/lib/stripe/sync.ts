@@ -30,6 +30,8 @@ export type SyncDeps = {
   upsertSubscription(row: SubscriptionRow): Promise<void>;
   linkCustomer(userId: string, customerId: string): Promise<void>;
   userForCustomer(customerId: string): Promise<string | null>;
+  /** Optional: called once when a user's first real (non-zero) payment succeeds. Used for referral rewards. */
+  rewardReferral?(input: { userId: string; unitAmount: number; currency: string }): Promise<unknown>;
 };
 
 const id = (x: string | { id: string } | null | undefined) =>
@@ -77,6 +79,7 @@ async function syncSubscription(subId: string, deps: SyncDeps) {
   const sub = await deps.retrieveSubscription(subId);
   const row = await subscriptionToRow(sub, deps);
   if (row) await deps.upsertSubscription(row);
+  return { sub, row };
 }
 
 export async function processStripeEvent(
@@ -106,8 +109,23 @@ export async function processStripeEvent(
     }
     case "invoice.paid":
     case "invoice.payment_failed": {
-      const subId = invoiceSubscriptionId(event.data.object as Stripe.Invoice);
-      if (subId) await syncSubscription(subId, deps);
+      const invoice = event.data.object as Stripe.Invoice;
+      const subId = invoiceSubscriptionId(invoice);
+      if (!subId) break;
+      const { sub, row } = await syncSubscription(subId, deps);
+      // Referral reward: only on the FIRST invoice of a subscription, and only if money actually changed hands.
+      if (
+        event.type === "invoice.paid" &&
+        invoice.billing_reason === "subscription_create" &&
+        (invoice.amount_paid ?? 0) > 0 &&
+        row &&
+        deps.rewardReferral
+      ) {
+        const price = sub.items?.data?.[0]?.price;
+        if (price?.unit_amount && price.currency) {
+          await deps.rewardReferral({ userId: row.user_id, unitAmount: price.unit_amount, currency: price.currency });
+        }
+      }
       break;
     }
     default:

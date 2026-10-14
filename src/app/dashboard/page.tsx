@@ -3,7 +3,10 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BookOpen, CreditCard, LogOut } from "lucide-react";
-import { authConfigured, billingConfigured } from "@/lib/env";
+import { authConfigured, billingConfigured, siteUrl } from "@/lib/env";
+import { getOrCreateReferralCode, getReferralStats } from "@/lib/referrals-db";
+import { MAX_REWARDED_REFERRALS, REFERRAL_REWARD_MONTHS, formatReferralCode, referralLink } from "@/lib/referrals";
+import { CopyButton } from "@/components/CopyButton";
 import { getUser } from "@/lib/supabase/server";
 import { getSubscriptions } from "@/lib/access";
 import { grantsAccess } from "@/lib/security";
@@ -44,6 +47,9 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
   const notice = sp.already ? notices.already : sp.reader ? notices[`reader:${sp.reader}`] : sp.billing ? notices[`billing:${sp.billing}`] : null;
   const pending = sp.checkout === "success" && active.length === 0;
   const libraryBooks = active.map((s) => ({ s, book: getBook(s.book_slug) })).filter((x) => x.book);
+  const referral = billingConfigured()
+    ? await Promise.all([getOrCreateReferralCode(user.id), getReferralStats(user.id)]).then(([code, stats]) => ({ code, stats }))
+    : null;
   const others = catalogue.filter((b) => !active.some((s) => s.book_slug === b.slug));
 
   return (
@@ -125,6 +131,38 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
           )}
         </div>
       </section>
+
+      {referral && (
+        <section className="mt-12" aria-labelledby="ref">
+          <h2 id="ref" className="font-display text-xl font-semibold tracking-tight">Refer a friend</h2>
+          <div className="mt-5 rounded-2xl bg-white p-6 shadow-card ring-1 ring-line">
+            <p className="text-muted">
+              Share your link. When a friend starts their first paid subscription, you get{" "}
+              <strong className="text-midnight">{REFERRAL_REWARD_MONTHS} months free</strong>, applied as credit to
+              your next bills. Your code is <strong className="font-mono text-midnight">{formatReferralCode(referral.code)}</strong>.
+            </p>
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <input
+                readOnly
+                aria-label="Your referral link"
+                value={referralLink(siteUrl(), referral.code)}
+                onFocus={(e) => e.currentTarget.select()}
+                className="h-11 min-w-0 flex-1 rounded-xl bg-mist px-4 text-sm text-midnight ring-1 ring-line"
+              />
+              <CopyButton text={referralLink(siteUrl(), referral.code)} />
+            </div>
+            <dl className="mt-5 grid grid-cols-3 gap-4 text-center">
+              <div><dt className="text-xs text-muted">Friends joined</dt><dd className="font-display text-2xl font-semibold">{referral.stats.joined}</dd></div>
+              <div><dt className="text-xs text-muted">Rewards earned</dt><dd className="font-display text-2xl font-semibold">{referral.stats.rewarded}</dd></div>
+              <div><dt className="text-xs text-muted">Free months earned</dt><dd className="font-display text-2xl font-semibold">{referral.stats.monthsEarned}</dd></div>
+            </dl>
+            <p className="mt-4 text-xs text-muted">
+              Only new subscribers count, and only once their first payment goes through. You can’t refer yourself.
+              Up to {MAX_REWARDED_REFERRALS} rewards per person.
+            </p>
+          </div>
+        </section>
+      )}
 
       {others.length > 0 && (
         <section className="mt-12" aria-labelledby="more">

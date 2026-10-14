@@ -20,7 +20,7 @@ Digital textbook subscription platform (Next.js App Router, TypeScript, Tailwind
 | Reader inside this site, admin area, Resend emails, PostHog, Sentry, support form | Not built |
 
 ## Setup (in order)
-1. **Supabase**: create a project. SQL editor: run `supabase/migrations/0001_init.sql`.
+1. **Supabase**: create a project. SQL editor: run `supabase/migrations/0001_init.sql`, then `supabase/migrations/0002_referrals.sql` (referral rewards).
    - Authentication > URL Configuration: Site URL = `NEXT_PUBLIC_SITE_URL`; add Redirect URL `NEXT_PUBLIC_SITE_URL/auth/callback`.
    - Authentication > Providers: enable Email, Google (needs a Google Cloud OAuth client) and Azure (Microsoft; needs an Entra app registration). Callback URL for both is shown in the Supabase provider screen.
    - Decide whether "Confirm email" stays on (recommended).

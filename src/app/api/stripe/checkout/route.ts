@@ -2,9 +2,12 @@ import { NextResponse, type NextRequest } from "next/server";
 import { billingConfigured, env, siteUrl } from "@/lib/env";
 import { getBook } from "@/lib/catalogue";
 import { planForBook } from "@/lib/plans";
-import { getUser, createSupabaseAdmin } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/server";
 import { getStripe } from "@/lib/stripe/client";
 import { hasAccess } from "@/lib/access";
+import { ensureStripeCustomer } from "@/lib/stripe/customer";
+import { attachReferral } from "@/lib/referrals-db";
+import { REFERRAL_COOKIE } from "@/lib/referrals";
 import { isSameOrigin, rateLimit } from "@/lib/security";
 
 
@@ -35,26 +38,20 @@ export async function POST(request: NextRequest) {
     if (await hasAccess(user.id, slug)) return redirect303(`${site}/dashboard?already=1`);
 
     const stripe = getStripe();
-    const admin = createSupabaseAdmin();
+
+    // If they arrived through a friend's referral link, record it (rules are enforced in attachReferral).
+    // A referral problem must never stop someone subscribing, so it's logged and ignored on failure.
+    const refCode = request.cookies.get(REFERRAL_COOKIE)?.value;
+    if (refCode) {
+      try {
+        await attachReferral(user.id, refCode);
+      } catch (err) {
+        console.error("referral attach failed", err instanceof Error ? err.message : err);
+      }
+    }
 
     // Find or create the Stripe customer for this user.
-    const { data: existing } = await admin
-      .from("stripe_customers")
-      .select("stripe_customer_id")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    let customerId = existing?.stripe_customer_id;
-    if (!customerId) {
-      const customer = await stripe.customers.create(
-        { email: user.email, metadata: { user_id: user.id } },
-        { idempotencyKey: `customer-${user.id}` },
-      );
-      customerId = customer.id;
-      const { error } = await admin
-        .from("stripe_customers")
-        .upsert({ user_id: user.id, stripe_customer_id: customerId }, { onConflict: "user_id" });
-      if (error) throw error;
-    }
+    const customerId = await ensureStripeCustomer(user.id, user.email);
 
     const metadata = { user_id: user.id, book_slug: slug };
     const session = await stripe.checkout.sessions.create({
