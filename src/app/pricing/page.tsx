@@ -15,10 +15,10 @@ export const metadata: Metadata = {
 };
 
 const faqs = [
-  { q: "What does one subscription include?", a: "A subscription gives you online access to one textbook through the Apex reader for as long as your subscription is active." },
+  { q: "What does one subscription include?", a: "A subscription gives you online access to one textbook through the Alaskova Education reader for as long as your subscription is active." },
   { q: "When am I billed?", a: "You are billed monthly from the day you subscribe, and your subscription renews each month until you cancel." },
   { q: "How do I cancel?", a: "Cancel any time from your account using the secure billing portal. No emails or phone calls required." },
-  { q: "Is payment secure?", a: "Payments are processed by Stripe. Apex never sees or stores your card details." },
+  { q: "Is payment secure?", a: "Payments are processed by Stripe. Alaskova Education never sees or stores your card details." },
   { q: "When do I get access?", a: "Access is activated as soon as your payment is confirmed by Stripe." },
 ];
 
@@ -49,7 +49,7 @@ export default function PricingPage() {
                   <div className="p-8 sm:p-10">
                     <h3 className="font-display text-lg font-semibold">What’s included</h3>
                     <ul className="mt-4 space-y-3">
-                      {["Online access to Molecular Atlas", "Read in the Apex reader on any device", "Bookmarks and reading progress", "Manage your subscription from your account"].map((t) => (
+                      {["Online access to Molecular Atlas", "Read in the Alaskova Education reader on any device", "Bookmarks and reading progress", "Manage your subscription from your account"].map((t) => (
                         <li key={t} className="flex gap-3"><Check size={18} className="mt-0.5 shrink-0 text-ocean" aria-hidden />{t}</li>
                       ))}
                     </ul>
@@ -66,7 +66,7 @@ export default function PricingPage() {
           {[
             { i: RefreshCw, t: "Transparent renewal", d: "Billed monthly and renewing until you cancel." },
             { i: XCircle, t: "Cancel any time", d: "Use the billing portal in your account." },
-            { i: Lock, t: "Secure payments", d: "Handled by Stripe — Apex never stores card details." },
+            { i: Lock, t: "Secure payments", d: "Handled by Stripe — Alaskova Education never stores card details." },
           ].map(({ i: Icon, t, d }) => (
             <li key={t} className="rounded-2xl bg-mist p-6 ring-1 ring-line">
               <Icon className="text-ocean" size={22} aria-hidden />

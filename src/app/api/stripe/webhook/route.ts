@@ -6,7 +6,7 @@ import { processStripeEvent } from "@/lib/stripe/sync";
 
 
 /**
- * Stripe -> Apex. Authenticated ONLY by the Stripe signature (no cookies/CORS).
+ * Stripe -> Alaskova Education. Authenticated ONLY by the Stripe signature (no cookies/CORS).
  * Needs the raw request body, so we read text() and never parse it first.
  */
 export async function POST(request: NextRequest) {

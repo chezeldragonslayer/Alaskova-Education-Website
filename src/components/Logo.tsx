@@ -16,10 +16,10 @@ export function LogoSymbol({
 }) {
   return (
     <Image
-      src="/brand/apex-symbol.png"
+      src="/brand/alaskova-symbol.png"
       alt=""
       width={size}
-      height={Math.round(size * (356 / 442))}
+      height={Math.round(size * (617 / 814))}
       className={clsx("h-auto", className)}
       style={{ width: size }}
       priority
@@ -38,10 +38,10 @@ export function LogoFull({
   const w = Math.max(width, 160);
   return (
     <Image
-      src="/brand/apex-logo-master.png"
-      alt="Apex Education"
+      src="/brand/alaskova-logo-master.png"
+      alt="Alaskova Education"
       width={w}
-      height={w}
+      height={Math.round(w * (1054 / 1405))}
       sizes={`${w}px`}
       className={clsx("h-auto", className)}
       style={{ width: w }}
@@ -53,10 +53,10 @@ export function HomeLink({ className }: { className?: string }) {
   return (
     <Link
       href="/"
-      aria-label="Apex Education — home"
+      aria-label="Alaskova Education — home"
       className={clsx("flex items-center gap-2.5", className)}
     >
-      <LogoSymbol size={46} />
+      <LogoSymbol size={56} />
     </Link>
   );
 }

@@ -55,7 +55,7 @@ export function SiteFooter() {
 
       <div className="relative border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-6 text-xs text-white/60 sm:px-8 md:flex-row md:items-center md:justify-between">
-          <p>© Apex Education. All rights reserved.</p>
+          <p>© Alaskova Education. All rights reserved.</p>
           <p>
             Textbook access depends on your subscription.
             {/* TODO(business): add legal entity name / ABN / registered address */}

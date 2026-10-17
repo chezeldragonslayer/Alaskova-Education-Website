@@ -9,7 +9,7 @@ import { allSubjects, searchCatalogue } from "@/lib/catalogue";
 
 export const metadata: Metadata = {
   title: "Textbook catalogue",
-  description: "Browse Apex Education's digital textbooks by subject and read them online with a subscription.",
+  description: "Browse Alaskova Education's digital textbooks by subject and read them online with a subscription.",
   alternates: { canonical: "/catalogue" },
 };
 

@@ -1,4 +1,4 @@
--- Apex Education: referral rewards ("refer a friend, get 3 months free").
+-- Alaskova Education: referral rewards ("refer a friend, get 3 months free").
 -- Run in the Supabase SQL editor AFTER 0001_init.sql.
 -- Security model: these tables are server-only. The browser (anon/authenticated roles) has NO access;
 -- the website reads and writes them with the service role, so nobody can edit their own rewards.

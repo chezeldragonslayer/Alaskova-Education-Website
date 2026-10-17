@@ -13,7 +13,7 @@ export const footerNav = {
     { href: "/how-it-works", label: "How it works" },
   ],
   Company: [
-    { href: "/about", label: "About Apex" },
+    { href: "/about", label: "About Alaskova Education" },
     { href: "/support", label: "Support centre" },
   ],
   Account: [

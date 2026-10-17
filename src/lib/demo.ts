@@ -16,7 +16,7 @@ export type DemoBook = {
 };
 
 export const demoBooks: DemoBook[] = [
-  { id: "d1", title: "Molecular Atlas", author: "Apex Education", subject: "Chemistry", status: "available", tone: 1, progress: 62 },
+  { id: "d1", title: "Molecular Atlas", author: "Alaskova Education", subject: "Chemistry", status: "available", tone: 1, progress: 62 },
   { id: "d2", title: "Introduction to Biology", author: "Sample Author", subject: "Life Sciences", edition: "5th ed.", status: "available", tone: 1, progress: 28 },
   { id: "d3", title: "Principles of Accounting", author: "Sample Author", subject: "Business", edition: "2nd ed.", status: "subscription", tone: 2 },
   { id: "d4", title: "Applied Statistics", author: "Sample Author", subject: "Mathematics", edition: "4th ed.", status: "available", tone: 3, progress: 81 },
@@ -26,12 +26,12 @@ export const demoBooks: DemoBook[] = [
 
 export const faqs = [
   {
-    q: "What is Apex Education?",
-    a: "Apex Education is a digital textbook subscription platform. Instead of buying a textbook outright, you subscribe monthly and read it online through a secure library.",
+    q: "What is Alaskova Education?",
+    a: "Alaskova Education is a digital textbook subscription platform. Instead of buying a textbook outright, you subscribe monthly and read it online through a secure library.",
   },
   {
     q: "Which textbooks are available?",
-    a: "Apex Education publishes its own digital textbooks. Every title page shows what the book covers and which subscription includes it, so you always know before you subscribe.",
+    a: "Alaskova Education publishes its own digital textbooks. Every title page shows what the book covers and which subscription includes it, so you always know before you subscribe.",
   },
   {
     q: "How does the subscription work?",
@@ -43,10 +43,10 @@ export const faqs = [
   },
   {
     q: "How do I read my textbooks?",
-    a: "Open any title in your library and read it online in the Apex reader, with chapter navigation, bookmarks, adjustable text size and light and dark themes where supported.",
+    a: "Open any title in your library and read it online in the Alaskova Education reader, with chapter navigation, bookmarks, adjustable text size and light and dark themes where supported.",
   },
   {
     q: "Is my data safe?",
-    a: "Payments are handled by Stripe, so card details never touch Apex servers. Access to textbooks is checked on the server for every request.",
+    a: "Payments are handled by Stripe, so card details never touch Alaskova Education servers. Access to textbooks is checked on the server for every request.",
   },
 ];

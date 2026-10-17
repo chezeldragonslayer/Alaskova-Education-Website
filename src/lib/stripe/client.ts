@@ -5,7 +5,7 @@ import { env } from "@/lib/env";
 let stripe: Stripe | undefined;
 export function getStripe() {
   stripe ??= new Stripe(env.stripeSecretKey(), {
-    appInfo: { name: "Apex Education" },
+    appInfo: { name: "Alaskova Education" },
     maxNetworkRetries: 2,
   });
   return stripe;

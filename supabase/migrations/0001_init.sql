@@ -1,4 +1,4 @@
--- Apex Education: initial schema. Run in the Supabase SQL editor or via `supabase db push`.
+-- Alaskova Education: initial schema. Run in the Supabase SQL editor or via `supabase db push`.
 -- Security model: the browser (anon/authenticated roles) can only READ its own rows.
 -- All writes to billing/entitlement tables happen server-side with the service role
 -- (Stripe webhook), which bypasses RLS and is never exposed to the client.

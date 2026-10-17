@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 /* ------------------------------------------------------------------
-   Apex Education design tokens
-   Source: Apex_Education_Brand_Guidelines.docx (sampled logo palette)
+   Alaskova Education design tokens
+   Source: the Alaskova Education brand guidelines (sampled logo palette)
    Contrast notes (vs white):
      midnight 16.1  deep 13.4  steel 9.2  ocean 5.4 (AA text)
      bright 4.2 -> large text / graphics / on-dark only, never small body text
@@ -27,7 +27,7 @@
   --shadow-lift: 0 2px 4px rgb(3 32 72 / 0.05), 0 24px 48px -16px rgb(3 32 72 / 0.22);
   --shadow-glow: 0 0 0 1px rgb(23 107 192 / 0.15), 0 16px 40px -12px rgb(23 107 192 / 0.45);
 
-  --ease-apex: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-alaskova: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html {
@@ -112,30 +112,30 @@ body {
 }
 
 /* Animated brand gradient (buttons, borders) */
-@keyframes apex-shift {
+@keyframes alaskova-shift {
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
 .animated-gradient {
   background-image: linear-gradient(100deg, var(--color-deep), var(--color-ocean), var(--color-bright), var(--color-ocean), var(--color-deep));
   background-size: 200% 100%;
-  animation: apex-shift 8s linear infinite;
+  animation: alaskova-shift 8s linear infinite;
 }
 
-@keyframes apex-float {
+@keyframes alaskova-float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
 }
-.float-slow { animation: apex-float 7s var(--ease-apex) infinite; }
+.float-slow { animation: alaskova-float 7s var(--ease-alaskova) infinite; }
 
-@keyframes apex-shimmer {
+@keyframes alaskova-shimmer {
   from { background-position: -200% 0; }
   to { background-position: 200% 0; }
 }
 .skeleton {
   background: linear-gradient(90deg, var(--color-mist-2) 25%, #fff 50%, var(--color-mist-2) 75%);
   background-size: 200% 100%;
-  animation: apex-shimmer 1.6s linear infinite;
+  animation: alaskova-shimmer 1.6s linear infinite;
   border-radius: 0.5rem;
 }
 

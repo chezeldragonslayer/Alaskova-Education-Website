@@ -4,7 +4,7 @@ import { randomInt } from "node:crypto";
  * Referral rules. Pure and dependency-injected so they can be unit tested without Stripe or a database.
  *
  * The offer: when a friend you referred makes their FIRST PAID subscription payment, you receive
- * REFERRAL_REWARD_MONTHS months of credit on your own Apex bill.
+ * REFERRAL_REWARD_MONTHS months of credit on your own Alaskova Education bill.
  *
  * Abuse guards (all enforced server-side):
  *  - a person can only be referred once, and never by themselves (database constraints);
@@ -16,7 +16,7 @@ import { randomInt } from "node:crypto";
 export const REFERRAL_REWARD_MONTHS = 3;
 /** Cap per person: 12 referrals = 36 free months. OWNER DECISION: change here if you want a different limit. */
 export const MAX_REWARDED_REFERRALS = 12;
-export const REFERRAL_COOKIE = "apex_ref";
+export const REFERRAL_COOKIE = "alaskova_ref";
 export const REFERRAL_COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 /** No I, L, O, 0 or 1, so a code read aloud or typed from a screenshot is never ambiguous. */

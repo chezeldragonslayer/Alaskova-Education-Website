@@ -24,7 +24,7 @@ export const catalogue: CatalogueBook[] = [
     slug: "molecular-atlas",
     title: "Molecular Atlas",
     subjects: ["Organic Chemistry", "Pharmaceutical Chemistry"],
-    publisher: "Apex Education",
+    publisher: "Alaskova Education",
     description:
       "A textbook covering organic and pharmaceutical chemistry. (Placeholder description — to be replaced with the final text.)",
     tone: 1,

@@ -10,18 +10,18 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Apex Education — Digital Textbooks, Simplified",
-    template: "%s · Apex Education",
+    default: "Alaskova Education — Digital Textbooks, Simplified",
+    template: "%s · Alaskova Education",
   },
   description:
-    "Discover a simpler way to access your course textbooks. Search the catalogue, build your digital library and read online with Apex Education.",
+    "Discover a simpler way to access your course textbooks. Search the catalogue, build your digital library and read online with Alaskova Education.",
   openGraph: {
     type: "website",
-    siteName: "Apex Education",
-    title: "Apex Education — All Your Textbooks. One Smarter Way to Study.",
+    siteName: "Alaskova Education",
+    title: "Alaskova Education — All Your Textbooks. One Smarter Way to Study.",
     description:
       "A modern, technology-driven way to access and manage your course textbooks.",
-    images: ["/brand/apex-logo-master.png"],
+    images: ["/brand/alaskova-logo-master.png"],
   },
   alternates: { canonical: "/" },
 };

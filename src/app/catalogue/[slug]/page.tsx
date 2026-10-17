@@ -128,7 +128,7 @@ export default async function BookPage({ params, searchParams }: { params: Promi
             <p className="mt-3 text-muted">Subscription details coming soon.</p>
           )}
           <ul className="mt-5 space-y-2.5 text-sm">
-            {["Read online in the Apex reader", "Bookmarks and reading progress", "Manage or cancel from your account"].map((t) => (
+            {["Read online in the Alaskova Education reader", "Bookmarks and reading progress", "Manage or cancel from your account"].map((t) => (
               <li key={t} className="flex gap-2.5"><Check size={16} className="mt-0.5 shrink-0 text-ocean" aria-hidden />{t}</li>
             ))}
           </ul>

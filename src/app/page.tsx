@@ -76,7 +76,7 @@ export default function HomePage() {
               <p className="lead mt-6 max-w-xl">
                 Discover a simpler way to access your course textbooks. Explore
                 digital learning resources, organise your studies, and take your
-                education further with Apex Education.
+                education further with Alaskova Education.
               </p>
             </Reveal>
             <Reveal delay={0.2}>
@@ -109,7 +109,7 @@ export default function HomePage() {
       {/* HOW IT WORKS */}
       <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28" aria-labelledby="how">
         <Reveal className="max-w-2xl">
-          <p className="eyebrow">How Apex works</p>
+          <p className="eyebrow">How Alaskova Education works</p>
           <h2 id="how" className="h2 mt-3">From search to reading in three steps.</h2>
           <p className="lead mt-4">Find the resources you need, build your digital library, and focus on what matters most — learning.</p>
         </Reveal>
@@ -139,8 +139,8 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <Reveal className="max-w-2xl">
             <p className="eyebrow">Featured textbook</p>
-            <h2 id="featured" className="h2 mt-3">Written by Apex. Read anywhere.</h2>
-            <p className="lead mt-4">Apex Education publishes its own digital textbooks, so you can see exactly what each title covers and what is included in your subscription.</p>
+            <h2 id="featured" className="h2 mt-3">Written by Alaskova Education. Read anywhere.</h2>
+            <p className="lead mt-4">Alaskova Education publishes its own digital textbooks, so you can see exactly what each title covers and what is included in your subscription.</p>
           </Reveal>
           <Reveal delay={0.1}>
             <article className="mt-12 grid items-center gap-8 rounded-[1.75rem] bg-white p-6 shadow-card ring-1 ring-line sm:p-10 md:grid-cols-[15rem_1fr] lg:grid-cols-[18rem_1fr] lg:gap-14">
@@ -167,10 +167,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* WHY APEX */}
+      {/* WHY ALASKOVA */}
       <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28" aria-labelledby="why">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <p className="eyebrow">Why Apex Education?</p>
+          <p className="eyebrow">Why Alaskova Education?</p>
           <h2 id="why" className="h2 mt-3">A technology platform that happens to provide textbooks.</h2>
           <p className="lead mt-4">Not another online bookstore — a better student experience, from discovery to the last page.</p>
         </Reveal>
@@ -197,7 +197,7 @@ export default function HomePage() {
         <div aria-hidden className="absolute -right-32 bottom-0 size-[28rem] rounded-full bg-bright/20 blur-3xl" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-5 sm:px-8 lg:grid-cols-2">
           <Reveal>
-            <p className="eyebrow !text-bright">The Apex digital experience</p>
+            <p className="eyebrow !text-bright">The Alaskova Education digital experience</p>
             <h2 id="experience" className="h2 mt-3">Read the way you study.</h2>
             <p className="mt-4 max-w-lg text-lg text-white/75">
               A focused reader with chapter navigation, bookmarks, adjustable text and light or dark themes — and your progress saved so you can resume instantly.
@@ -213,7 +213,7 @@ export default function HomePage() {
             <p className="mt-6 text-sm text-white/60">Reader preview shown with demonstration content.</p>
           </Reveal>
           <Reveal delay={0.1}>
-            <div className="float-slow rounded-2xl bg-white p-6 text-midnight shadow-lift sm:p-8" role="img" aria-label="Preview of the Apex reader layout (demonstration content)">
+            <div className="float-slow rounded-2xl bg-white p-6 text-midnight shadow-lift sm:p-8" role="img" aria-label="Preview of the Alaskova Education reader layout (demonstration content)">
               <div className="flex items-center justify-between text-xs text-muted">
                 <span className="font-medium text-steel">Sample textbook · Chapter 4</span>
                 <DemoBadge>Demo</DemoBadge>

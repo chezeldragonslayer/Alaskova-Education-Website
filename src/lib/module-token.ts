@@ -4,11 +4,11 @@ import { createPrivateKey, createPublicKey, randomUUID } from "node:crypto";
 /**
  * Launch token handed to a textbook module (a separate Render service).
  * Contract is documented in docs/molecular-atlas-module-brief.md:
- *   alg EdDSA (Ed25519) · iss "apex-education" · aud = book slug · sub = user id
+ *   alg EdDSA (Ed25519) · iss "alaskova-education" · aud = book slug · sub = user id
  *   book = slug · exp = 60s · jti = single-use id
  * The module holds only the PUBLIC key (or reads our JWKS) — never a shared secret.
  */
-export const ISSUER = "apex-education";
+export const ISSUER = "alaskova-education";
 export const TOKEN_TTL_SECONDS = 60;
 
 /** Render/env files often store PEMs with literal "\n"; normalise. */

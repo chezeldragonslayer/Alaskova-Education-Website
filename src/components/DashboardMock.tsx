@@ -51,7 +51,7 @@ export function DashboardMock({ className }: { className?: string }) {
         className,
       )}
       role="group"
-      aria-label="Interactive preview of the Apex Education student dashboard (demonstration content)"
+      aria-label="Interactive preview of the Alaskova Education student dashboard (demonstration content)"
     >
       {/* window chrome */}
       <div className="flex items-center gap-2 border-b border-line bg-mist px-4 py-3">
@@ -59,7 +59,7 @@ export function DashboardMock({ className }: { className?: string }) {
         <span className="size-2.5 rounded-full bg-midnight/15" />
         <span className="size-2.5 rounded-full bg-midnight/15" />
         <div className="mx-auto hidden h-6 w-1/2 items-center justify-center rounded-md bg-white text-[0.7rem] text-muted ring-1 ring-line sm:flex">
-          apex.education/dashboard
+          Alaskova Education · Dashboard
         </div>
         <span className="ml-auto rounded-full bg-white px-2 py-0.5 text-[0.65rem] font-medium text-steel ring-1 ring-line">
           Demo content

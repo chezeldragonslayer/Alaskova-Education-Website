@@ -77,7 +77,7 @@ export function AuthForm({ mode, next }: { mode: "login" | "register"; next: str
       </form>
 
       <p className="mt-6 text-center text-sm text-muted">
-        {isLogin ? "New to Apex Education?" : "Already have an account?"}{" "}
+        {isLogin ? "New to Alaskova Education?" : "Already have an account?"}{" "}
         <Link
           href={`${isLogin ? "/register" : "/login"}?next=${encodeURIComponent(next)}`}
           className="font-semibold text-ocean underline underline-offset-4"

@@ -6,7 +6,7 @@ type Variant = "primary" | "secondary" | "ghost" | "inverse";
 type Size = "md" | "lg";
 
 const base =
-  "group relative inline-flex items-center justify-center gap-2 rounded-xl font-semibold whitespace-nowrap select-none transition-all duration-300 ease-[var(--ease-apex)] active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none";
+  "group relative inline-flex items-center justify-center gap-2 rounded-xl font-semibold whitespace-nowrap select-none transition-all duration-300 ease-[var(--ease-alaskova)] active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none";
 
 const sizes: Record<Size, string> = {
   md: "h-11 px-5 text-[0.9375rem]",

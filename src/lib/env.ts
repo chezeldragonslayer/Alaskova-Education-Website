@@ -36,6 +36,6 @@ export const env = {
   /** Module launch URL for a book, e.g. MODULE_URL_MOLECULAR_ATLAS (optional). */
   moduleUrlForBook: (slug: string) =>
     process.env[`MODULE_URL_${slug.toUpperCase().replace(/[^A-Z0-9]/g, "_")}`] ?? null,
-  moduleSigningKeyPem: () => need("APEX_MODULE_PRIVATE_KEY"),
-  moduleKeyId: () => process.env.APEX_MODULE_KID ?? "apex-module-1",
+  moduleSigningKeyPem: () => need("ALASKOVA_MODULE_PRIVATE_KEY"),
+  moduleKeyId: () => process.env.ALASKOVA_MODULE_KID ?? "alaskova-module-1",
 };

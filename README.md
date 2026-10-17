@@ -1,4 +1,4 @@
-# Apex Education
+# Alaskova Education
 
 Digital textbook subscription platform (Next.js App Router, TypeScript, Tailwind v4, Motion).
 
@@ -27,7 +27,7 @@ Digital textbook subscription platform (Next.js App Router, TypeScript, Tailwind
 2. **Stripe**: Products > create "Molecular Atlas" with a recurring monthly price of $11.99 (set your currency). Copy the `price_...` id to `STRIPE_PRICE_MOLECULAR_ATLAS`.
    - Developers > Webhooks > add endpoint `NEXT_PUBLIC_SITE_URL/api/stripe/webhook` for: `checkout.session.completed`, `customer.subscription.created|updated|deleted|paused|resumed`, `invoice.paid`, `invoice.payment_failed`. Copy the signing secret to `STRIPE_WEBHOOK_SECRET`.
    - Settings > Billing > Customer portal: enable cancellation and payment-method updates.
-3. **Keys for the textbook module**: `node scripts/generate-module-keys.mjs`. Put the private key in `APEX_MODULE_PRIVATE_KEY`; give the module agent the public key or `/.well-known/jwks.json`.
+3. **Keys for the textbook module**: `node scripts/generate-module-keys.mjs`. Put the private key in `ALASKOVA_MODULE_PRIVATE_KEY`; give the module agent the public key or `/.well-known/jwks.json`.
 4. **Render**: new Web Service from this repo. Build `npm ci && npm run build`, start `npm start`, add every variable from `.env.example`.
 5. Make yourself admin (admin screens come later): `update public.profiles set role='admin' where email='you@example.com';`
 
