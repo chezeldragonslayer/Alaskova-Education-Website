@@ -1,6 +1,6 @@
 # Brief for the Molecular Atlas module agent
 
-You are working on **Molecular Atlas**, an organic and pharmaceutical chemistry textbook. It is one product of **Alaskova Education**, a digital textbook subscription business. Molecular Atlas will be hosted as its **own Render web service**, separate from the main **Alaskova Education website** (its own Render web service, repo: https://github.com/chezeldragonslayer/Alaskova Education-Education-Website). Your job is to make Molecular Atlas work as a **protected module** that the main website unlocks for paying subscribers. Do not build payments or user accounts into it.
+You are working on **Molecular Atlas**, an organic chemistry textbook. It is one product of **Alaskova Education**, a digital textbook subscription business. Molecular Atlas will be hosted as its **own Render web service**, separate from the main **Alaskova Education website** (its own Render web service, repo: https://github.com/chezeldragonslayer/Alaskova Education-Education-Website). Your job is to make Molecular Atlas work as a **protected module** that the main website unlocks for paying subscribers. Do not build payments or user accounts into it.
 
 ## Architecture (fixed decisions)
 - **The main Alaskova Education website owns everything commercial:** user accounts (Supabase Auth), Stripe (Checkout, Billing, Customer Portal, webhooks), and the database record of who is entitled to which book.
