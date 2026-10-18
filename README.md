@@ -15,9 +15,11 @@ Digital textbook subscription platform (Next.js App Router, TypeScript, Tailwind
 | Student dashboard (library, subscription status, billing portal link, sign out) | **Built, needs Supabase + Stripe configured** |
 | Stripe Checkout, Customer Portal, signature-verified idempotent webhook | **Built, needs Stripe configured** |
 | Server-side entitlement check + signed launch token for the Molecular Atlas module | **Built, needs keys + module URL** |
-| Unit tests (webhook idempotency, access rules, tokens, redirect/CSRF guards) | 43 passing |
+| Refer-a-friend: personal link `/r/CODE`, reward of 3 months credit (Stripe customer balance) on the friend's first paid invoice, dashboard card | **Built, needs migration 0002 + Stripe configured** |
+| Unit tests (webhook idempotency, access rules, tokens, redirect/CSRF guards, referrals) | 58 passing |
 | NOT yet tested against live Supabase/Stripe | Do the checklist below before launch |
-| Reader inside this site, admin area, Resend emails, PostHog, Sentry, support form | Not built |
+| Legal pages (`/legal/*`, footer links currently 404), password reset, `/account` page, sitemap/robots, custom 404, support form, admin area, Resend emails, PostHog, Sentry | **Not built** |
+| Reader | Lives in the separate Molecular Atlas service (github.com/chezeldragonslayer/Molecular-Atlas), reached through `/read/<slug>` |
 
 ## Setup (in order)
 1. **Supabase**: create a project. SQL editor: run `supabase/migrations/0001_init.sql`, then `supabase/migrations/0002_referrals.sql` (referral rewards).
