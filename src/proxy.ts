@@ -40,7 +40,10 @@ export async function proxy(request: NextRequest) {
   if (isPrivate && !signedIn) {
     const login = new URL("/login", request.url);
     login.searchParams.set("next", pathname + request.nextUrl.search);
-    return NextResponse.redirect(login);
+    const redirect = NextResponse.redirect(login);
+    redirect.headers.set("Cache-Control", "private, no-store");
+    redirect.headers.set("X-Robots-Tag", "noindex, nofollow");
+    return redirect;
   }
 
   if (signedIn && (pathname === "/login" || pathname === "/register")) {
