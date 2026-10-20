@@ -1,5 +1,6 @@
 "use client";
 
+import { keepValues } from "@/components/keepValues";
 import { useActionState } from "react";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
@@ -36,7 +37,7 @@ export function AuthForm({ mode, next }: { mode: "login" | "register"; next: str
         <span className="h-px flex-1 bg-line" /> or <span className="h-px flex-1 bg-line" />
       </div>
 
-      <form action={action} className="space-y-4" noValidate>
+      <form action={action} onSubmit={keepValues(action)} className="space-y-4" noValidate>
         <input type="hidden" name="next" value={next} />
         {!isLogin && (
           <div>
@@ -60,6 +61,11 @@ export function AuthForm({ mode, next }: { mode: "login" | "register"; next: str
             className={field}
           />
           {!isLogin && <p className="mt-1.5 text-xs text-muted">At least 8 characters.</p>}
+          {isLogin && (
+            <p className="mt-1.5 text-right text-sm">
+              <Link href="/forgot-password" className="font-medium text-ocean underline underline-offset-4">Forgot your password?</Link>
+            </p>
+          )}
         </div>
 
         <div aria-live="polite" className="min-h-5 text-sm">

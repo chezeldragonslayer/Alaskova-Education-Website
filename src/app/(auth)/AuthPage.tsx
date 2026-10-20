@@ -6,7 +6,8 @@ import { AuthForm } from "./AuthForm";
 type SP = Promise<{ next?: string; book?: string; error?: string }>;
 
 const errors: Record<string, string> = {
-  callback: "That sign-in link didn't work. Please try again.",
+  callback:
+    "That link didn't work: it may have expired or been opened in a different browser. If you were confirming your email, your account is probably confirmed already, so try signing in.",
   oauth: "We couldn't start that sign-in. Please try again.",
   "not-configured": "Sign-in isn't configured yet. The site owner needs to connect Supabase.",
 };
