@@ -60,6 +60,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|brand/|icon.png|robots.txt|sitemap.xml|api/stripe/webhook|.well-known).*)",
+    "/((?!_next/static|_next/image|brand/|icon.png|robots.txt|sitemap.xml|healthz|api/stripe/webhook|.well-known).*)",
   ],
 };

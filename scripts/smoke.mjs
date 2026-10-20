@@ -23,6 +23,9 @@ for (const p of ["/dashboard", "/account", "/read/molecular-atlas"]) {
   check(`GET ${p} is never cached`, (r.headers.get("cache-control") ?? "").includes("no-store"), r.headers.get("cache-control"));
 }
 
+const health = await get("/healthz");
+check("health check answers ok", health.status === 200 && (await health.text()) === "ok", health.status);
+
 const lib = await get("/library");
 check("/library redirects to the dashboard", loc(lib).endsWith("/dashboard"), loc(lib));
 
