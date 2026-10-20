@@ -3,11 +3,13 @@ import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { authConfigured, env } from "@/lib/env";
+import { supabaseCookieOptions } from "./cookies";
 
 /** Per-request client acting as the signed-in user (RLS applies). */
 export async function createSupabaseServer() {
   const store = await cookies();
   return createServerClient(env.supabaseUrl(), env.supabaseAnonKey(), {
+    cookieOptions: supabaseCookieOptions(),
     cookies: {
       getAll: () => store.getAll(),
       setAll: (list) => {

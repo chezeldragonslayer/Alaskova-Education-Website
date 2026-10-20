@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { supabaseCookieOptions } from "@/lib/supabase/cookies";
 
 /**
  * 1. Refreshes the Supabase session cookie on every request.
@@ -22,6 +23,7 @@ export async function proxy(request: NextRequest) {
 
   if (url && key) {
     const supabase = createServerClient(url, key, {
+      cookieOptions: supabaseCookieOptions(),
       cookies: {
         getAll: () => request.cookies.getAll(),
         setAll: (list) => {
