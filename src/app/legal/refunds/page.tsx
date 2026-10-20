@@ -43,15 +43,15 @@ export default function RefundsPage() {
           refund in the case of a major failure. These rights are not affected by anything on this page.
         </li>
         <li>
-          If we refund a payment in full, access paid for by that payment ends when the refund is made.
+          If we give you a refund, your subscription is cancelled and you keep access until the end of the period you
+          had paid for. You are not charged again.
         </li>
       </ul>
 
       <h2>Failed payments</h2>
       <p>
         If a monthly payment fails, Stripe emails you and tries your card again over the following days. Your access is
-        paused while the payment is overdue and returns as soon as it succeeds.{" "}
-        <Fact value="[TO BE CONFIRMED: grace period, if any]" /> You can update your card at any time from Manage billing.
+        paused while the payment is overdue and returns as soon as it succeeds. You can update your card at any time from Manage billing.
       </p>
 
       <h2>How to ask for a refund</h2>

@@ -11,12 +11,12 @@ Never paste a secret key into a chat, an email, a document or the repository. Pa
 
 | Decision | Where it lands |
 |---|---|
-| Currency (AUD?) and whether the price includes GST | Stripe price; `src/lib/plans.ts` shows the symbol **[Agent]**; terms page |
-| Grace period when a renewal payment fails (none, or e.g. 7 days) | `grantsAccess` in `src/lib/security.ts` **[Agent]**; terms and refunds pages |
-| Change-of-mind refund policy, and whether a refund cancels access immediately | refunds page; how you refund in Stripe (step 2.7) |
+| ~~Currency~~ **Decided: AUD** (site shows A$11.99). Still open: GST registration and wording | Stripe price in AUD; terms page GST line |
+| ~~Grace period~~ **Decided: none.** Access pauses as soon as a renewal fails (current behaviour) | done |
+| **Decided:** a refund keeps access to the end of the paid period. Still open: whether you offer change-of-mind refunds at all | refunds page; how you refund in Stripe (step 2.7) |
 | Referral safeguards (reward after the friend's second payment? refuse same card?) | `src/lib/referrals.ts` **[Agent]** (audit H5) |
 | Legal entity name, ABN, address, support email, governing state, minimum age | `src/lib/business.ts` and the age line in the terms **[Agent or Owner]** |
-| AI tutor in Molecular Atlas on or off | privacy policy paragraph; module setting `ANTHROPIC_API_KEY` |
+| ~~AI tutor~~ **Decided: on** | privacy policy updated; set `ANTHROPIC_API_KEY` on the module (step 6) |
 | Analytics: none (current), or a privacy-friendly tool | privacy policy must change first |
 | Lawyer review of the three legal pages, then remove the "Draft" banner and set `legalUpdated` | `src/components/LegalPage.tsx`, `src/lib/business.ts` |
 
@@ -45,8 +45,9 @@ Test-mode products, prices, keys and webhooks do **not** carry over to live mode
    **at the end of the billing period** (the refunds page promises this). Add links to your terms and privacy pages.
 6. Settings > Billing > Subscriptions and emails: turn on emails for failed payments and expiring cards, and Smart
    Retries. Settings > Public details: support email and statement descriptor ("ALASKOVA EDUCATION").
-7. When you refund someone: Payments > the payment > Refund. If your policy is that a refund ends access, also cancel
-   the subscription **immediately** (otherwise access continues to the period end).
+7. When you refund someone: Payments > the payment > Refund. Then open the subscription and **Cancel > At end of
+   current period**. Your policy is that a refund keeps access until the period they paid for ends; the refund alone
+   does not stop future charges, so the cancel step is what prevents next month's payment.
 8. Disputes: Stripe emails you. Respond in Stripe with the evidence; consider cancelling the subscription.
 
 ## 3. Signing key for the book: replace the test key **[Owner]**
@@ -108,6 +109,7 @@ The current key was shared in a chat, so it must not be used in production.
 | `ALASKOVA_ISSUER` / `MODULE_AUDIENCE` | `alaskova-education` / `molecular-atlas` |
 | Instances | **1** (it remembers used launch passes in memory) on a paid always-on plan |
 | Health check | `/healthz` |
+| `ANTHROPIC_API_KEY` | your Anthropic API key (turns the AI tutor on; keep it secret) |
 
 On **this** site set `MODULE_URL_MOLECULAR_ATLAS=https://atlas.<domain>`.
 

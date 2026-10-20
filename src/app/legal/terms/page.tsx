@@ -46,9 +46,8 @@ export default function TermsPage() {
       <h2>3. Subscriptions, price and billing</h2>
       <ul>
         <li>
-          A subscription costs {plan ? formatPrice(plan.priceCents) : "the price shown"} per month (
-          <Fact value="[TO BE CONFIRMED: currency, and whether GST is included]" />
-          ). The price and currency are shown again on the secure Stripe checkout page before you pay.
+          A subscription costs {plan ? formatPrice(plan.priceCents) : "the price shown"} (Australian dollars) per
+          month. <Fact value="[TO BE CONFIRMED: GST, e.g. 'The price includes GST.' or 'We are not registered for GST.']" /> The price and currency are shown again on the secure Stripe checkout page before you pay.
         </li>
         <li>
           Payments are processed by Stripe. You are charged when you subscribe and then once a month on the same date
@@ -57,9 +56,8 @@ export default function TermsPage() {
         <li>Your access starts once Stripe confirms your payment, usually within seconds.</li>
         <li>
           If a payment fails, Stripe will try your card again over the following days and email you. While a payment is
-          overdue your access is paused, and it resumes once the payment succeeds.{" "}
-          <Fact value="[TO BE CONFIRMED: grace period, if any]" /> If the payment still cannot be collected, the
-          subscription ends.
+          overdue your access is paused straight away, and it resumes as soon as the payment succeeds. If the payment
+          still cannot be collected, the subscription ends.
         </li>
         <li>
           We may change the price for future billing periods. We will tell you by email at least{" "}

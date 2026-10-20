@@ -26,8 +26,13 @@ exactly; nothing in the module needs to change for launch. Paste the block below
 > 5. **Progress endpoint.** Not built on the main site yet (optional per INTEGRATION.md). Learner progress stays in the
 >    browser for launch. The main site's draft privacy policy says so. Please do not set `ALASKOVA_PROGRESS_URL` until
 >    the main site announces the endpoint.
-> 6. **AI tutor.** The owner has not yet decided whether to enable `ANTHROPIC_API_KEY` in production. The main site's
->    privacy policy has a placeholder paragraph for it. Please do not enable it in production until the owner confirms.
+> 6. **AI tutor.** The owner has decided the AI tutor will be **on** in production. The main site's privacy policy now
+>    says the tutor sends what the learner types, and the current lesson, to Anthropic, never a name or email, and that
+>    conversations stay in the browser. The main-site agent read `src/app/api/tutor/route.ts` (read-only) and the policy
+>    lists what it sends: the conversation, the lesson or current problem, mastery and recent errors, and the optional
+>    `displayName` from the reader's settings. Note that sending `displayName` to Anthropic sits awkwardly with the brief's
+>    "do not collect names" rule; consider labelling that setting "What should the tutor call you? (optional, shared with
+>    the AI tutor)". Please confirm the route logs no learner text, and tell the owner if anything else is sent.
 > 7. **Feature claims.** The main site now advertises only: table of contents and lesson navigation, progress tracking
 >    saved in the browser, light and dark themes, practice and review, and a personal notebook. It no longer mentions
 >    bookmarks or adjustable text size, because the module does not have them yet. If you add either, tell the owner so

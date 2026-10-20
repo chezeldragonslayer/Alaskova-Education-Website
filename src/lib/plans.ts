@@ -4,7 +4,7 @@
  * database/Stripe-synced plans in Phase 2.
  *
  * Owner-confirmed: $11.99 per month, one subscription = one textbook.
- * TO CONFIRM: currency (shown as "$" only) and whether an annual option exists.
+ * Owner-confirmed: prices are in Australian dollars (AUD). TO CONFIRM: GST treatment, and whether an annual option exists.
  */
 export type Plan = {
   id: string;
@@ -25,7 +25,8 @@ export const plans: Plan[] = [
   },
 ];
 
-export const formatPrice = (cents: number) => `$${(cents / 100).toFixed(2)}`;
+/** Australian dollars, written "A$" so overseas visitors are not misled into reading US dollars. */
+export const formatPrice = (cents: number) => `A$${(cents / 100).toFixed(2)}`;
 
 export const planForBook = (slug: string) =>
   plans.find((p) => p.bookSlug === slug);
