@@ -4,11 +4,11 @@ import { getBook } from "@/lib/catalogue";
 import { planForBook } from "@/lib/plans";
 import { getUser } from "@/lib/supabase/server";
 import { getStripe } from "@/lib/stripe/client";
-import { hasAccess } from "@/lib/access";
+import { getSubscriptions } from "@/lib/access";
 import { ensureStripeCustomer } from "@/lib/stripe/customer";
 import { attachReferral } from "@/lib/referrals-db";
 import { REFERRAL_COOKIE } from "@/lib/referrals";
-import { isSameOrigin, rateLimit } from "@/lib/security";
+import { blocksNewCheckout, grantsAccess, isSameOrigin, rateLimit } from "@/lib/security";
 
 
 const redirect303 = (url: string) => NextResponse.redirect(url, { status: 303 });
@@ -34,8 +34,12 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    // Already subscribed? Don't charge twice.
-    if (await hasAccess(user.id, slug)) return redirect303(`${site}/dashboard?already=1`);
+    // Already subscribed (including a failed, paused or still-processing subscription)? Don't charge twice.
+    const existing = (await getSubscriptions(user.id)).filter((s) => s.book_slug === slug);
+    if (existing.some((s) => grantsAccess(s.status, s.current_period_end))) {
+      return redirect303(`${site}/dashboard?already=1`);
+    }
+    if (blocksNewCheckout(existing.map((s) => s.status))) return redirect303(`${site}/dashboard?billing=fix`);
 
     const stripe = getStripe();
 
@@ -52,6 +56,16 @@ export async function POST(request: NextRequest) {
 
     // Find or create the Stripe customer for this user.
     const customerId = await ensureStripeCustomer(user.id, user.email);
+
+    // Our database only learns about a new subscription when Stripe's webhook arrives (usually seconds later).
+    // Ask Stripe directly too, so a second click in that gap can't start a second subscription.
+    const inStripe = await stripe.subscriptions.list({ customer: customerId, status: "all", limit: 100 });
+    const stripeStatuses = inStripe.data.filter((s) => s.metadata?.book_slug === slug).map((s) => s.status);
+    if (blocksNewCheckout(stripeStatuses)) {
+      return redirect303(
+        `${site}/dashboard?${stripeStatuses.some((st) => st === "active" || st === "trialing") ? "already=1" : "billing=fix"}`,
+      );
+    }
 
     const metadata = { user_id: user.id, book_slug: slug };
     const session = await stripe.checkout.sessions.create({
