@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { BookOpen, CreditCard, LogOut } from "lucide-react";
+import { BookOpen, CreditCard, LogOut, UserRound } from "lucide-react";
 import { authConfigured, billingConfigured, siteUrl } from "@/lib/env";
 import { getOrCreateReferralCode, getReferralStats } from "@/lib/referrals-db";
 import { MAX_REWARDED_REFERRALS, REFERRAL_REWARD_MONTHS, formatReferralCode, referralLink } from "@/lib/referrals";
 import { CopyButton } from "@/components/CopyButton";
 import { getUser } from "@/lib/supabase/server";
 import { getSubscriptions } from "@/lib/access";
-import { grantsAccess } from "@/lib/security";
+import { describeSubscription, grantsAccess } from "@/lib/security";
 import { catalogue, getBook } from "@/lib/catalogue";
 import { BookCover } from "@/components/BookCover";
 import { ButtonLink } from "@/components/ui/Button";
@@ -29,6 +29,7 @@ const notices: Record<string, string> = {
   "billing:none": "You don’t have a billing account yet — it’s created when you subscribe.",
   "billing:unavailable": "Billing isn’t available right now.",
   "billing:error": "We couldn’t open the billing portal. Please try again.",
+  "billing:fix": "You already have a subscription for that textbook that needs attention. Use Manage billing below to update your card or resume it, rather than subscribing again.",
 };
 
 const fmt = (iso: string | null) =>
@@ -59,11 +60,16 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
           <p className="eyebrow">Student dashboard</p>
           <h1 className="h2 mt-2">Welcome back, {name}</h1>
         </div>
-        <form action="/auth/signout" method="post">
-          <button className="inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-semibold text-steel ring-1 ring-line transition-colors hover:bg-mist-2">
-            <LogOut size={16} aria-hidden /> Sign out
-          </button>
-        </form>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/account" className="inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-semibold text-steel ring-1 ring-line transition-colors hover:bg-mist-2">
+            <UserRound size={16} aria-hidden /> My account
+          </Link>
+          <form action="/auth/signout" method="post">
+            <button className="inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-semibold text-steel ring-1 ring-line transition-colors hover:bg-mist-2">
+              <LogOut size={16} aria-hidden /> Sign out
+            </button>
+          </form>
+        </div>
       </div>
 
       <div className="mt-8 space-y-4" aria-live="polite">
@@ -108,18 +114,19 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
         <div className="mt-5 overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-line">
           {subs.length ? (
             <ul className="divide-y divide-line">
-              {subs.map((s) => (
-                <li key={s.id} className="grid gap-1 px-5 py-4 sm:grid-cols-[1fr_auto_auto] sm:items-center sm:gap-6">
-                  <span className="font-medium">{getBook(s.book_slug)?.title ?? s.book_slug}</span>
-                  <span className="text-sm capitalize text-steel">{s.status.replace("_", " ")}</span>
-                  <span className="text-sm text-muted">
-                    {s.cancel_at_period_end ? "Ends" : "Renews"} {fmt(s.current_period_end)}
-                  </span>
-                </li>
-              ))}
+              {subs.map((s) => {
+                const d = describeSubscription(s, fmt);
+                return (
+                  <li key={s.id} className="grid gap-1 px-5 py-4 sm:grid-cols-[1fr_auto_auto] sm:items-center sm:gap-6">
+                    <span className="font-medium">{getBook(s.book_slug)?.title ?? s.book_slug}</span>
+                    <span className={d.needsAction ? "text-sm font-semibold text-red-700" : "text-sm text-steel"}>{d.label}</span>
+                    <span className="text-sm text-muted">{d.detail}</span>
+                  </li>
+                );
+              })}
             </ul>
           ) : (
-            <p className="px-5 py-6 text-muted">No active subscriptions.</p>
+            <p className="px-5 py-6 text-muted">You don’t have any subscriptions yet.</p>
           )}
           {subs.length > 0 && (
             <form action="/api/stripe/portal" method="post" className="border-t border-line bg-mist px-5 py-4">

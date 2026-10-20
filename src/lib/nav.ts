@@ -15,11 +15,13 @@ export const footerNav = {
   Company: [
     { href: "/about", label: "About Alaskova Education" },
     { href: "/support", label: "Support centre" },
+    { href: "/support#contact", label: "Contact us" },
   ],
   Account: [
     { href: "/login", label: "Sign in" },
     { href: "/register", label: "Create account" },
     { href: "/dashboard", label: "Student dashboard" },
+    { href: "/account", label: "My account" },
   ],
   Legal: [
     { href: "/legal/terms", label: "Terms of service" },
