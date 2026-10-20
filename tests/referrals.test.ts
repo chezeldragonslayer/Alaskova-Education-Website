@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import type Stripe from "stripe";
 import {
-  MAX_REWARDED_REFERRALS, decideAttach, formatReferralCode, generateReferralCode,
+  MAX_REWARDED_REFERRALS, decideAttach, findExistingCredit, formatReferralCode, generateReferralCode,
   normaliseReferralCode, referralLink, rewardCredit, rewardReferral, type RewardDeps,
 } from "@/lib/referrals";
 import { processStripeEvent, type SyncDeps } from "@/lib/stripe/sync";
@@ -104,4 +104,16 @@ describe("webhook triggers the reward only on a real first payment", () => {
   it("not on renewals", async () => expect(await run(invoice({ billing_reason: "subscription_cycle" }))).not.toHaveBeenCalled());
   it("not on a $0 first invoice", async () => expect(await run(invoice({ amount_paid: 0 }))).not.toHaveBeenCalled());
   it("not on a failed payment", async () => expect(await run(invoice({}), "invoice.payment_failed")).not.toHaveBeenCalled());
+});
+
+describe("findExistingCredit (retries after Stripe's 24-hour idempotency window)", () => {
+  const txns = [
+    { id: "cbtxn_other", amount: -3597, metadata: { referral_id: "ref-2" } },
+    { id: "cbtxn_debit", amount: 500, metadata: { referral_id: "ref-1" } },
+    { id: "cbtxn_mine", amount: -3597, metadata: { referral_id: "ref-1" } },
+  ];
+  it("finds the earlier credit for this referral", () => expect(findExistingCredit(txns, "ref-1")).toBe("cbtxn_mine"));
+  it("returns null when this referral was never credited", () => expect(findExistingCredit(txns, "ref-3")).toBeNull());
+  it("ignores transactions without metadata", () =>
+    expect(findExistingCredit([{ id: "x", amount: -1, metadata: null }], "ref-1")).toBeNull());
 });

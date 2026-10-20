@@ -5,6 +5,7 @@ import { ensureStripeCustomer } from "@/lib/stripe/customer";
 import {
   REFERRAL_REWARD_MONTHS,
   decideAttach,
+  findExistingCredit,
   generateReferralCode,
   normaliseReferralCode,
   type AttachDecision,
@@ -100,6 +101,12 @@ export function realRewardDeps(): RewardDeps {
       const { data: user, error } = await db.auth.admin.getUserById(referrerId);
       if (error) throw error;
       const customerId = await ensureStripeCustomer(referrerId, user.user?.email);
+      // Stripe forgets idempotency keys after 24 hours, but webhook retries can come days later. If an earlier attempt
+      // already credited this referral (and only recording it failed), reuse that credit instead of adding another.
+      const earlier = [];
+      for await (const t of getStripe().customers.listBalanceTransactions(customerId, { limit: 100 })) earlier.push(t);
+      const already = findExistingCredit(earlier, referralId);
+      if (already) return already;
       // A NEGATIVE balance transaction is a credit: Stripe takes it off the referrer's next invoices.
       // The idempotency key guarantees one referral can never be credited twice, even if we retry.
       const txn = await getStripe().customers.createBalanceTransaction(

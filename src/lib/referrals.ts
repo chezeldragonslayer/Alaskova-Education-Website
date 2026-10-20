@@ -102,3 +102,11 @@ export async function rewardReferral(
   await deps.markRewarded(referral.id, txn);
   return "rewarded";
 }
+
+/** The id of a Stripe balance transaction that already credits this referral, if there is one. */
+export function findExistingCredit(
+  transactions: { id: string; amount: number; metadata?: Record<string, string> | null }[],
+  referralId: string,
+): string | null {
+  return transactions.find((t) => t.amount < 0 && t.metadata?.referral_id === referralId)?.id ?? null;
+}
