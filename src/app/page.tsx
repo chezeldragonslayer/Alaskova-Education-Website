@@ -28,7 +28,7 @@ const steps = [
   {
     icon: Search,
     title: "Find your textbooks",
-    body: "Search by title, subject or course and see straight away what is included in your subscription.",
+    body: "Search by title or subject and see straight away what is included in your subscription.",
   },
   {
     icon: CreditCard,
@@ -38,16 +38,16 @@ const steps = [
   {
     icon: Library,
     title: "Access your digital library",
-    body: "Open your eligible textbooks in one place, read online, and pick up exactly where you left off.",
+    body: "Open your textbooks in one place, read online, and pick up where you left off.",
   },
 ];
 
 const benefits = [
   { icon: MonitorSmartphone, title: "Convenient digital access", body: "Read on the devices you already use, without carrying a stack of books." },
   { icon: LayoutGrid, title: "One centralised library", body: "Every textbook you can access, organised in a single, searchable place." },
-  { icon: CreditCard, title: "Simple subscription management", body: "Upgrade, downgrade or cancel from your account through a secure billing portal." },
-  { icon: Search, title: "A searchable catalogue", body: "Browse by subject or course, or search for a title straight away." },
-  { icon: BookOpenCheck, title: "Online reading", body: "Chapter navigation, bookmarks, adjustable text and light or dark themes." },
+  { icon: CreditCard, title: "Simple subscription management", body: "Update your card, see your invoices or cancel from your account through a secure billing portal." },
+  { icon: Search, title: "A searchable catalogue", body: "Browse by subject, or search for a title straight away." },
+  { icon: BookOpenCheck, title: "Online reading", body: "Lesson-by-lesson navigation, practice and review, and light or dark themes." },
   { icon: GraduationCap, title: "Built around students", body: "A calm, fast interface designed for studying, not for browsing a store." },
 ];
 
@@ -200,10 +200,10 @@ export default function HomePage() {
             <p className="eyebrow !text-bright">The Alaskova Education digital experience</p>
             <h2 id="experience" className="h2 mt-3">Read the way you study.</h2>
             <p className="mt-4 max-w-lg text-lg text-white/75">
-              A focused reader with chapter navigation, bookmarks, adjustable text and light or dark themes — and your progress saved so you can resume instantly.
+              A focused reader with lesson navigation, practice questions, a personal notebook and light or dark themes. Your progress is saved in your browser, so you can pick up where you left off on that device.
             </p>
             <ul className="mt-8 space-y-3 text-white/85">
-              {["Table of contents and chapter navigation", "Bookmarks and reading progress", "Light and dark reading themes", "Keyboard navigation and accessibility support"].map((t) => (
+              {["Table of contents and lesson navigation", "Progress tracking, saved in your browser", "Light and dark reading themes", "Practice, review and a personal notebook"].map((t) => (
                 <li key={t} className="flex items-center gap-3">
                   <span className="grid size-5 place-items-center rounded-full bg-bright/20 text-bright">✓</span>
                   {t}
@@ -246,7 +246,7 @@ export default function HomePage() {
             </p>
             <p className="mt-2 text-sm text-white/70">Billed monthly. Renews until cancelled.</p>
             <ul className="mt-7 space-y-3 text-[0.9375rem]">
-              {["Online access to the full textbook", "Bookmarks and reading progress", "Manage or cancel from your account"].map((pt) => (
+              {["Online access to the full textbook", "Progress tracking on your device", "Manage or cancel from your account"].map((pt) => (
                 <li key={pt} className="flex gap-3"><span aria-hidden className="text-bright">✓</span>{pt}</li>
               ))}
             </ul>

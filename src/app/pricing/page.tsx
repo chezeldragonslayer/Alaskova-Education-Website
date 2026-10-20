@@ -49,7 +49,7 @@ export default function PricingPage() {
                   <div className="p-8 sm:p-10">
                     <h3 className="font-display text-lg font-semibold">What’s included</h3>
                     <ul className="mt-4 space-y-3">
-                      {["Online access to Molecular Atlas", "Read in the Alaskova Education reader on any device", "Bookmarks and reading progress", "Manage your subscription from your account"].map((t) => (
+                      {["Online access to Molecular Atlas", "Read in your web browser", "Progress tracking on your device", "Manage your subscription from your account"].map((t) => (
                         <li key={t} className="flex gap-3"><Check size={18} className="mt-0.5 shrink-0 text-ocean" aria-hidden />{t}</li>
                       ))}
                     </ul>

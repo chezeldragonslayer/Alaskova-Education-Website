@@ -15,7 +15,7 @@ const steps = [
   { icon: Search, title: "Find your textbook", body: "Browse the catalogue by subject and open a title to see what it covers and what a subscription includes." },
   { icon: CreditCard, title: "Subscribe", body: "Pay securely through Stripe. Your price, renewal and cancellation terms are shown before you confirm." },
   { icon: BookOpenCheck, title: "Start reading", body: "Once payment is confirmed your textbook unlocks in your library, ready to read online." },
-  { icon: Library, title: "Manage your library", body: "Pick up where you left off, keep bookmarks, and manage or cancel your subscription any time." },
+  { icon: Library, title: "Manage your library", body: "Pick up where you left off, track your progress, and manage or cancel your subscription any time." },
 ];
 
 export default function HowItWorksPage() {

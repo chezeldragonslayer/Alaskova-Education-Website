@@ -43,10 +43,10 @@ export const faqs = [
   },
   {
     q: "How do I read my textbooks?",
-    a: "Open any title in your library and read it online in the Alaskova Education reader, with chapter navigation, bookmarks, adjustable text size and light and dark themes where supported.",
+    a: "Open any title in your library and read it online in your web browser, with lesson-by-lesson navigation, practice and review, and light and dark themes. Your progress is saved in that browser.",
   },
   {
     q: "Is my data safe?",
-    a: "Payments are handled by Stripe, so card details never touch Alaskova Education servers. Access to textbooks is checked on the server for every request.",
+    a: "Payments are handled by Stripe, so card details never touch Alaskova Education servers. Your subscription is checked on our servers before your textbook opens, and again at least every hour while you read.",
   },
 ];

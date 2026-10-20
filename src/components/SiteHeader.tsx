@@ -70,6 +70,9 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
+          <ButtonLink href="/dashboard" variant="ghost" prefetch={false}>
+            My library
+          </ButtonLink>
           <ButtonLink href="/login" variant="ghost">
             Sign in
           </ButtonLink>
@@ -124,6 +127,9 @@ export function SiteHeader() {
                 </ButtonLink>
                 <ButtonLink href="/login" variant="secondary" size="lg" onClick={() => setOpen(false)}>
                   Sign in
+                </ButtonLink>
+                <ButtonLink href="/dashboard" variant="ghost" size="lg" prefetch={false} onClick={() => setOpen(false)}>
+                  My library
                 </ButtonLink>
               </div>
             </nav>

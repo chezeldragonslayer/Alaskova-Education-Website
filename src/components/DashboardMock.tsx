@@ -4,7 +4,6 @@ import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import {
   BookMarked,
-  Bookmark,
   Compass,
   CreditCard,
   LayoutDashboard,
@@ -12,7 +11,6 @@ import {
   Library,
   Search,
   Settings,
-  Activity,
 } from "lucide-react";
 import clsx from "clsx";
 import { BookCover } from "./BookCover";
@@ -22,8 +20,6 @@ const sidebar = [
   { icon: LayoutDashboard, label: "Dashboard" },
   { icon: Library, label: "My Library" },
   { icon: Compass, label: "Explore" },
-  { icon: Bookmark, label: "Saved" },
-  { icon: Activity, label: "Activity" },
   { icon: CreditCard, label: "Subscription" },
   { icon: Settings, label: "Settings" },
   { icon: LifeBuoy, label: "Support" },
@@ -32,17 +28,8 @@ const sidebar = [
 /** Built from the same card/progress primitives the real dashboard will use. */
 export function DashboardMock({ className }: { className?: string }) {
   const [active, setActive] = useState(0);
-  const [saved, setSaved] = useState<Set<string>>(new Set(["d4"]));
   const reduce = useReducedMotion();
   const reading = demoBooks.filter((b) => b.progress !== undefined);
-
-  const toggle = (id: string) =>
-    setSaved((s) => {
-      const n = new Set(s);
-      if (n.has(id)) n.delete(id);
-      else n.add(id);
-      return n;
-    });
 
   return (
     <div
@@ -165,17 +152,6 @@ export function DashboardMock({ className }: { className?: string }) {
                     compact
                     className="transition-transform duration-300 group-hover:-translate-y-1"
                   />
-                  <button
-                    onClick={() => toggle(b.id)}
-                    aria-pressed={saved.has(b.id)}
-                    aria-label={`${saved.has(b.id) ? "Remove" : "Save"} ${b.title}`}
-                    className="absolute right-1.5 top-1.5 grid size-6 place-items-center rounded-full bg-white/90 text-steel shadow-sm transition-transform hover:scale-110"
-                  >
-                    <Bookmark
-                      size={12}
-                      className={saved.has(b.id) ? "fill-ocean text-ocean" : ""}
-                    />
-                  </button>
                 </motion.li>
               ))}
             </ul>
