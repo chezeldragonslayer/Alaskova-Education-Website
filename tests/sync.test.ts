@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import type Stripe from "stripe";
 import { processStripeEvent, periodEnd, type SyncDeps, type SubscriptionRow } from "@/lib/stripe/sync";
+import { grantsAccess } from "@/lib/security";
 
 const sub = (over: Record<string, unknown> = {}) =>
   ({
@@ -104,5 +105,30 @@ describe("periodEnd", () => {
     expect(periodEnd(sub({ items: { data: [{}] }, current_period_end: 1_800_000_000 }))).toBe(
       new Date(1_800_000_000 * 1000).toISOString(),
     );
+  });
+});
+
+describe("subscription lifecycle from webhooks", () => {
+  const future = new Date((1_900_000_000) * 1000);
+  it("cancel at period end keeps access until the period ends", async () => {
+    const { d, rows } = deps({}, sub({ cancel_at_period_end: true }));
+    await processStripeEvent(evt("customer.subscription.updated", sub()), d);
+    expect(rows[0]).toMatchObject({ status: "active", cancel_at_period_end: true });
+    expect(grantsAccess(rows[0].status, rows[0].current_period_end, new Date(future.getTime() - 1000))).toBe(true);
+    expect(grantsAccess(rows[0].status, rows[0].current_period_end, new Date(future.getTime() + 1000))).toBe(false);
+  });
+  it.each(["canceled", "paused", "unpaid", "past_due", "incomplete_expired"])(
+    "a subscription that becomes %s loses access",
+    async (status) => {
+      const { d, rows } = deps({}, sub({ status }));
+      await processStripeEvent(evt("customer.subscription.deleted", sub()), d);
+      expect(rows[0].status).toBe(status);
+      expect(grantsAccess(rows[0].status, rows[0].current_period_end)).toBe(false);
+    },
+  );
+  it("resubscribing after cancellation stores a new active subscription", async () => {
+    const { d, rows } = deps({}, sub({ id: "sub_2", status: "active" }));
+    await processStripeEvent(evt("customer.subscription.created", sub({ id: "sub_2" }), "evt_new"), d);
+    expect(rows[0]).toMatchObject({ id: "sub_2", status: "active" });
   });
 });
