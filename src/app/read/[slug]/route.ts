@@ -25,24 +25,30 @@ export async function GET(_request: NextRequest, ctx: { params: Promise<{ slug: 
   const user = await getUser().catch(() => null);
   if (!user) return go(`${site}/login?next=${encodeURIComponent(`/read/${slug}`)}`);
 
-  if (!(await hasAccess(user.id, slug))) return go(`${site}/catalogue/${slug}?access=required`);
+  try {
+    if (!(await hasAccess(user.id, slug))) return go(`${site}/catalogue/${slug}?access=required`);
 
-  const moduleUrl = env.moduleUrlForBook(slug);
-  if (!moduleUrl) return go(`${site}/dashboard?reader=coming-soon`);
+    const moduleUrl = env.moduleUrlForBook(slug);
+    if (!moduleUrl) return go(`${site}/dashboard?reader=coming-soon`);
 
-  const target = new URL("/launch", moduleUrl);
-  const isLocal = target.hostname === "localhost" || target.hostname === "127.0.0.1";
-  if (target.protocol !== "https:" && !isLocal) {
-    console.error("MODULE_URL must be https in production");
+    const target = new URL("/launch", moduleUrl);
+    const isLocal = target.hostname === "localhost" || target.hostname === "127.0.0.1";
+    if (target.protocol !== "https:" && !isLocal) {
+      console.error("MODULE_URL must be https in production");
+      return go(`${site}/dashboard?reader=error`);
+    }
+
+    const token = await signLaunchToken({
+      privateKeyPem: env.moduleSigningKeyPem(),
+      kid: env.moduleKeyId(),
+      userId: user.id,
+      bookSlug: slug,
+    });
+    target.searchParams.set("token", token);
+    return go(target.toString());
+  } catch (err) {
+    // Database, configuration or signing-key problem: never show a raw error page to a paying learner.
+    console.error("read launch failed", err instanceof Error ? err.message : err);
     return go(`${site}/dashboard?reader=error`);
   }
-
-  const token = await signLaunchToken({
-    privateKeyPem: env.moduleSigningKeyPem(),
-    kid: env.moduleKeyId(),
-    userId: user.id,
-    bookSlug: slug,
-  });
-  target.searchParams.set("token", token);
-  return go(target.toString());
 }
