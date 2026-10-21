@@ -48,8 +48,14 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
   const notice = sp.already ? notices.already : sp.reader ? notices[`reader:${sp.reader}`] : sp.billing ? notices[`billing:${sp.billing}`] : null;
   const pending = sp.checkout === "success" && active.length === 0;
   const libraryBooks = active.map((s) => ({ s, book: getBook(s.book_slug) })).filter((x) => x.book);
+  // The referral card is optional: if it fails (e.g. a database migration not yet run), hide it, never the library.
   const referral = billingConfigured()
-    ? await Promise.all([getOrCreateReferralCode(user.id), getReferralStats(user.id)]).then(([code, stats]) => ({ code, stats }))
+    ? await Promise.all([getOrCreateReferralCode(user.id), getReferralStats(user.id)])
+        .then(([code, stats]) => ({ code, stats }))
+        .catch((err) => {
+          console.error("referral card failed", err instanceof Error ? err.message : err);
+          return null;
+        })
     : null;
   const others = catalogue.filter((b) => !active.some((s) => s.book_slug === b.slug));
 
@@ -144,9 +150,10 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
           <h2 id="ref" className="font-display text-xl font-semibold tracking-tight">Refer a friend</h2>
           <div className="mt-5 rounded-2xl bg-white p-6 shadow-card ring-1 ring-line">
             <p className="text-muted">
-              Share your link. When a friend starts their first paid subscription, you get{" "}
-              <strong className="text-midnight">{REFERRAL_REWARD_MONTHS} months free</strong>, applied as credit to
-              your next bills. Your code is <strong className="font-mono text-midnight">{formatReferralCode(referral.code)}</strong>.
+              Share your link. When a friend subscribes, you get{" "}
+              <strong className="text-midnight">1 free month each time they pay</strong>, for their first{" "}
+              {REFERRAL_REWARD_MONTHS} months: up to {REFERRAL_REWARD_MONTHS} free months per friend, applied as credit
+              to your next bills. Your code is <strong className="font-mono text-midnight">{formatReferralCode(referral.code)}</strong>.
             </p>
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <input
@@ -160,12 +167,12 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
             </div>
             <dl className="mt-5 grid grid-cols-3 gap-4 text-center">
               <div><dt className="text-xs text-muted">Friends joined</dt><dd className="font-display text-2xl font-semibold">{referral.stats.joined}</dd></div>
-              <div><dt className="text-xs text-muted">Rewards earned</dt><dd className="font-display text-2xl font-semibold">{referral.stats.rewarded}</dd></div>
+              <div><dt className="text-xs text-muted">Friends subscribed</dt><dd className="font-display text-2xl font-semibold">{referral.stats.paying}</dd></div>
               <div><dt className="text-xs text-muted">Free months earned</dt><dd className="font-display text-2xl font-semibold">{referral.stats.monthsEarned}</dd></div>
             </dl>
             <p className="mt-4 text-xs text-muted">
-              Only new subscribers count, and only once their first payment goes through. You can’t refer yourself.
-              Up to {MAX_REWARDED_REFERRALS} rewards per person.
+              Only new subscribers count, and each free month is added once your friend’s payment goes through. You
+              can’t refer yourself. Rewards from up to {MAX_REWARDED_REFERRALS} friends per person.
             </p>
           </div>
         </section>

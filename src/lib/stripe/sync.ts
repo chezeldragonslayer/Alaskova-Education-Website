@@ -30,8 +30,8 @@ export type SyncDeps = {
   upsertSubscription(row: SubscriptionRow): Promise<void>;
   linkCustomer(userId: string, customerId: string): Promise<void>;
   userForCustomer(customerId: string): Promise<string | null>;
-  /** Optional: called once when a user's first real (non-zero) payment succeeds. Used for referral rewards. */
-  rewardReferral?(input: { userId: string; unitAmount: number; currency: string }): Promise<unknown>;
+  /** Optional: called for each real (non-zero) monthly payment. Used for referral rewards, paid in instalments. */
+  rewardReferral?(input: { userId: string; invoiceId: string; unitAmount: number; currency: string }): Promise<unknown>;
 };
 
 const id = (x: string | { id: string } | null | undefined) =>
@@ -113,17 +113,24 @@ export async function processStripeEvent(
       const subId = invoiceSubscriptionId(invoice);
       if (!subId) break;
       const { sub, row } = await syncSubscription(subId, deps);
-      // Referral reward: only on the FIRST invoice of a subscription, and only if money actually changed hands.
+      // Referral reward instalment: only on the subscription's monthly invoices (first one or renewals), and only if
+      // money actually changed hands. rewardReferral decides whether an instalment is still owed.
       if (
         event.type === "invoice.paid" &&
-        invoice.billing_reason === "subscription_create" &&
+        (invoice.billing_reason === "subscription_create" || invoice.billing_reason === "subscription_cycle") &&
+        invoice.id &&
         (invoice.amount_paid ?? 0) > 0 &&
         row &&
         deps.rewardReferral
       ) {
         const price = sub.items?.data?.[0]?.price;
         if (price?.unit_amount && price.currency) {
-          await deps.rewardReferral({ userId: row.user_id, unitAmount: price.unit_amount, currency: price.currency });
+          await deps.rewardReferral({
+            userId: row.user_id,
+            invoiceId: invoice.id,
+            unitAmount: price.unit_amount,
+            currency: price.currency,
+          });
         }
       }
       break;

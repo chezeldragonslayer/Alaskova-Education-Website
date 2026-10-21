@@ -9,7 +9,6 @@ Render's Environment screen.
 - [ ] **GST:** are you registered for GST (or will you be)? Ask your accountant. Then tell the agent which line to use
       on the terms page.
 - [ ] **Change-of-mind refunds:** none, or e.g. "full refund if asked within 7 days of the first payment".
-- [ ] **Referral safeguards:** pick an option (see the agent's advice); the agent then makes the change.
 - [ ] **Analytics:** none, or a privacy-friendly tool (see the agent's advice).
 - [ ] **Business details** for `src/lib/business.ts`: legal entity name, ABN, address for notices, support email, state
       for the governing law, plus minimum age, support reply time, and notice period for price changes.
@@ -28,7 +27,8 @@ Render's Environment screen.
 
 ## C. Test everything in Stripe TEST mode
 
-- [ ] Supabase SQL editor: run `supabase/migrations/0003_support_requests.sql` (0001 and 0002 should already be done).
+- [ ] Supabase SQL editor: run `supabase/migrations/0003_support_requests.sql`, then `0004_referral_instalments.sql`
+      (0001 and 0002 should already be done).
 - [ ] Supabase: custom SMTP on, Confirm email on, the two email templates changed. (GO-LIVE 4)
 - [ ] Check the book's Render service has the matching settings, including `ANTHROPIC_API_KEY`. (GO-LIVE 6)
 - [ ] Work through all 26 tests in `TEST-PLAN.md`. Note anything that fails and send it to the agent.

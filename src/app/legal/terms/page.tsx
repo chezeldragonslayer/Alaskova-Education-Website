@@ -93,12 +93,16 @@ export default function TermsPage() {
       <h2>6. Refer a friend</h2>
       <ul>
         <li>
-          If someone signs up through your personal referral link and makes their first paid subscription payment, you
-          receive account credit equal to {REFERRAL_REWARD_MONTHS} months of your subscription price. Credit is applied
+          If someone signs up through your personal referral link and subscribes, you receive account credit equal to
+          one month of the subscription price each time they make a paid monthly payment, for their first{" "}
+          {REFERRAL_REWARD_MONTHS} payments (up to {REFERRAL_REWARD_MONTHS} free months per friend). Credit is applied
           automatically to your future invoices.
         </li>
         <li>Only people who have never subscribed before count. You cannot refer yourself or your own other accounts.</li>
-        <li>You can earn at most {MAX_REWARDED_REFERRALS} rewards. Credit has no cash value and cannot be transferred.</li>
+        <li>
+          You can earn rewards from at most {MAX_REWARDED_REFERRALS} friends. Credit has no cash value and cannot be
+          transferred.
+        </li>
         <li>
           We may withhold or reverse credit that was earned by misuse (for example duplicate accounts or payments that
           are refunded or disputed), and may change or end the program for future referrals with notice on this page.

@@ -14,7 +14,7 @@ Never paste a secret key into a chat, an email, a document or the repository. Pa
 | ~~Currency~~ **Decided: AUD** (site shows A$11.99). Still open: GST registration and wording | Stripe price in AUD; terms page GST line |
 | ~~Grace period~~ **Decided: none.** Access pauses as soon as a renewal fails (current behaviour) | done |
 | **Decided:** a refund keeps access to the end of the paid period. Still open: whether you offer change-of-mind refunds at all | refunds page; how you refund in Stripe (step 2.7) |
-| Referral safeguards (reward after the friend's second payment? refuse same card?) | `src/lib/referrals.ts` **[Agent]** (audit H5) |
+| ~~Referral safeguards~~ **Decided: instalments** (1 free month per friend's paid month, up to 3). Built. Optional extra: refuse rewards when the friend pays with the referrer's own card | done |
 | Legal entity name, ABN, address, support email, governing state, minimum age | `src/lib/business.ts` and the age line in the terms **[Agent or Owner]** |
 | ~~AI tutor~~ **Decided: on** | privacy policy updated; set `ANTHROPIC_API_KEY` on the module (step 6) |
 | Analytics: none (current), or a privacy-friendly tool | privacy policy must change first |
@@ -82,7 +82,7 @@ The current key was shared in a chat, so it must not be used in production.
    Brand the wording ("Alaskova Education") while you are there.
 5. Google and Microsoft providers: switch the Google OAuth consent screen to "In production", and add the live domain
    to the authorised domains in Google Cloud and to the redirect URIs in the Microsoft Entra app registration.
-6. SQL editor: confirm migrations 0001, 0002 and **0003** have been run.
+6. SQL editor: confirm migrations 0001, 0002, **0003** and **0004** have been run, in that order.
 7. Database > Backups: the Pro plan keeps daily backups for 7 days; Point-in-Time Recovery is an add-on. The free plan
    has **no** downloadable backups and pauses inactive projects: use Pro for a paying business.
 8. Make yourself admin: `update public.profiles set role='admin' where email='you@example.com';`

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import type Stripe from "stripe";
 import {
   MAX_REWARDED_REFERRALS, decideAttach, findExistingCredit, formatReferralCode, generateReferralCode,
-  normaliseReferralCode, referralLink, rewardCredit, rewardReferral, type RewardDeps,
+  instalmentCredit, normaliseReferralCode, referralLink, rewardReferral, type RewardDeps,
 } from "@/lib/referrals";
 import { processStripeEvent, type SyncDeps } from "@/lib/stripe/sync";
 
@@ -26,7 +26,7 @@ describe("codes", () => {
     expect(formatReferralCode("ABCDEFG2")).toBe("ABCD-EFG2");
     expect(referralLink("https://x.com/", "ABCDEFG2")).toBe("https://x.com/r/ABCDEFG2");
   });
-  it("credits 3 months of the monthly price", () => expect(rewardCredit(1199)).toBe(3597));
+  it("each instalment credits one month of the monthly price", () => expect(instalmentCredit(1199)).toBe(1199));
 });
 
 describe("decideAttach", () => {
@@ -40,48 +40,102 @@ describe("decideAttach", () => {
   });
 });
 
-function rewardDeps(over: Partial<RewardDeps> = {}): RewardDeps {
-  return {
-    findPending: vi.fn(async () => ({ id: "ref1", referrerId: "referrer" })),
-    countRewarded: vi.fn(async () => 0),
-    creditReferrer: vi.fn(async () => "cbtxn_1"),
-    markRewarded: vi.fn(async () => {}),
-    markCapped: vi.fn(async () => {}),
-    ...over,
+/**
+ * In-memory stand-in for the database and Stripe: one referral (friend -> referrer), the invoices that have paid an
+ * instalment, and the credits added to the referrer's Stripe balance.
+ */
+function fakeWorld(opts: { months?: number; earning?: number; status?: string } = {}) {
+  const referral = { id: "ref1", referrerId: "referrer", monthsRewarded: opts.months ?? 0, status: opts.status ?? "pending" };
+  const rewardedInvoices = new Set<string>();
+  const credits: { instalment: number; amount: number }[] = [];
+  const deps: RewardDeps = {
+    findOpen: vi.fn(async (refereeId: string) =>
+      refereeId === "friend" && (referral.status === "pending" || referral.status === "active") ? { ...referral } : null),
+    invoiceRewarded: vi.fn(async (id: string) => rewardedInvoices.has(id)),
+    countEarning: vi.fn(async () => opts.earning ?? 0),
+    creditReferrer: vi.fn(async ({ instalment, amount }) => {
+      credits.push({ instalment, amount });
+      return `cbtxn_${instalment}`;
+    }),
+    recordInstalment: vi.fn(async ({ instalment, invoiceId }) => {
+      rewardedInvoices.add(invoiceId);
+      referral.monthsRewarded = instalment;
+      referral.status = instalment >= 3 ? "rewarded" : "active";
+    }),
+    markCapped: vi.fn(async () => {
+      referral.status = "capped";
+    }),
   };
+  const pay = (invoiceId: string, unitAmount = 1199) =>
+    rewardReferral({ userId: "friend", invoiceId, unitAmount, currency: "aud" }, deps);
+  return { deps, referral, credits, pay };
 }
 
-describe("rewardReferral", () => {
-  it("credits the referrer 3 months and marks it rewarded", async () => {
-    const d = rewardDeps();
-    expect(await rewardReferral({ userId: "friend", unitAmount: 1199, currency: "aud" }, d)).toBe("rewarded");
-    expect(d.creditReferrer).toHaveBeenCalledWith({ referrerId: "referrer", referralId: "ref1", amount: 3597, currency: "aud" });
-    expect(d.markRewarded).toHaveBeenCalledWith("ref1", "cbtxn_1");
+describe("rewardReferral (1 free month per paid month, for the friend's first 3)", () => {
+  it("pays one month of credit on the friend's first payment", async () => {
+    const w = fakeWorld();
+    expect(await w.pay("in_1")).toBe("rewarded");
+    expect(w.credits).toEqual([{ instalment: 1, amount: 1199 }]);
+    expect(w.referral).toMatchObject({ monthsRewarded: 1, status: "active" });
   });
-  it("does nothing when the user wasn't referred", async () => {
-    const d = rewardDeps({ findPending: vi.fn(async () => null) });
-    expect(await rewardReferral({ userId: "x", unitAmount: 1199, currency: "aud" }, d)).toBe("none");
-    expect(d.creditReferrer).not.toHaveBeenCalled();
+
+  it("pays one month per paid month, stops after three", async () => {
+    const w = fakeWorld();
+    for (const inv of ["in_1", "in_2", "in_3", "in_4", "in_5"]) await w.pay(inv);
+    expect(w.credits.map((c) => c.instalment)).toEqual([1, 2, 3]);
+    expect(w.credits.reduce((n, c) => n + c.amount, 0)).toBe(3 * 1199);
+    expect(w.referral.status).toBe("rewarded");
   });
-  it("stops at the cap without crediting", async () => {
-    const d = rewardDeps({ countRewarded: vi.fn(async () => MAX_REWARDED_REFERRALS) });
-    expect(await rewardReferral({ userId: "x", unitAmount: 1199, currency: "aud" }, d)).toBe("capped");
-    expect(d.creditReferrer).not.toHaveBeenCalled();
-    expect(d.markCapped).toHaveBeenCalledWith("ref1");
+
+  it("a throwaway account that pays once earns exactly what it paid, never more", async () => {
+    const w = fakeWorld();
+    await w.pay("in_1", 1199); // pays one month, then cancels
+    expect(w.credits.reduce((n, c) => n + c.amount, 0)).toBeLessThanOrEqual(1199);
   });
-  it("ignores zero or invalid prices", async () => {
-    const d = rewardDeps();
-    expect(await rewardReferral({ userId: "x", unitAmount: 0, currency: "aud" }, d)).toBe("none");
-    expect(d.findPending).not.toHaveBeenCalled();
+
+  it("the same invoice never pays twice (webhook retries)", async () => {
+    const w = fakeWorld();
+    await w.pay("in_1");
+    expect(await w.pay("in_1")).toBe("none");
+    expect(w.credits).toHaveLength(1);
   });
-  it("leaves the referral pending if crediting fails, so Stripe's retry can finish it", async () => {
-    const d = rewardDeps({ creditReferrer: vi.fn(async () => { throw new Error("stripe down"); }) });
-    await expect(rewardReferral({ userId: "x", unitAmount: 1199, currency: "aud" }, d)).rejects.toThrow("stripe down");
-    expect(d.markRewarded).not.toHaveBeenCalled();
+
+  it("does nothing when the friend wasn't referred", async () => {
+    const w = fakeWorld();
+    expect(await rewardReferral({ userId: "stranger", invoiceId: "in_1", unitAmount: 1199, currency: "aud" }, w.deps)).toBe("none");
+    expect(w.deps.creditReferrer).not.toHaveBeenCalled();
+  });
+
+  it("caps a NEW friend once the referrer has the maximum earning friends", async () => {
+    const w = fakeWorld({ earning: MAX_REWARDED_REFERRALS });
+    expect(await w.pay("in_1")).toBe("capped");
+    expect(w.deps.creditReferrer).not.toHaveBeenCalled();
+    expect(w.referral.status).toBe("capped");
+  });
+
+  it("lets a friend who is already earning finish their three months, even at the cap", async () => {
+    const w = fakeWorld({ months: 1, status: "active", earning: MAX_REWARDED_REFERRALS });
+    expect(await w.pay("in_2")).toBe("rewarded");
+    expect(w.credits).toEqual([{ instalment: 2, amount: 1199 }]);
+  });
+
+  it("ignores zero or invalid prices and missing invoice ids", async () => {
+    const w = fakeWorld();
+    expect(await w.pay("in_1", 0)).toBe("none");
+    expect(await rewardReferral({ userId: "friend", invoiceId: "", unitAmount: 1199, currency: "aud" }, w.deps)).toBe("none");
+    expect(w.deps.findOpen).not.toHaveBeenCalled();
+  });
+
+  it("records nothing if crediting fails, so Stripe's retry can finish it", async () => {
+    const w = fakeWorld();
+    (w.deps.creditReferrer as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error("stripe down"));
+    await expect(w.pay("in_1")).rejects.toThrow("stripe down");
+    expect(w.deps.recordInstalment).not.toHaveBeenCalled();
+    expect(await w.pay("in_1")).toBe("rewarded"); // the retry succeeds
   });
 });
 
-describe("webhook triggers the reward only on a real first payment", () => {
+describe("webhook triggers an instalment only on a real monthly payment", () => {
   const sub = {
     id: "sub_1", customer: "cus_1", status: "active", cancel_at_period_end: false,
     metadata: { user_id: "friend", book_slug: "molecular-atlas" },
@@ -98,22 +152,27 @@ describe("webhook triggers the reward only on a real first payment", () => {
     await processStripeEvent({ id: "e", type, data: { object: inv } } as unknown as Stripe.Event, deps);
     return reward;
   };
-  it("rewards on the first paid invoice", async () => {
-    expect(await run(invoice({}))).toHaveBeenCalledWith({ userId: "friend", unitAmount: 1199, currency: "aud" });
+  it("on the first paid invoice", async () => {
+    expect(await run(invoice({}))).toHaveBeenCalledWith({ userId: "friend", invoiceId: "in_1", unitAmount: 1199, currency: "aud" });
   });
-  it("not on renewals", async () => expect(await run(invoice({ billing_reason: "subscription_cycle" }))).not.toHaveBeenCalled());
-  it("not on a $0 first invoice", async () => expect(await run(invoice({ amount_paid: 0 }))).not.toHaveBeenCalled());
+  it("on a paid renewal", async () =>
+    expect(await run(invoice({ id: "in_2", billing_reason: "subscription_cycle" }))).toHaveBeenCalledWith(
+      expect.objectContaining({ invoiceId: "in_2" })));
+  it("not on other invoices (e.g. plan changes)", async () =>
+    expect(await run(invoice({ billing_reason: "subscription_update" }))).not.toHaveBeenCalled());
+  it("not on a $0 invoice", async () => expect(await run(invoice({ amount_paid: 0 }))).not.toHaveBeenCalled());
   it("not on a failed payment", async () => expect(await run(invoice({}), "invoice.payment_failed")).not.toHaveBeenCalled());
 });
 
 describe("findExistingCredit (retries after Stripe's 24-hour idempotency window)", () => {
   const txns = [
-    { id: "cbtxn_other", amount: -3597, metadata: { referral_id: "ref-2" } },
-    { id: "cbtxn_debit", amount: 500, metadata: { referral_id: "ref-1" } },
-    { id: "cbtxn_mine", amount: -3597, metadata: { referral_id: "ref-1" } },
+    { id: "cbtxn_other", amount: -1199, metadata: { referral_id: "ref-2", instalment: "1" } },
+    { id: "cbtxn_debit", amount: 500, metadata: { referral_id: "ref-1", instalment: "1" } },
+    { id: "cbtxn_first", amount: -1199, metadata: { referral_id: "ref-1", instalment: "1" } },
   ];
-  it("finds the earlier credit for this referral", () => expect(findExistingCredit(txns, "ref-1")).toBe("cbtxn_mine"));
-  it("returns null when this referral was never credited", () => expect(findExistingCredit(txns, "ref-3")).toBeNull());
+  it("finds the earlier credit for this instalment", () => expect(findExistingCredit(txns, "ref-1", 1)).toBe("cbtxn_first"));
+  it("does not mistake instalment 1 for instalment 2", () => expect(findExistingCredit(txns, "ref-1", 2)).toBeNull());
+  it("returns null when this referral was never credited", () => expect(findExistingCredit(txns, "ref-3", 1)).toBeNull());
   it("ignores transactions without metadata", () =>
-    expect(findExistingCredit([{ id: "x", amount: -1, metadata: null }], "ref-1")).toBeNull());
+    expect(findExistingCredit([{ id: "x", amount: -1, metadata: null }], "ref-1", 1)).toBeNull());
 });

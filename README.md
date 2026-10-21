@@ -15,11 +15,11 @@ Digital textbook subscription platform (Next.js App Router, TypeScript, Tailwind
 | Student dashboard and **My account** (name, email, subscription, billing portal link, password, deletion request) | **Built, needs Supabase + Stripe configured** |
 | Stripe Checkout (double-subscription guard), Customer Portal, signature-verified idempotent webhook | **Built, needs Stripe configured** |
 | Server-side entitlement check + signed launch token for the Molecular Atlas module | **Built, needs keys + module URL** |
-| Refer-a-friend: `/r/CODE`, 3 months credit on the friend's first paid invoice | **Built, needs migration 0002 + Stripe** |
+| Refer-a-friend: `/r/CODE`, 1 month of credit for each of the friend's first 3 paid months | **Built, needs migrations 0002 and 0004 + Stripe** |
 | Support contact form (stored in `support_requests`, rate limited) | **Built, needs migration 0003** |
 | Legal pages `/legal/terms`, `/legal/privacy`, `/legal/refunds` | **DRAFTS: need owner details and a lawyer's review** |
 | Security headers, HttpOnly session cookies | Done |
-| Tests | 98 unit tests (`npm test`); 40-check smoke test of a running site (`npm run smoke -- <url>`) |
+| Tests | 104 unit tests (`npm test`); 40-check smoke test of a running site (`npm run smoke -- <url>`) |
 | NOT yet tested against live Supabase/Stripe | Follow `docs/TEST-PLAN.md` |
 | Admin area, email notifications (Resend), analytics, error tracking, cross-device progress endpoint | **Not built** |
 | Reader | Separate Molecular Atlas service, reached through `/read/<slug>` |
@@ -28,7 +28,7 @@ Digital textbook subscription platform (Next.js App Router, TypeScript, Tailwind
 (switching to live), `docs/FOR-MODULE-AGENT.md` (notes for the book's agent).
 
 ## Setup (in order)
-1. **Supabase**: create a project. SQL editor: run `supabase/migrations/0001_init.sql`, then `0002_referrals.sql` (referral rewards), then `0003_support_requests.sql` (contact form and deletion requests).
+1. **Supabase**: create a project. SQL editor: run `supabase/migrations/0001_init.sql`, then `0002_referrals.sql` (referral rewards), then `0003_support_requests.sql` (contact form and deletion requests), then `0004_referral_instalments.sql`.
    - Authentication > URL Configuration: Site URL = `NEXT_PUBLIC_SITE_URL`; add Redirect URL `NEXT_PUBLIC_SITE_URL/auth/callback`.
    - Authentication > Providers: enable Email, Google (needs a Google Cloud OAuth client) and Azure (Microsoft; needs an Entra app registration). Callback URL for both is shown in the Supabase provider screen.
    - Decide whether "Confirm email" stays on (recommended).

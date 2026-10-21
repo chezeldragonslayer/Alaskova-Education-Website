@@ -11,13 +11,13 @@ Each step is marked:
 - **Not testable from code**: depends on something outside this repository (email delivery, Google/Microsoft, the
   Molecular Atlas service).
 
-What has already been run (21 October 2026): `npm test` 98 tests passing; `npm run smoke -- http://localhost:3100`
+What has already been run (21 October 2026): `npm test` 104 tests passing; `npm run smoke -- http://localhost:3100`
 40/40 against a local production build with **no** Supabase or Stripe keys. Nothing has yet been run against a
 configured Supabase project or a Stripe account.
 
 ## Before you start
 
-1. Supabase project created, migrations `0001`, `0002` and `0003` run (Supabase > SQL editor).
+1. Supabase project created, migrations `0001`, `0002`, `0003` and `0004` run, in that order (Supabase > SQL editor).
 2. Render environment variables set with **test** Stripe keys (`sk_test_...`, the test `whsec_...`, the test
    `price_...`). See `.env.example`.
 3. Stripe webhook endpoint added for the events listed in GO-LIVE.md, step 2.
@@ -46,8 +46,8 @@ configured Supabase project or a Stripe account.
 | 15 | Resubscribe | After 14, Subscribe again with `4242...`. | A new subscription; access returns. | Owner (logic: automated) |
 | 16 | Replayed webhook ignored | Stripe > Developers > Webhooks > your endpoint > pick a delivered event > **Resend**. | Delivery shows 200 with `"result":"duplicate"`. Nothing changes on the dashboard. | Automated (idempotency) + Owner (resend) |
 | 17 | Forged webhook refused | (Done by the smoke test.) | 400 "Invalid signature". | Automated (smoke) |
-| 18 | Referral reward | Person A: dashboard > copy referral link. Person B (new browser): open the link, register, subscribe with `4242...`. | Stripe > Person A's customer > "Credit balance" shows a credit of 3 x the monthly price, described "Referral reward: 3 months free". A's dashboard: Rewards earned 1. | Owner (rules: automated) |
-| 19 | Referral abuse refused | Signed in as Person A, open A's own link and subscribe. Then have Person B (already rewarded) renew a month later. | No credit for referring yourself; no second credit when the friend renews. Note: a brand-new throwaway account of A's own **would** still earn a reward until the owner decides on audit item H5. | Automated (rules) |
+| 18 | Referral reward | Person A: dashboard > copy referral link. Person B (new browser): open the link, register, subscribe with `4242...`. | Stripe > Person A's customer > "Credit balance" shows a credit of **one** month (A$11.99), described "Referral reward: 1 free month (your friend's payment 1 of 3)". A's dashboard: Friends subscribed 1, Free months earned 1. When B's second and third months are paid, one more month is added each time, then no more. | Owner (rules: automated) |
+| 19 | Referral abuse refused | Signed in as Person A, open A's own link and subscribe. | No credit for referring yourself. A throwaway second account earns one month per month it pays, so it never earns more than it costs. | Automated (rules) |
 | 20 | Expired module session | Open the book, wait past the module's session time (default 45 minutes; or ask the module agent for a short test setting), then click a link in the book. | The browser briefly returns to `/read/molecular-atlas` and comes straight back to the same page of the book, no sign-in needed. If the subscription ended in the meantime, you land on the subscribe page instead. | Not testable from code here (module side) |
 | 21 | Account page | My account: change your name; check email, sign-in method and subscription; Manage billing opens Stripe. | All shown correctly. | Owner |
 | 22 | Contact form | Support > send a message. | "Thanks, we've got your message". The message appears in Supabase > Table editor > `support_requests`. Sending 4 in a row is refused for a few minutes. | Owner (validation and limits: automated) |
@@ -62,7 +62,7 @@ configured Supabase project or a Stripe account.
 |---|---|
 | `tests/security.test.ts` | open-redirect guard, CSRF origin check, rate limiter (including spoofed addresses and memory bound), access rules, double-subscription guard, dashboard status wording |
 | `tests/sync.test.ts` | webhook idempotency, out-of-order and stale events, past_due, cancel at period end, paused, unpaid, deleted, resubscribe, unattributable subscriptions, retries |
-| `tests/referrals.test.ts` | codes, self/repeat/existing-customer refusal, cap, $0 first invoices, renewals, failed payments, no double credit after Stripe's 24-hour window |
+| `tests/referrals.test.ts` | codes, self/repeat/existing-customer refusal, 1 month per paid month up to 3, throwaway accounts never profit, cap, $0 invoices, failed payments, webhook retries, no double credit after Stripe's 24-hour window |
 | `tests/module-token.test.ts` | launch token claims and lifetime against INTEGRATION.md, unique `jti`, wrong audience/issuer/key, tampering, `alg: none`, JWKS has no private part |
 | `tests/support.test.ts` | contact form validation, honeypot, display names |
 | `scripts/smoke.mjs` | 40 outside-in checks of a running site: pages, health check, private-route redirects and caching, 404, security headers, robots/sitemap, JWKS, CSRF refusals, forged webhooks, referral cookie, auth redirects |

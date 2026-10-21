@@ -33,15 +33,15 @@ export async function getOrCreateReferralCode(userId: string): Promise<string> {
 export async function getReferralStats(userId: string) {
   const { data, error } = await createSupabaseAdmin()
     .from("referrals")
-    .select("status")
+    .select("status, months_rewarded")
     .eq("referrer_id", userId);
   if (error) throw error;
   const rows = data ?? [];
-  const rewarded = rows.filter((r) => r.status === "rewarded").length;
   return {
     joined: rows.length,
-    rewarded,
-    monthsEarned: rewarded * REFERRAL_REWARD_MONTHS,
+    /** Friends who have paid at least once (and so earned the referrer at least one month). */
+    paying: rows.filter((r) => (r.months_rewarded as number) > 0).length,
+    monthsEarned: rows.reduce((sum, r) => sum + ((r.months_rewarded as number) ?? 0), 0),
   };
 }
 
@@ -78,59 +78,78 @@ export async function attachReferral(refereeId: string, rawCode: unknown): Promi
 export function realRewardDeps(): RewardDeps {
   const db = createSupabaseAdmin();
   return {
-    async findPending(refereeId) {
+    async findOpen(refereeId) {
       const { data, error } = await db
         .from("referrals")
-        .select("id, referrer_id")
+        .select("id, referrer_id, months_rewarded")
         .eq("referee_id", refereeId)
-        .eq("status", "pending")
+        .in("status", ["pending", "active"])
         .maybeSingle();
       if (error) throw error;
-      return data ? { id: data.id as string, referrerId: data.referrer_id as string } : null;
+      return data
+        ? { id: data.id as string, referrerId: data.referrer_id as string, monthsRewarded: data.months_rewarded as number }
+        : null;
     },
-    async countRewarded(referrerId) {
+    async invoiceRewarded(invoiceId) {
+      const { count, error } = await db
+        .from("referral_rewards")
+        .select("id", { count: "exact", head: true })
+        .eq("stripe_invoice_id", invoiceId);
+      if (error) throw error;
+      return (count ?? 0) > 0;
+    },
+    async countEarning(referrerId) {
       const { count, error } = await db
         .from("referrals")
         .select("id", { count: "exact", head: true })
         .eq("referrer_id", referrerId)
-        .eq("status", "rewarded");
+        .in("status", ["active", "rewarded"]);
       if (error) throw error;
       return count ?? 0;
     },
-    async creditReferrer({ referrerId, referralId, amount, currency }) {
+    async creditReferrer({ referrerId, referralId, instalment, amount, currency }) {
       const { data: user, error } = await db.auth.admin.getUserById(referrerId);
       if (error) throw error;
       const customerId = await ensureStripeCustomer(referrerId, user.user?.email);
       // Stripe forgets idempotency keys after 24 hours, but webhook retries can come days later. If an earlier attempt
-      // already credited this referral (and only recording it failed), reuse that credit instead of adding another.
+      // already credited this instalment (and only recording it failed), reuse that credit instead of adding another.
       const earlier = [];
       for await (const t of getStripe().customers.listBalanceTransactions(customerId, { limit: 100 })) earlier.push(t);
-      const already = findExistingCredit(earlier, referralId);
+      const already = findExistingCredit(earlier, referralId, instalment);
       if (already) return already;
-      // A NEGATIVE balance transaction is a credit: Stripe takes it off the referrer's next invoices.
-      // The idempotency key guarantees one referral can never be credited twice, even if we retry.
+      // A NEGATIVE balance transaction is a credit: Stripe takes it off the referrer's next invoice.
       const txn = await getStripe().customers.createBalanceTransaction(
         customerId,
         {
           amount: -amount,
           currency,
-          description: `Referral reward: ${REFERRAL_REWARD_MONTHS} months free`,
-          metadata: { referral_id: referralId },
+          description: `Referral reward: 1 free month (your friend's payment ${instalment} of ${REFERRAL_REWARD_MONTHS})`,
+          metadata: { referral_id: referralId, instalment: String(instalment) },
         },
-        { idempotencyKey: `referral-${referralId}` },
+        { idempotencyKey: `referral-${referralId}-${instalment}` },
       );
       return txn.id;
     },
-    async markRewarded(referralId, balanceTransactionId) {
+    // Writes the invoice row first: if the second write fails, a retry of the same invoice is skipped (the referrer may
+    // be one month short, which support can fix) rather than paying a second month for one payment.
+    async recordInstalment({ referralId, instalment, invoiceId, balanceTransactionId }) {
+      const { error: insertErr } = await db.from("referral_rewards").insert({
+        referral_id: referralId,
+        instalment,
+        stripe_invoice_id: invoiceId,
+        stripe_balance_transaction_id: balanceTransactionId,
+      });
+      if (insertErr && insertErr.code !== "23505") throw insertErr; // 23505 = already recorded by an earlier attempt
       const { error } = await db
         .from("referrals")
         .update({
-          status: "rewarded",
+          months_rewarded: instalment,
+          status: instalment >= REFERRAL_REWARD_MONTHS ? "rewarded" : "active",
           stripe_balance_transaction_id: balanceTransactionId,
           rewarded_at: new Date().toISOString(),
         })
         .eq("id", referralId)
-        .eq("status", "pending");
+        .eq("months_rewarded", instalment - 1);
       if (error) throw error;
     },
     async markCapped(referralId) {

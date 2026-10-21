@@ -3,18 +3,20 @@ import { randomInt } from "node:crypto";
 /**
  * Referral rules. Pure and dependency-injected so they can be unit tested without Stripe or a database.
  *
- * The offer: when a friend you referred makes their FIRST PAID subscription payment, you receive
- * REFERRAL_REWARD_MONTHS months of credit on your own Alaskova Education bill.
+ * The offer, paid in instalments: for each of the FIRST REFERRAL_REWARD_MONTHS paid monthly payments a referred friend
+ * makes, the referrer receives ONE month of credit on their own Alaskova Education bill. A genuine friend who stays three
+ * months earns the full three months; a throwaway account can never earn more credit than it paid in, so creating fake
+ * accounts is never profitable.
  *
  * Abuse guards (all enforced server-side):
  *  - a person can only be referred once, and never by themselves (database constraints);
  *  - only brand-new subscribers count (no earlier subscription of any kind);
- *  - the reward fires on a real payment: a $0 first invoice (100%-off coupon) earns nothing;
- *  - one referral can only ever be paid once (Stripe idempotency key + status check);
- *  - a referrer can earn at most MAX_REWARDED_REFERRALS rewards.
+ *  - each instalment needs a real payment: $0 invoices (100%-off coupons) earn nothing;
+ *  - each paid invoice can pay at most one instalment, and each instalment is paid once (unique invoice id,
+ *    unique referral+instalment, Stripe idempotency key, and a search for an earlier credit);
+ *  - a referrer can have at most MAX_REWARDED_REFERRALS friends earning them rewards.
  */
 export const REFERRAL_REWARD_MONTHS = 3;
-/** Cap per person: 12 referrals = 36 free months. OWNER DECISION: change here if you want a different limit. */
 export const MAX_REWARDED_REFERRALS = 12;
 export const REFERRAL_COOKIE = "alaskova_ref";
 export const REFERRAL_COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
@@ -43,9 +45,8 @@ export const formatReferralCode = (code: string) => `${code.slice(0, 4)}-${code.
 export const referralLink = (siteOrigin: string, code: string) =>
   `${siteOrigin.replace(/\/$/, "")}/r/${code}`;
 
-/** Credit in the smallest currency unit (cents) for the reward: N months at the monthly price. */
-export const rewardCredit = (monthlyUnitAmount: number, months = REFERRAL_REWARD_MONTHS) =>
-  monthlyUnitAmount * months;
+/** Credit for one instalment, in the smallest currency unit (cents): one month at the friend's monthly price. */
+export const instalmentCredit = (monthlyUnitAmount: number) => monthlyUnitAmount;
 
 export type AttachDecision = "attach" | "self" | "already-referred" | "not-new";
 
@@ -63,50 +64,69 @@ export function decideAttach(input: {
   return "attach";
 }
 
-export type PendingReferral = { id: string; referrerId: string };
+export type OpenReferral = { id: string; referrerId: string; monthsRewarded: number };
 
 export type RewardDeps = {
-  findPending(refereeId: string): Promise<PendingReferral | null>;
-  countRewarded(referrerId: string): Promise<number>;
-  /** Credit the referrer's Stripe balance (must be idempotent per referralId). Returns the Stripe transaction id. */
+  /** The referral for this friend that still has instalments to pay (status pending or active), if any. */
+  findOpen(refereeId: string): Promise<OpenReferral | null>;
+  /** Has this Stripe invoice already paid an instalment? */
+  invoiceRewarded(invoiceId: string): Promise<boolean>;
+  /** How many of this referrer's friends have started earning them rewards (status active or rewarded). */
+  countEarning(referrerId: string): Promise<number>;
+  /** Credit the referrer's Stripe balance (idempotent per referral + instalment). Returns the Stripe transaction id. */
   creditReferrer(input: {
     referrerId: string;
     referralId: string;
+    instalment: number;
     amount: number;
     currency: string;
   }): Promise<string>;
-  markRewarded(referralId: string, balanceTransactionId: string): Promise<void>;
+  recordInstalment(input: {
+    referralId: string;
+    instalment: number;
+    invoiceId: string;
+    balanceTransactionId: string;
+  }): Promise<void>;
   markCapped(referralId: string): Promise<void>;
 };
 
-/** Called when a user's first real payment succeeds. Safe to call more than once. */
+/** Called for each paid subscription invoice of a referred friend. Safe to call more than once for the same invoice. */
 export async function rewardReferral(
-  input: { userId: string; unitAmount: number; currency: string },
+  input: { userId: string; invoiceId: string; unitAmount: number; currency: string },
   deps: RewardDeps,
 ): Promise<"none" | "rewarded" | "capped"> {
-  if (!Number.isInteger(input.unitAmount) || input.unitAmount <= 0) return "none";
-  const referral = await deps.findPending(input.userId);
-  if (!referral) return "none";
+  if (!Number.isInteger(input.unitAmount) || input.unitAmount <= 0 || !input.invoiceId) return "none";
+  const referral = await deps.findOpen(input.userId);
+  if (!referral || referral.monthsRewarded >= REFERRAL_REWARD_MONTHS) return "none";
+  if (await deps.invoiceRewarded(input.invoiceId)) return "none";
 
-  if ((await deps.countRewarded(referral.referrerId)) >= MAX_REWARDED_REFERRALS) {
+  // The cap applies when a friend would START earning; a friend already earning finishes their three instalments.
+  if (referral.monthsRewarded === 0 && (await deps.countEarning(referral.referrerId)) >= MAX_REWARDED_REFERRALS) {
     await deps.markCapped(referral.id);
     return "capped";
   }
 
+  const instalment = referral.monthsRewarded + 1;
   const txn = await deps.creditReferrer({
     referrerId: referral.referrerId,
     referralId: referral.id,
-    amount: rewardCredit(input.unitAmount),
+    instalment,
+    amount: instalmentCredit(input.unitAmount),
     currency: input.currency,
   });
-  await deps.markRewarded(referral.id, txn);
+  await deps.recordInstalment({ referralId: referral.id, instalment, invoiceId: input.invoiceId, balanceTransactionId: txn });
   return "rewarded";
 }
 
-/** The id of a Stripe balance transaction that already credits this referral, if there is one. */
+/** The id of a Stripe balance transaction that already credits this referral instalment, if there is one. */
 export function findExistingCredit(
   transactions: { id: string; amount: number; metadata?: Record<string, string> | null }[],
   referralId: string,
+  instalment: number,
 ): string | null {
-  return transactions.find((t) => t.amount < 0 && t.metadata?.referral_id === referralId)?.id ?? null;
+  return (
+    transactions.find(
+      (t) => t.amount < 0 && t.metadata?.referral_id === referralId && t.metadata?.instalment === String(instalment),
+    )?.id ?? null
+  );
 }
