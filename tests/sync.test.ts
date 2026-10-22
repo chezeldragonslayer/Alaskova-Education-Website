@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type Stripe from "stripe";
-import { processStripeEvent, periodEnd, type SyncDeps, type SubscriptionRow } from "@/lib/stripe/sync";
+import { isFullRefund, processStripeEvent, periodEnd, type SyncDeps, type SubscriptionRow } from "@/lib/stripe/sync";
 import { grantsAccess } from "@/lib/security";
 
 const sub = (over: Record<string, unknown> = {}) =>
@@ -26,6 +26,8 @@ function deps(over: Partial<SyncDeps> = {}, current = sub()) {
     upsertSubscription: vi.fn(async (r) => void rows.push(r)),
     linkCustomer: vi.fn(async () => {}),
     userForCustomer: vi.fn(async () => null),
+    subscriptionForCharge: vi.fn(async () => "sub_1"),
+    cancelSubscriptionNow: vi.fn(async () => {}),
     ...over,
   };
   return { d, rows };
@@ -130,5 +132,44 @@ describe("subscription lifecycle from webhooks", () => {
     const { d, rows } = deps({}, sub({ id: "sub_2", status: "active" }));
     await processStripeEvent(evt("customer.subscription.created", sub({ id: "sub_2" }), "evt_new"), d);
     expect(rows[0]).toMatchObject({ id: "sub_2", status: "active" });
+  });
+});
+
+describe("refunds end access immediately (owner policy)", () => {
+  const charge = (over: Record<string, unknown> = {}) =>
+    ({ id: "ch_1", amount: 1199, amount_refunded: 1199, refunded: true, payment_intent: "pi_1", ...over });
+
+  it("a full refund cancels the subscription it paid for, and access ends", async () => {
+    const { d, rows } = deps({}, sub({ status: "canceled" }));
+    await processStripeEvent(evt("charge.refunded", charge()), d);
+    expect(d.subscriptionForCharge).toHaveBeenCalled();
+    expect(d.cancelSubscriptionNow).toHaveBeenCalledWith("sub_1");
+    expect(rows[0].status).toBe("canceled");
+    expect(grantsAccess(rows[0].status, rows[0].current_period_end)).toBe(false);
+  });
+
+  it("a partial refund leaves access alone", async () => {
+    const { d, rows } = deps();
+    await processStripeEvent(evt("charge.refunded", charge({ amount_refunded: 500, refunded: false })), d);
+    expect(d.cancelSubscriptionNow).not.toHaveBeenCalled();
+    expect(rows).toHaveLength(0);
+  });
+
+  it("a refund of a non-subscription payment changes nothing", async () => {
+    const { d } = deps({ subscriptionForCharge: vi.fn(async () => null) });
+    await processStripeEvent(evt("charge.refunded", charge()), d);
+    expect(d.cancelSubscriptionNow).not.toHaveBeenCalled();
+  });
+
+  it("if cancelling fails, the event is not marked done, so Stripe retries it", async () => {
+    const { d } = deps({ cancelSubscriptionNow: vi.fn(async () => { throw new Error("stripe down"); }) });
+    await expect(processStripeEvent(evt("charge.refunded", charge()), d)).rejects.toThrow("stripe down");
+    expect(d.markProcessed).not.toHaveBeenCalled();
+  });
+
+  it("recognises full and partial refunds", () => {
+    expect(isFullRefund({ refunded: true, amount: 1199, amount_refunded: 1199 })).toBe(true);
+    expect(isFullRefund({ refunded: false, amount: 1199, amount_refunded: 1199 })).toBe(true);
+    expect(isFullRefund({ refunded: false, amount: 1199, amount_refunded: 600 })).toBe(false);
   });
 });

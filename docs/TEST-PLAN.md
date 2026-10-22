@@ -11,7 +11,7 @@ Each step is marked:
 - **Not testable from code**: depends on something outside this repository (email delivery, Google/Microsoft, the
   Molecular Atlas service).
 
-What has already been run (21 October 2026): `npm test` 104 tests passing; `npm run smoke -- http://localhost:3100`
+What has already been run (21 October 2026): `npm test` 109 tests passing; `npm run smoke -- http://localhost:3100`
 40/40 against a local production build with **no** Supabase or Stripe keys. Nothing has yet been run against a
 configured Supabase project or a Stripe account.
 
@@ -20,7 +20,8 @@ configured Supabase project or a Stripe account.
 1. Supabase project created, migrations `0001`, `0002`, `0003` and `0004` run, in that order (Supabase > SQL editor).
 2. Render environment variables set with **test** Stripe keys (`sk_test_...`, the test `whsec_...`, the test
    `price_...`). See `.env.example`.
-3. Stripe webhook endpoint added for the events listed in GO-LIVE.md, step 2.
+3. Stripe webhook endpoint added for the events listed in GO-LIVE.md, step 2, **including `charge.refunded`** (add it to
+   your existing test-mode endpoint).
 4. Run `npm run smoke -- https://<your Render address>` and confirm every line says PASS.
 5. Use a fresh private/incognito window for each "person" in the tests. Use real email addresses you can open
    (Gmail's `you+test1@gmail.com` trick works).
@@ -52,7 +53,7 @@ configured Supabase project or a Stripe account.
 | 21 | Account page | My account: change your name; check email, sign-in method and subscription; Manage billing opens Stripe. | All shown correctly. | Owner |
 | 22 | Contact form | Support > send a message. | "Thanks, we've got your message". The message appears in Supabase > Table editor > `support_requests`. Sending 4 in a row is refused for a few minutes. | Owner (validation and limits: automated) |
 | 23 | Deletion request | My account > Delete my account > tick > Request. | Confirmation shown; a row with kind `account_deletion` in `support_requests`. Then follow GO-LIVE "Handling a deletion request". | Owner |
-| 24 | Refund | In Stripe, refund a test payment, then cancel the subscription **at end of period** (GO-LIVE step 2.7). | Dashboard shows "Cancelled · Access until <date>"; Read now still works until that date; no further charge. | Owner |
+| 24 | Refund ends access | In Stripe, refund a test subscription payment **in full**. | Within seconds Stripe shows the subscription as Canceled, the dashboard shows "Ended" and Read now refuses. A **partial** refund changes nothing. | Owner (logic: automated) |
 | 25 | Pages and links | Click every footer link; open a made-up address like `/abc`. | No 404s except the made-up one, which shows the branded "We couldn't find that page". | Automated (smoke) |
 | 26 | Phone layout | Repeat 6, 8 and 21 on a phone. | Nothing cut off, no sideways scrolling. | Owner (360px and 768px layouts were checked by the agent for the new pages only) |
 
@@ -61,7 +62,7 @@ configured Supabase project or a Stripe account.
 | File | Covers |
 |---|---|
 | `tests/security.test.ts` | open-redirect guard, CSRF origin check, rate limiter (including spoofed addresses and memory bound), access rules, double-subscription guard, dashboard status wording |
-| `tests/sync.test.ts` | webhook idempotency, out-of-order and stale events, past_due, cancel at period end, paused, unpaid, deleted, resubscribe, unattributable subscriptions, retries |
+| `tests/sync.test.ts` | webhook idempotency, out-of-order and stale events, past_due, cancel at period end, paused, unpaid, deleted, resubscribe, full refund ends access, partial refund doesn't, unattributable subscriptions, retries |
 | `tests/referrals.test.ts` | codes, self/repeat/existing-customer refusal, 1 month per paid month up to 3, throwaway accounts never profit, cap, $0 invoices, failed payments, webhook retries, no double credit after Stripe's 24-hour window |
 | `tests/module-token.test.ts` | launch token claims and lifetime against INTEGRATION.md, unique `jti`, wrong audience/issuer/key, tampering, `alg: none`, JWKS has no private part |
 | `tests/support.test.ts` | contact form validation, honeypot, display names |

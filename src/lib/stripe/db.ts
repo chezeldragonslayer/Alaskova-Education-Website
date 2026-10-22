@@ -3,7 +3,7 @@ import { createSupabaseAdmin } from "@/lib/supabase/server";
 import { getStripe } from "./client";
 import { rewardReferral } from "@/lib/referrals";
 import { realRewardDeps } from "@/lib/referrals-db";
-import type { SyncDeps } from "./sync";
+import { invoiceSubscription, type SyncDeps } from "./sync";
 
 /** Real dependencies for the webhook: Stripe API + Supabase (service role). */
 export function realSyncDeps(): SyncDeps {
@@ -48,6 +48,28 @@ export function realSyncDeps(): SyncDeps {
         .eq("stripe_customer_id", customerId)
         .maybeSingle();
       return data?.user_id ?? null;
+    },
+    async subscriptionForCharge(charge) {
+      const paymentIntent = typeof charge.payment_intent === "string" ? charge.payment_intent : charge.payment_intent?.id;
+      if (!paymentIntent) return null;
+      // Current Stripe API versions link a payment to its invoice through "invoice payments".
+      const payments = await stripe.invoicePayments.list({
+        payment: { type: "payment_intent", payment_intent: paymentIntent },
+        limit: 1,
+      });
+      const inv = payments.data[0]?.invoice;
+      const invoiceId = typeof inv === "string" ? inv : inv?.id;
+      if (!invoiceId) return null;
+      return invoiceSubscription(await stripe.invoices.retrieve(invoiceId));
+    },
+    async cancelSubscriptionNow(subscriptionId) {
+      const current = await stripe.subscriptions.retrieve(subscriptionId);
+      if (current.status === "canceled" || current.status === "incomplete_expired") return;
+      await stripe.subscriptions.cancel(
+        subscriptionId,
+        { cancellation_details: { comment: "Payment refunded: access ended immediately (Alaskova Education policy)." } },
+        { idempotencyKey: `refund-cancel-${subscriptionId}` },
+      );
     },
     rewardReferral: (input) => rewardReferral(input, realRewardDeps()),
   };

@@ -13,7 +13,7 @@ Never paste a secret key into a chat, an email, a document or the repository. Pa
 |---|---|
 | ~~Currency~~ **Decided: AUD** (site shows A$11.99). Still open: GST registration and wording | Stripe price in AUD; terms page GST line |
 | ~~Grace period~~ **Decided: none.** Access pauses as soon as a renewal fails (current behaviour) | done |
-| **Decided:** a refund keeps access to the end of the paid period. Still open: whether you offer change-of-mind refunds at all | refunds page; how you refund in Stripe (step 2.7) |
+| **Decided:** a full refund ends access immediately (automatic). Still open: whether you offer change-of-mind refunds at all | refunds page; built into the webhook |
 | ~~Referral safeguards~~ **Decided: instalments** (1 free month per friend's paid month, up to 3). Built. Optional extra: refuse rewards when the friend pays with the referrer's own card | done |
 | Legal entity name, ABN, address, support email, governing state, minimum age | `src/lib/business.ts` and the age line in the terms **[Agent or Owner]** |
 | ~~AI tutor~~ **Decided: on** | privacy policy updated; set `ANTHROPIC_API_KEY` on the module (step 6) |
@@ -40,14 +40,15 @@ Test-mode products, prices, keys and webhooks do **not** carry over to live mode
 4. Developers > Webhooks > **Add endpoint** `https://www.<domain>/api/stripe/webhook`, events:
    `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`,
    `customer.subscription.deleted`, `customer.subscription.paused`, `customer.subscription.resumed`, `invoice.paid`,
-   `invoice.payment_failed`. Copy its **signing secret** (`whsec_...`).
+   `invoice.payment_failed`, **`charge.refunded`**. Copy its **signing secret** (`whsec_...`).
 5. Settings > Billing > **Customer portal** (live mode): allow updating payment methods, viewing invoices, and cancelling
    **at the end of the billing period** (the refunds page promises this). Add links to your terms and privacy pages.
 6. Settings > Billing > Subscriptions and emails: turn on emails for failed payments and expiring cards, and Smart
    Retries. Settings > Public details: support email and statement descriptor ("ALASKOVA EDUCATION").
-7. When you refund someone: Payments > the payment > Refund. Then open the subscription and **Cancel > At end of
-   current period**. Your policy is that a refund keeps access until the period they paid for ends; the refund alone
-   does not stop future charges, so the cancel step is what prevents next month's payment.
+7. When you refund someone: Payments > the payment > **Refund** the full amount. That is all: the website sees the
+   refund, cancels the subscription in Stripe straight away and ends their access within seconds. A **partial** refund
+   (for example a goodwill credit) does not end access. To end access without refunding, cancel the subscription
+   immediately instead.
 8. Disputes: Stripe emails you. Respond in Stripe with the evidence; consider cancelling the subscription.
 
 ## 3. Signing key for the book: replace the test key **[Owner]**

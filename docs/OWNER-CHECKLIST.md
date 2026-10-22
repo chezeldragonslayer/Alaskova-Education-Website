@@ -29,6 +29,8 @@ Render's Environment screen.
 
 - [ ] Supabase SQL editor: run `supabase/migrations/0003_support_requests.sql`, then `0004_referral_instalments.sql`
       (0001 and 0002 should already be done).
+- [ ] Stripe (test mode) > Developers > Webhooks > your endpoint > add the event **`charge.refunded`**, so a full
+      refund ends access automatically.
 - [ ] Supabase: custom SMTP on, Confirm email on, the two email templates changed. (GO-LIVE 4)
 - [ ] Check the book's Render service has the matching settings, including `ANTHROPIC_API_KEY`. (GO-LIVE 6)
 - [ ] Work through all 26 tests in `TEST-PLAN.md`. Note anything that fails and send it to the agent.

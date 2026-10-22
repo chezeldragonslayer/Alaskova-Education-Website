@@ -19,7 +19,7 @@ Digital textbook subscription platform (Next.js App Router, TypeScript, Tailwind
 | Support contact form (stored in `support_requests`, rate limited) | **Built, needs migration 0003** |
 | Legal pages `/legal/terms`, `/legal/privacy`, `/legal/refunds` | **DRAFTS: need owner details and a lawyer's review** |
 | Security headers, HttpOnly session cookies | Done |
-| Tests | 104 unit tests (`npm test`); 40-check smoke test of a running site (`npm run smoke -- <url>`) |
+| Tests | 109 unit tests (`npm test`); 40-check smoke test of a running site (`npm run smoke -- <url>`) |
 | NOT yet tested against live Supabase/Stripe | Follow `docs/TEST-PLAN.md` |
 | Admin area, email notifications (Resend), analytics, error tracking, cross-device progress endpoint | **Not built** |
 | Reader | Separate Molecular Atlas service, reached through `/read/<slug>` |
@@ -33,7 +33,7 @@ Digital textbook subscription platform (Next.js App Router, TypeScript, Tailwind
    - Authentication > Providers: enable Email, Google (needs a Google Cloud OAuth client) and Azure (Microsoft; needs an Entra app registration). Callback URL for both is shown in the Supabase provider screen.
    - Decide whether "Confirm email" stays on (recommended).
 2. **Stripe**: Products > create "Molecular Atlas" with a recurring monthly price of $11.99 (set your currency). Copy the `price_...` id to `STRIPE_PRICE_MOLECULAR_ATLAS`.
-   - Developers > Webhooks > add endpoint `NEXT_PUBLIC_SITE_URL/api/stripe/webhook` for: `checkout.session.completed`, `customer.subscription.created|updated|deleted|paused|resumed`, `invoice.paid`, `invoice.payment_failed`. Copy the signing secret to `STRIPE_WEBHOOK_SECRET`.
+   - Developers > Webhooks > add endpoint `NEXT_PUBLIC_SITE_URL/api/stripe/webhook` for: `checkout.session.completed`, `customer.subscription.created|updated|deleted|paused|resumed`, `invoice.paid`, `invoice.payment_failed`, `charge.refunded`. Copy the signing secret to `STRIPE_WEBHOOK_SECRET`.
    - Settings > Billing > Customer portal: enable cancellation and payment-method updates.
 3. **Keys for the textbook module**: `node scripts/generate-module-keys.mjs`. Put the private key in `ALASKOVA_MODULE_PRIVATE_KEY`; give the module agent the public key or `/.well-known/jwks.json`.
 4. **Render**: new Web Service from this repo. Build `npm ci && npm run build`, start `npm start`, health check `/healthz`, one instance, add every variable from `.env.example`. Full production steps: `docs/GO-LIVE.md`.

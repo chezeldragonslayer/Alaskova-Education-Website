@@ -10,6 +10,8 @@ import type Stripe from "stripe";
  *  - We re-fetch the subscription from Stripe for every relevant event, so
  *    out-of-order or replayed events can't leave stale state behind.
  *  - Each event id is claimed in `stripe_events`; duplicates are acknowledged and skipped.
+ *  - Owner policy: a FULL refund ends access immediately. When a payment is fully refunded (in the Stripe Dashboard or
+ *    anywhere else), the subscription it paid for is cancelled at once. Partial refunds leave access alone.
  */
 export type SubscriptionRow = {
   id: string;
@@ -30,6 +32,10 @@ export type SyncDeps = {
   upsertSubscription(row: SubscriptionRow): Promise<void>;
   linkCustomer(userId: string, customerId: string): Promise<void>;
   userForCustomer(customerId: string): Promise<string | null>;
+  /** The subscription a charge paid for (via its invoice), or null if it wasn't a subscription payment. */
+  subscriptionForCharge(charge: Stripe.Charge): Promise<string | null>;
+  /** Cancel a subscription immediately (no-op if it has already ended). */
+  cancelSubscriptionNow(subscriptionId: string): Promise<void>;
   /** Optional: called for each real (non-zero) monthly payment. Used for referral rewards, paid in instalments. */
   rewardReferral?(input: { userId: string; invoiceId: string; unitAmount: number; currency: string }): Promise<unknown>;
 };
@@ -73,6 +79,15 @@ function invoiceSubscriptionId(invoice: Stripe.Invoice): string | null {
   }).parent;
   const legacy = (invoice as unknown as { subscription?: string | { id: string } }).subscription;
   return id(parent?.subscription_details?.subscription) ?? id(legacy);
+}
+
+/** True when the whole charge has been refunded (Stripe sets `refunded` only then). */
+export function isFullRefund(charge: Pick<Stripe.Charge, "refunded" | "amount" | "amount_refunded">): boolean {
+  return Boolean(charge.refunded) || (charge.amount > 0 && charge.amount_refunded >= charge.amount);
+}
+
+export function invoiceSubscription(invoice: Stripe.Invoice): string | null {
+  return invoiceSubscriptionId(invoice);
 }
 
 async function syncSubscription(subId: string, deps: SyncDeps) {
@@ -133,6 +148,15 @@ export async function processStripeEvent(
           });
         }
       }
+      break;
+    }
+    case "charge.refunded": {
+      const charge = event.data.object as Stripe.Charge;
+      if (!isFullRefund(charge)) break; // partial refund (e.g. a goodwill credit): access continues
+      const subId = await deps.subscriptionForCharge(charge);
+      if (!subId) break;
+      await deps.cancelSubscriptionNow(subId);
+      await syncSubscription(subId, deps);
       break;
     }
     default:

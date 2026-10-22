@@ -148,6 +148,7 @@ describe("webhook triggers an instalment only on a real monthly payment", () => 
     const deps: SyncDeps = {
       claimEvent: async () => "new", markProcessed: async () => {}, retrieveSubscription: async () => sub,
       upsertSubscription: async () => {}, linkCustomer: async () => {}, userForCustomer: async () => null, rewardReferral: reward,
+      subscriptionForCharge: async () => null, cancelSubscriptionNow: async () => {},
     };
     await processStripeEvent({ id: "e", type, data: { object: inv } } as unknown as Stripe.Event, deps);
     return reward;

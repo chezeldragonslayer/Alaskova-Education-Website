@@ -43,8 +43,8 @@ export default function RefundsPage() {
           refund in the case of a major failure. These rights are not affected by anything on this page.
         </li>
         <li>
-          If we give you a refund, your subscription is cancelled and you keep access until the end of the period you
-          had paid for. You are not charged again.
+          If we refund a payment in full, the subscription it paid for is cancelled and your access to the textbook ends
+          straight away. You are not charged again. You can subscribe again at any time.
         </li>
       </ul>
 
