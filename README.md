@@ -25,7 +25,7 @@ Digital textbook subscription platform (Next.js App Router, TypeScript, Tailwind
 | Reader | Separate Molecular Atlas service, reached through `/read/<slug>` |
 
 **Launch documents:** `docs/LAUNCH-AUDIT.md` (findings), `docs/TEST-PLAN.md` (what to test), `docs/GO-LIVE.md`
-(switching to live), `docs/FOR-MODULE-AGENT.md` (notes for the book's agent).
+(switching to live), `docs/FOR-MODULE-AGENT.md` (notes for the book's agent). Connecting the finished book and launch order: `docs/CONNECT-MOLECULAR-ATLAS.md`.
 
 ## Setup (in order)
 1. **Supabase**: create a project. SQL editor: run `supabase/migrations/0001_init.sql`, then `0002_referrals.sql` (referral rewards), then `0003_support_requests.sql` (contact form and deletion requests), then `0004_referral_instalments.sql`.
