@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import { sendContactMessage, type ContactState } from "./actions";
 
 const field =
-  "mt-1.5 w-full rounded-xl bg-white px-4 text-base text-midnight ring-1 ring-line placeholder:text-muted/70 focus:outline-none focus:ring-2 focus:ring-bright";
+  "mt-1.5 w-full rounded-xl bg-white px-4 text-base text-navy ring-1 ring-line placeholder:text-muted/70 focus:outline-none focus:ring-2 focus:ring-gold-ink";
 
 const topics: [string, string][] = [
   ["account", "My account or signing in"],
@@ -53,7 +53,7 @@ export function ContactForm() {
         {state.error && <p role="alert" id="contact-error" className="rounded-lg bg-white px-3 py-2 font-medium text-red-700">{state.error}</p>}
       </div>
       <div className="sm:col-span-2">
-        <button disabled={pending} className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-white px-6 text-base font-semibold text-midnight shadow-card transition-all hover:-translate-y-0.5 disabled:opacity-60">
+        <button disabled={pending} className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-white px-6 text-base font-semibold text-navy shadow-card transition-all hover:-translate-y-0.5 disabled:opacity-60">
           {pending && <Loader2 className="animate-spin" size={18} aria-hidden />}
           Send message
         </button>

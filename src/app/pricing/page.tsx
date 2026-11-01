@@ -36,7 +36,7 @@ export default function PricingPage() {
             return (
               <Reveal key={plan.id}>
                 <div className="grid overflow-hidden rounded-[1.75rem] bg-white shadow-lift ring-1 ring-line md:grid-cols-[1fr_1.1fr]">
-                  <div className="relative bg-gradient-to-br from-deep via-steel to-ocean p-8 text-white sm:p-10">
+                  <div className="on-dark relative bg-gradient-to-br from-navy via-navy-2 to-navy p-8 text-white sm:p-10">
                     <p className="text-sm font-semibold text-white/80">Subscription</p>
                     <h2 className="mt-1 font-display text-3xl font-bold tracking-tight">{book.title}</h2>
                     <p className="mt-6 font-display text-5xl font-bold tracking-tight">
@@ -50,7 +50,7 @@ export default function PricingPage() {
                     <h3 className="font-display text-lg font-semibold">What’s included</h3>
                     <ul className="mt-4 space-y-3">
                       {["Online access to Molecular Atlas", "Read in your web browser", "Progress tracking on your device", "Manage your subscription from your account"].map((t) => (
-                        <li key={t} className="flex gap-3"><Check size={18} className="mt-0.5 shrink-0 text-ocean" aria-hidden />{t}</li>
+                        <li key={t} className="flex gap-3"><Check size={18} className="mt-0.5 shrink-0 text-gold-ink" aria-hidden />{t}</li>
                       ))}
                     </ul>
                     <SubscribeButton slug={book.slug} className="mt-8 w-full">Subscribe</SubscribeButton>
@@ -68,8 +68,8 @@ export default function PricingPage() {
             { i: XCircle, t: "Cancel any time", d: "Use the billing portal in your account." },
             { i: Lock, t: "Secure payments", d: "Handled by Stripe — Alaskova Education never stores card details." },
           ].map(({ i: Icon, t, d }) => (
-            <li key={t} className="rounded-2xl bg-mist p-6 ring-1 ring-line">
-              <Icon className="text-ocean" size={22} aria-hidden />
+            <li key={t} className="rounded-2xl bg-paper p-6 ring-1 ring-line">
+              <Icon className="text-gold-ink" size={22} aria-hidden />
               <h3 className="mt-4 font-display font-semibold">{t}</h3>
               <p className="mt-1 text-sm text-muted">{d}</p>
             </li>
@@ -77,7 +77,7 @@ export default function PricingPage() {
         </ul>
       </section>
 
-      <section className="bg-mist py-16 lg:py-24" aria-labelledby="pf">
+      <section className="bg-paper py-16 lg:py-24" aria-labelledby="pf">
         <div className="mx-auto max-w-3xl px-5 sm:px-8">
           <h2 id="pf" className="h2 text-center">Billing questions</h2>
           <div className="mt-10"><Faq items={faqs} /></div>

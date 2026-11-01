@@ -15,12 +15,12 @@ const sizes: Record<Size, string> = {
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-ocean text-white shadow-[0_1px_0_rgb(255_255_255/0.25)_inset,0_8px_20px_-8px_rgb(23_107_192/0.8)] hover:bg-steel hover:shadow-glow hover:-translate-y-0.5",
+    "bg-navy text-white shadow-[0_1px_0_rgb(255_255_255/0.25)_inset,0_8px_20px_-8px_rgb(15_30_61/0.8)] hover:bg-navy-2 hover:shadow-glow hover:-translate-y-0.5",
   secondary:
-    "bg-white text-midnight ring-1 ring-line shadow-card hover:ring-ocean/40 hover:-translate-y-0.5",
-  ghost: "text-steel hover:bg-mist-2",
+    "bg-white text-navy ring-1 ring-line shadow-card hover:ring-gold/40 hover:-translate-y-0.5",
+  ghost: "text-navy-soft hover:bg-paper-2",
   inverse:
-    "bg-white text-midnight shadow-card hover:-translate-y-0.5 hover:shadow-lift",
+    "bg-white text-navy shadow-card hover:-translate-y-0.5 hover:shadow-lift",
 };
 
 type Common = { variant?: Variant; size?: Size; className?: string };

@@ -19,8 +19,8 @@ export function HeroSearch() {
 
   return (
     <form onSubmit={submit} role="search" aria-label="Search textbooks" className="w-full max-w-xl">
-      <div className="flex items-center gap-2 rounded-2xl bg-white p-2 shadow-lift ring-1 ring-line transition-shadow focus-within:ring-2 focus-within:ring-bright">
-        <Search className="ml-3 shrink-0 text-steel" size={20} aria-hidden />
+      <div className="flex items-center gap-2 rounded-2xl bg-white p-2 shadow-lift ring-1 ring-line transition-shadow focus-within:ring-2 focus-within:ring-gold-ink">
+        <Search className="ml-3 shrink-0 text-navy-soft" size={20} aria-hidden />
         <label htmlFor="hero-q" className="sr-only">
           Search by title or subject
         </label>
@@ -29,12 +29,12 @@ export function HeroSearch() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search by title or subject"
-          className="h-11 min-w-0 flex-1 bg-transparent text-base text-midnight placeholder:text-muted/80 focus:outline-none"
+          className="h-11 min-w-0 flex-1 bg-transparent text-base text-navy placeholder:text-muted/80 focus:outline-none"
           autoComplete="off"
         />
         <button
           type="submit"
-          className="inline-flex h-11 items-center gap-1.5 rounded-xl bg-ocean px-4 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-steel"
+          className="inline-flex h-11 items-center gap-1.5 rounded-xl bg-navy px-4 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-navy-2"
         >
           <span className="hidden sm:inline">Find textbooks</span>
           <span className="sm:hidden">Search</span>

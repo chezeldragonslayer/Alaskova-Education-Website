@@ -19,7 +19,7 @@ async function Inner() {
         <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-800 ring-1 ring-red-200">
           This reset link has expired or has already been used.
         </p>
-        <Link href="/forgot-password" className="font-semibold text-ocean underline underline-offset-4">Send a new link</Link>
+        <Link href="/forgot-password" className="font-semibold text-gold-ink underline underline-offset-4">Send a new link</Link>
       </div>
     );
   }

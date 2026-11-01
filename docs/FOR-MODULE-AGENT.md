@@ -42,3 +42,9 @@ exactly; nothing in the module needs to change for launch. Paste the block below
 >    that wording with the owner.
 > 9. **Single instance.** Both services keep state in memory (your used `jti`s and `/launch` rate limit; the main
 >    site's rate limits), so both must run as exactly one instance on an always-on plan.
+> 10. **New brand (revision 4).** The owner has a new logo: a crowned navy lion with a gold staff and serpent. The main
+>     site now uses navy `#0F1E3D` as the main colour, gold `#C69732` for decoration (and as text only on navy), a darker
+>     gold `#85621A` for gold text on light backgrounds, warm off-white surfaces (`#FAF8F3`), Noto Serif bold condensed
+>     headings and Inter body text. The old blues (`#032048`, `#176BC0`, `#1D7DD9` and so on) are retired. Please ask the
+>     owner for the logo pack (`alaskova-education-logo-pack-v4.zip`) before changing the book's branding, and use the
+>     supplied files unchanged. The PNGs have opaque backgrounds (white, or navy `#0F1E3D` for the reversed version).

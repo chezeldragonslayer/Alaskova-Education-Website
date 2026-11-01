@@ -26,7 +26,7 @@ export function Faq({ items }: { items: { q: string; a: string }[] }) {
                 <span
                   className={clsx(
                     "grid size-8 shrink-0 place-items-center rounded-full ring-1 transition-all duration-300",
-                    isOpen ? "rotate-45 bg-ocean text-white ring-ocean" : "text-steel ring-line",
+                    isOpen ? "rotate-45 bg-navy text-white ring-gold-ink" : "text-navy-soft ring-line",
                   )}
                 >
                   <Plus size={16} aria-hidden />

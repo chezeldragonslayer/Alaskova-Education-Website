@@ -16,7 +16,7 @@ export function SubscribeButton({
       <input type="hidden" name="book" value={slug} />
       <button
         className={clsx(
-          "inline-flex h-13 w-full items-center justify-center rounded-xl bg-ocean px-7 text-base font-semibold text-white shadow-[0_8px_20px_-8px_rgb(23_107_192/0.8)] transition-all hover:-translate-y-0.5 hover:bg-steel active:scale-[0.98]",
+          "inline-flex h-13 w-full items-center justify-center rounded-xl bg-navy px-7 text-base font-semibold text-white shadow-[0_8px_20px_-8px_rgb(15_30_61/0.8)] transition-all hover:-translate-y-0.5 hover:bg-navy-2 active:scale-[0.98]",
           className,
         )}
       >

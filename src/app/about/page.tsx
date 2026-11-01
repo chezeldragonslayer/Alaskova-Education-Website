@@ -22,9 +22,9 @@ export default function AboutPage() {
         </Reveal>
         <Reveal delay={0.1}>
           <h2 className="h2">What we do</h2>
-          <p className="lead mt-4">Alaskova Education publishes digital textbooks, starting with <strong className="font-semibold text-midnight">Molecular Atlas</strong>, covering organic chemistry. Subscribers read online, track their progress, and manage their subscription from one account.</p>
+          <p className="lead mt-4">Alaskova Education publishes digital textbooks, starting with <strong className="font-semibold text-navy">Molecular Atlas</strong>, covering organic chemistry. Subscribers read online, track their progress, and manage their subscription from one account.</p>
         </Reveal>
-        <Reveal className="rounded-2xl bg-mist p-8 ring-1 ring-line lg:col-span-2">
+        <Reveal className="rounded-2xl bg-paper p-8 ring-1 ring-line lg:col-span-2">
           <h2 className="font-display text-xl font-semibold">About the author</h2>
           {/* TODO(owner): replace with your name, short bio and photo. */}
           <p className="mt-3 text-muted">Author biography to be added.</p>

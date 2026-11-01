@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/inter";
-import "@fontsource-variable/montserrat";
+import "@fontsource-variable/noto-serif/wdth.css";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     title: "Alaskova Education — All Your Textbooks. One Smarter Way to Study.",
     description:
       "A modern, technology-driven way to access and manage your course textbooks.",
-    images: ["/brand/alaskova-logo-master.png"],
+    images: [{ url: "/brand/alaskova-social.png", width: 1200, height: 630, alt: "Alaskova Education" }],
   },
   alternates: { canonical: "/" },
 };

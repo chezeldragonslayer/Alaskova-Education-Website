@@ -67,11 +67,11 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
           <h1 className="h2 mt-2">Welcome back, {name}</h1>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link href="/account" className="inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-semibold text-steel ring-1 ring-line transition-colors hover:bg-mist-2">
+          <Link href="/account" className="inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-semibold text-navy-soft ring-1 ring-line transition-colors hover:bg-paper-2">
             <UserRound size={16} aria-hidden /> My account
           </Link>
           <form action="/auth/signout" method="post">
-            <button className="inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-semibold text-steel ring-1 ring-line transition-colors hover:bg-mist-2">
+            <button className="inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-semibold text-navy-soft ring-1 ring-line transition-colors hover:bg-paper-2">
               <LogOut size={16} aria-hidden /> Sign out
             </button>
           </form>
@@ -81,11 +81,11 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
       <div className="mt-8 space-y-4" aria-live="polite">
         {pending && <RefreshWhilePending />}
         {sp.checkout === "success" && active.length > 0 && (
-          <p role="status" className="rounded-2xl bg-ocean/10 px-5 py-4 text-sm font-semibold text-steel ring-1 ring-ocean/30">
+          <p role="status" className="rounded-2xl bg-gold/10 px-5 py-4 text-sm font-semibold text-navy-soft ring-1 ring-gold/30">
             You’re subscribed — your textbook is ready to read.
           </p>
         )}
-        {notice && <p role="status" className="rounded-2xl bg-mist-2 px-5 py-4 text-sm font-medium text-steel ring-1 ring-line">{notice}</p>}
+        {notice && <p role="status" className="rounded-2xl bg-paper-2 px-5 py-4 text-sm font-medium text-navy-soft ring-1 ring-line">{notice}</p>}
       </div>
 
       <section className="mt-10" aria-labelledby="lib">
@@ -106,8 +106,8 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
             ))}
           </ul>
         ) : (
-          <div className="mt-5 rounded-2xl bg-mist p-8 text-center ring-1 ring-line">
-            <BookOpen className="mx-auto text-steel" size={32} aria-hidden />
+          <div className="mt-5 rounded-2xl bg-paper p-8 text-center ring-1 ring-line">
+            <BookOpen className="mx-auto text-navy-soft" size={32} aria-hidden />
             <h3 className="mt-4 font-display text-lg font-semibold">Your library is empty</h3>
             <p className="mx-auto mt-1 max-w-sm text-muted">Subscribe to a textbook and it will appear here, ready to read.</p>
             <ButtonLink href="/catalogue" className="mt-5">Explore textbooks</ButtonLink>
@@ -125,7 +125,7 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
                 return (
                   <li key={s.id} className="grid gap-1 px-5 py-4 sm:grid-cols-[1fr_auto_auto] sm:items-center sm:gap-6">
                     <span className="font-medium">{getBook(s.book_slug)?.title ?? s.book_slug}</span>
-                    <span className={d.needsAction ? "text-sm font-semibold text-red-700" : "text-sm text-steel"}>{d.label}</span>
+                    <span className={d.needsAction ? "text-sm font-semibold text-red-700" : "text-sm text-navy-soft"}>{d.label}</span>
                     <span className="text-sm text-muted">{d.detail}</span>
                   </li>
                 );
@@ -135,8 +135,8 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
             <p className="px-5 py-6 text-muted">You don’t have any subscriptions yet.</p>
           )}
           {subs.length > 0 && (
-            <form action="/api/stripe/portal" method="post" className="border-t border-line bg-mist px-5 py-4">
-              <button className="inline-flex h-11 items-center gap-2 rounded-xl bg-white px-4 text-sm font-semibold text-midnight shadow-card ring-1 ring-line transition-all hover:-translate-y-0.5">
+            <form action="/api/stripe/portal" method="post" className="border-t border-line bg-paper px-5 py-4">
+              <button className="inline-flex h-11 items-center gap-2 rounded-xl bg-white px-4 text-sm font-semibold text-navy shadow-card ring-1 ring-line transition-all hover:-translate-y-0.5">
                 <CreditCard size={16} aria-hidden /> Manage billing
               </button>
               <span className="ml-3 text-xs text-muted">Update your card, view invoices or cancel.</span>
@@ -151,9 +151,9 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
           <div className="mt-5 rounded-2xl bg-white p-6 shadow-card ring-1 ring-line">
             <p className="text-muted">
               Share your link. When a friend subscribes, you get{" "}
-              <strong className="text-midnight">1 free month each time they pay</strong>, for their first{" "}
+              <strong className="text-navy">1 free month each time they pay</strong>, for their first{" "}
               {REFERRAL_REWARD_MONTHS} months: up to {REFERRAL_REWARD_MONTHS} free months per friend, applied as credit
-              to your next bills. Your code is <strong className="font-mono text-midnight">{formatReferralCode(referral.code)}</strong>.
+              to your next bills. Your code is <strong className="font-mono text-navy">{formatReferralCode(referral.code)}</strong>.
             </p>
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <input
@@ -161,7 +161,7 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
                 aria-label="Your referral link"
                 value={referralLink(siteUrl(), referral.code)}
                 onFocus={(e) => e.currentTarget.select()}
-                className="h-11 min-w-0 flex-1 rounded-xl bg-mist px-4 text-sm text-midnight ring-1 ring-line"
+                className="h-11 min-w-0 flex-1 rounded-xl bg-paper px-4 text-sm text-navy ring-1 ring-line"
               />
               <CopyButton text={referralLink(siteUrl(), referral.code)} />
             </div>
@@ -186,7 +186,7 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
               <li key={b.slug}>
                 <Link href={`/catalogue/${b.slug}`} className="flex items-center justify-between rounded-2xl bg-white px-5 py-4 ring-1 ring-line transition-all hover:-translate-y-0.5 hover:shadow-card">
                   <span className="font-medium">{b.title}</span>
-                  <span className="text-sm font-semibold text-ocean">View →</span>
+                  <span className="text-sm font-semibold text-gold-ink">View →</span>
                 </Link>
               </li>
             ))}

@@ -35,10 +35,11 @@ export function SiteHeader() {
   return (
     <header
       className={clsx(
-        "sticky top-0 z-50 transition-all duration-300",
+        // Solid white: the logo artwork has an opaque white background, so the header must be pure white behind it.
+        "sticky top-0 z-50 bg-white transition-all duration-300",
         scrolled || open
-          ? "glass border-b border-line shadow-[0_8px_24px_-16px_rgb(3_32_72/0.25)]"
-          : "border-b border-transparent bg-white/0",
+          ? "border-b border-line shadow-[0_8px_24px_-16px_rgb(15_30_61/0.25)]"
+          : "border-b border-transparent",
       )}
     >
       <div className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between px-5 sm:px-8">
@@ -54,13 +55,13 @@ export function SiteHeader() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={clsx(
-                      "relative rounded-lg px-3.5 py-2 text-[0.9375rem] font-medium transition-colors",
-                      active ? "text-midnight" : "text-steel hover:text-midnight",
+                      "relative whitespace-nowrap rounded-lg px-2.5 py-2 text-[0.9375rem] font-medium transition-colors xl:px-3.5",
+                      active ? "text-navy" : "text-navy-soft hover:text-navy",
                     )}
                   >
                     {item.label}
                     {active && (
-                      <span className="absolute inset-x-3.5 -bottom-0.5 h-0.5 rounded-full bg-ocean" />
+                      <span className="absolute inset-x-2.5 -bottom-0.5 h-0.5 rounded-full bg-gold xl:inset-x-3.5" />
                     )}
                   </Link>
                 </li>
@@ -70,7 +71,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <ButtonLink href="/dashboard" variant="ghost" prefetch={false}>
+          <ButtonLink href="/dashboard" variant="ghost" prefetch={false} className="hidden xl:inline-flex">
             My library
           </ButtonLink>
           <ButtonLink href="/login" variant="ghost">
@@ -81,7 +82,7 @@ export function SiteHeader() {
 
         <button
           type="button"
-          className="grid size-11 place-items-center rounded-xl text-midnight ring-1 ring-line lg:hidden"
+          className="grid size-11 place-items-center rounded-xl text-navy ring-1 ring-line lg:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls="mobile-menu"
@@ -114,7 +115,7 @@ export function SiteHeader() {
                     <Link
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className="flex items-center justify-between py-4 font-display text-xl font-semibold text-midnight"
+                      className="flex items-center justify-between py-4 font-display text-xl font-semibold text-navy"
                     >
                       {item.label}
                     </Link>

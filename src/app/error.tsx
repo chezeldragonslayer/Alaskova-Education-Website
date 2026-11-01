@@ -19,10 +19,10 @@ export default function Error({ error, retry }: { error: Error & { digest?: stri
           {error.digest && <span className="mt-2 block text-sm">Reference: {error.digest}</span>}
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <button onClick={() => retry()} className="inline-flex h-11 items-center rounded-xl bg-ocean px-5 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-steel">
+          <button onClick={() => retry()} className="inline-flex h-11 items-center rounded-xl bg-navy px-5 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-navy-2">
             Try again
           </button>
-          <Link href="/support#contact" className="inline-flex h-11 items-center rounded-xl bg-white px-5 text-[0.9375rem] font-semibold text-midnight ring-1 ring-line">
+          <Link href="/support#contact" className="inline-flex h-11 items-center rounded-xl bg-white px-5 text-[0.9375rem] font-semibold text-navy ring-1 ring-line">
             Contact support
           </Link>
         </div>

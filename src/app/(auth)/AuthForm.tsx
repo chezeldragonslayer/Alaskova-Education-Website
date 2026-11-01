@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import { signIn, signUp, signInWithProvider, type FormState } from "./actions";
 
 const field =
-  "mt-1.5 h-12 w-full rounded-xl bg-white px-4 text-base ring-1 ring-line placeholder:text-muted/70 focus:outline-none focus:ring-2 focus:ring-bright";
+  "mt-1.5 h-12 w-full rounded-xl bg-white px-4 text-base ring-1 ring-line placeholder:text-muted/70 focus:outline-none focus:ring-2 focus:ring-gold-ink";
 
 export function AuthForm({ mode, next }: { mode: "login" | "register"; next: string }) {
   const [state, action, pending] = useActionState<FormState, FormData>(
@@ -26,7 +26,7 @@ export function AuthForm({ mode, next }: { mode: "login" | "register"; next: str
           <form key={p} action={signInWithProvider}>
             <input type="hidden" name="provider" value={p} />
             <input type="hidden" name="next" value={next} />
-            <button className="h-12 w-full rounded-xl bg-white text-[0.9375rem] font-semibold text-midnight shadow-card ring-1 ring-line transition-all hover:-translate-y-0.5 hover:ring-ocean/40">
+            <button className="h-12 w-full rounded-xl bg-white text-[0.9375rem] font-semibold text-navy shadow-card ring-1 ring-line transition-all hover:-translate-y-0.5 hover:ring-gold/40">
               {label}
             </button>
           </form>
@@ -63,19 +63,19 @@ export function AuthForm({ mode, next }: { mode: "login" | "register"; next: str
           {!isLogin && <p className="mt-1.5 text-xs text-muted">At least 8 characters.</p>}
           {isLogin && (
             <p className="mt-1.5 text-right text-sm">
-              <Link href="/forgot-password" className="font-medium text-ocean underline underline-offset-4">Forgot your password?</Link>
+              <Link href="/forgot-password" className="font-medium text-gold-ink underline underline-offset-4">Forgot your password?</Link>
             </p>
           )}
         </div>
 
         <div aria-live="polite" className="min-h-5 text-sm">
           {state.error && <p role="alert" className="font-medium text-red-700">{state.error}</p>}
-          {state.message && <p className="font-medium text-steel">{state.message}</p>}
+          {state.message && <p className="font-medium text-navy-soft">{state.message}</p>}
         </div>
 
         <button
           disabled={pending}
-          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-ocean text-base font-semibold text-white shadow-[0_8px_20px_-8px_rgb(23_107_192/0.8)] transition-colors hover:bg-steel disabled:opacity-60"
+          className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-navy text-base font-semibold text-white shadow-[0_8px_20px_-8px_rgb(15_30_61/0.8)] transition-colors hover:bg-navy-2 disabled:opacity-60"
         >
           {pending && <Loader2 className="animate-spin" size={18} aria-hidden />}
           {isLogin ? "Sign in" : "Create account"}
@@ -86,7 +86,7 @@ export function AuthForm({ mode, next }: { mode: "login" | "register"; next: str
         {isLogin ? "New to Alaskova Education?" : "Already have an account?"}{" "}
         <Link
           href={`${isLogin ? "/register" : "/login"}?next=${encodeURIComponent(next)}`}
-          className="font-semibold text-ocean underline underline-offset-4"
+          className="font-semibold text-gold-ink underline underline-offset-4"
         >
           {isLogin ? "Create an account" : "Sign in"}
         </Link>

@@ -35,7 +35,7 @@ export default function SupportPage() {
         <ul className="grid gap-5 sm:grid-cols-2">
           {topics.map((t) => (
             <li key={t.title} className="flex gap-4 rounded-2xl bg-white p-6 shadow-card ring-1 ring-line">
-              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-mist-2 text-ocean"><t.icon size={20} aria-hidden /></span>
+              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-paper-2 text-gold-ink"><t.icon size={20} aria-hidden /></span>
               <div><h2 className="font-display text-lg font-semibold tracking-tight">{t.title}</h2><p className="mt-1 text-sm text-muted">{t.body}</p></div>
             </li>
           ))}
@@ -44,7 +44,7 @@ export default function SupportPage() {
         <h2 className="h2 mt-16">Common questions</h2>
         <div className="mt-8"><Faq items={faqs} /></div>
 
-        <div id="contact" className="mt-16 scroll-mt-24 rounded-2xl bg-gradient-to-br from-deep to-steel p-8 text-white sm:p-10">
+        <div id="contact" className="on-dark mt-16 scroll-mt-24 rounded-2xl bg-gradient-to-br from-navy-2 to-navy p-8 text-white sm:p-10">
           <LifeBuoy aria-hidden size={28} className="text-white/80" />
           <h2 className="mt-4 font-display text-2xl font-semibold">Still need help?</h2>
           {/* OWNER: set supportEmail in src/lib/business.ts. */}

@@ -60,9 +60,10 @@ Access = subscription status `active` or `trialing` AND period not ended. `past_
 Target is Render (Node web service: `npm ci && npm run build`, start `npm start`). Add environment variables in Render, never in the repo.
 
 ## Brand notes
-- Logo files in `public/brand/` are the supplied artwork (opaque white background); never recreated or recoloured.
-- `#1D7DD9` (bright blue) is 4.2:1 on white: use for large text, graphics and dark backgrounds only. `#176BC0` (5.4:1) is the AA-safe blue for text/buttons.
-- Header uses the symbol only (guideline: below 160px wide use symbol). A horizontal lockup would need to be supplied/commissioned.
+- Brand revision 4 (lion emblem). Logo files in `public/brand/` are web-sized copies of the owner's logo pack v4, never recreated or recoloured: `alaskova-horizontal.png` (header), `alaskova-horizontal-reversed.png` (footer), `alaskova-horizontal-navy.png`, `alaskova-stacked.png`, `alaskova-emblem.png` (sign-in pages, favicon), `alaskova-social.png` (link previews).
+- The PNGs have **opaque** backgrounds: colour and navy versions only on pure white, the reversed version only on navy `#0F1E3D`. That is why the header is solid white and the footer exactly `bg-navy`.
+- Colours: navy `#0F1E3D` (main), gold `#C69732` (decoration, and text on navy only: 2.7:1 on white), gold-ink `#85621A` (gold for text and icons on light backgrounds, 5.6:1). Tokens and contrast figures: `src/app/globals.css`.
+- Type: headings Noto Serif, bold, slightly condensed (the family of the "Alaskova" wordmark); body Inter.
 
 ## Demo content
 `src/lib/demo.ts` holds placeholder books/FAQs. No real titles, prices, publishers or statistics are used.

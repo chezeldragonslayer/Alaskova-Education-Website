@@ -11,7 +11,7 @@ export function DemoBadge({
   return (
     <span
       className={clsx(
-        "inline-flex items-center gap-1.5 rounded-full bg-mist-2 px-2.5 py-1 text-xs font-medium text-steel ring-1 ring-line",
+        "inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-2.5 py-1 text-xs font-medium text-navy-soft ring-1 ring-line",
         className,
       )}
     >

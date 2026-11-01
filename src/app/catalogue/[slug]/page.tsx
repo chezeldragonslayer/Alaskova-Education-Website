@@ -29,7 +29,7 @@ async function AccessCta({ slug, searchParams }: { slug: string; searchParams: P
   }
   return (
     <div className="mt-6 grid gap-3">
-      {msg && <p role="status" className="rounded-xl bg-mist-2 px-4 py-3 text-sm font-medium text-steel ring-1 ring-line">{msg}</p>}
+      {msg && <p role="status" className="rounded-xl bg-paper-2 px-4 py-3 text-sm font-medium text-navy-soft ring-1 ring-line">{msg}</p>}
       {subscribed ? (
         <ButtonLink href={`/read/${slug}`} size="lg" prefetch={false}>Read now</ButtonLink>
       ) : (
@@ -85,9 +85,9 @@ export default async function BookPage({ params, searchParams }: { params: Promi
     <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:py-16">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-muted">
-        <Link href="/catalogue" className="hover:text-midnight">Catalogue</Link>
+        <Link href="/catalogue" className="hover:text-navy">Catalogue</Link>
         <ChevronRight size={14} aria-hidden />
-        <span aria-current="page" className="font-medium text-midnight">{book.title}</span>
+        <span aria-current="page" className="font-medium text-navy">{book.title}</span>
       </nav>
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[20rem_1fr_22rem] lg:gap-14">
@@ -98,7 +98,7 @@ export default async function BookPage({ params, searchParams }: { params: Promi
         <div>
           <ul className="flex flex-wrap gap-2" aria-label="Subjects">
             {book.subjects.map((s) => (
-              <li key={s}><Link href={`/catalogue?subject=${encodeURIComponent(s)}`} className="rounded-full bg-ocean/10 px-3 py-1 text-[0.8125rem] font-semibold text-steel ring-1 ring-ocean/25 hover:bg-ocean/15">{s}</Link></li>
+              <li key={s}><Link href={`/catalogue?subject=${encodeURIComponent(s)}`} className="rounded-full bg-gold/10 px-3 py-1 text-[0.8125rem] font-semibold text-navy-soft ring-1 ring-gold/25 hover:bg-gold/15">{s}</Link></li>
             ))}
           </ul>
           <h1 className="h1 mt-5 !text-[clamp(2.25rem,1.8rem+2vw,3.25rem)]">{book.title}</h1>
@@ -129,7 +129,7 @@ export default async function BookPage({ params, searchParams }: { params: Promi
           )}
           <ul className="mt-5 space-y-2.5 text-sm">
             {["Read online in the Alaskova Education reader", "Progress tracking on your device", "Manage or cancel from your account"].map((t) => (
-              <li key={t} className="flex gap-2.5"><Check size={16} className="mt-0.5 shrink-0 text-ocean" aria-hidden />{t}</li>
+              <li key={t} className="flex gap-2.5"><Check size={16} className="mt-0.5 shrink-0 text-gold-ink" aria-hidden />{t}</li>
             ))}
           </ul>
           <Suspense fallback={<div className="mt-6 grid gap-3"><SubscribeButton slug={book.slug}>Subscribe to read</SubscribeButton></div>}>

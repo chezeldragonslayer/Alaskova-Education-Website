@@ -58,12 +58,12 @@ async function CatalogueResults({ searchParams }: { searchParams: Promise<SP> })
     <>
 
       <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:py-16">
-        <form action="/catalogue" role="search" className="flex max-w-2xl items-center gap-2 rounded-2xl bg-white p-2 shadow-card ring-1 ring-line focus-within:ring-2 focus-within:ring-bright">
-          <Search className="ml-3 shrink-0 text-steel" size={20} aria-hidden />
+        <form action="/catalogue" role="search" className="flex max-w-2xl items-center gap-2 rounded-2xl bg-white p-2 shadow-card ring-1 ring-line focus-within:ring-2 focus-within:ring-gold-ink">
+          <Search className="ml-3 shrink-0 text-navy-soft" size={20} aria-hidden />
           <label htmlFor="cat-q" className="sr-only">Search textbooks</label>
           <input id="cat-q" name="q" defaultValue={q} placeholder="Search by title or subject" className="h-11 min-w-0 flex-1 bg-transparent text-base placeholder:text-muted/80 focus:outline-none" autoComplete="off" />
           {subject && <input type="hidden" name="subject" value={subject} />}
-          <button className="h-11 rounded-xl bg-ocean px-5 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-steel">Search</button>
+          <button className="h-11 rounded-xl bg-navy px-5 text-[0.9375rem] font-semibold text-white transition-colors hover:bg-navy-2">Search</button>
         </form>
 
         <nav aria-label="Filter by subject" className="mt-5 flex flex-wrap gap-2">
@@ -74,7 +74,7 @@ async function CatalogueResults({ searchParams }: { searchParams: Promise<SP> })
               aria-current={subject === s ? "true" : undefined}
               className={clsx(
                 "rounded-full px-3.5 py-1.5 text-[0.8125rem] font-medium ring-1 transition-colors",
-                subject === s ? "bg-midnight text-white ring-midnight" : "bg-white text-steel ring-line hover:ring-ocean/50",
+                subject === s ? "bg-navy text-white ring-navy" : "bg-white text-navy-soft ring-line hover:ring-gold/50",
               )}
             >
               {s || "All subjects"}
@@ -95,11 +95,11 @@ async function CatalogueResults({ searchParams }: { searchParams: Promise<SP> })
             ))}
           </ul>
         ) : (
-          <div className="mt-8 grid place-items-center rounded-2xl bg-mist px-6 py-16 text-center ring-1 ring-line">
-            <SearchX className="text-steel" size={32} aria-hidden />
+          <div className="mt-8 grid place-items-center rounded-2xl bg-paper px-6 py-16 text-center ring-1 ring-line">
+            <SearchX className="text-navy-soft" size={32} aria-hidden />
             <h2 className="h3 mt-4">No textbooks found</h2>
             <p className="mt-2 max-w-sm text-muted">Try a different title or subject, or clear your filters.</p>
-            <Link href="/catalogue" className="mt-5 font-semibold text-ocean underline underline-offset-4">Clear search</Link>
+            <Link href="/catalogue" className="mt-5 font-semibold text-gold-ink underline underline-offset-4">Clear search</Link>
           </div>
         )}
       </section>

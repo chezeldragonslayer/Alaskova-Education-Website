@@ -18,7 +18,7 @@ export function CopyButton({ text, label = "Copy link" }: { text: string; label?
           /* clipboard blocked: the link is still visible to copy by hand */
         }
       }}
-      className="inline-flex h-11 shrink-0 items-center gap-2 rounded-xl bg-white px-4 text-sm font-semibold text-midnight shadow-card ring-1 ring-line transition-all hover:-translate-y-0.5"
+      className="inline-flex h-11 shrink-0 items-center gap-2 rounded-xl bg-white px-4 text-sm font-semibold text-navy shadow-card ring-1 ring-line transition-all hover:-translate-y-0.5"
     >
       {done ? <Check size={16} aria-hidden /> : <Copy size={16} aria-hidden />}
       {done ? "Copied" : label}

@@ -25,16 +25,16 @@ export default function HowItWorksPage() {
         Five simple steps between you and your textbook.
       </PageHero>
       <section className="mx-auto max-w-4xl px-5 py-16 sm:px-8 lg:py-24">
-        <ol className="relative space-y-6 before:absolute before:bottom-6 before:left-[1.65rem] before:top-6 before:w-px before:bg-gradient-to-b before:from-ocean/50 before:to-ocean/0">
+        <ol className="relative space-y-6 before:absolute before:bottom-6 before:left-[1.65rem] before:top-6 before:w-px before:bg-gradient-to-b before:from-gold/50 before:to-gold/0">
           {steps.map((s, i) => (
             <li key={s.title}>
               <Reveal delay={0.04 * i}>
                 <div className="relative flex gap-5 rounded-2xl bg-white p-5 shadow-card ring-1 ring-line sm:p-6">
-                  <span className="relative z-10 grid size-14 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-ocean to-deep text-white shadow-glow">
+                  <span className="relative z-10 grid size-14 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-navy-2 to-navy text-white shadow-glow">
                     <s.icon size={24} aria-hidden />
                   </span>
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-widest text-ocean">Step {i + 1}</p>
+                    <p className="text-xs font-semibold uppercase tracking-widest text-gold-ink">Step {i + 1}</p>
                     <h2 className="mt-1 font-display text-xl font-semibold tracking-tight">{s.title}</h2>
                     <p className="mt-1.5 text-muted">{s.body}</p>
                   </div>

@@ -34,27 +34,27 @@ export function DashboardMock({ className }: { className?: string }) {
   return (
     <div
       className={clsx(
-        "relative overflow-hidden rounded-[1.25rem] bg-white shadow-lift ring-1 ring-midnight/10",
+        "relative overflow-hidden rounded-[1.25rem] bg-white shadow-lift ring-1 ring-navy/10",
         className,
       )}
       role="group"
       aria-label="Interactive preview of the Alaskova Education student dashboard (demonstration content)"
     >
       {/* window chrome */}
-      <div className="flex items-center gap-2 border-b border-line bg-mist px-4 py-3">
-        <span className="size-2.5 rounded-full bg-midnight/15" />
-        <span className="size-2.5 rounded-full bg-midnight/15" />
-        <span className="size-2.5 rounded-full bg-midnight/15" />
+      <div className="flex items-center gap-2 border-b border-line bg-paper px-4 py-3">
+        <span className="size-2.5 rounded-full bg-navy/15" />
+        <span className="size-2.5 rounded-full bg-navy/15" />
+        <span className="size-2.5 rounded-full bg-navy/15" />
         <div className="mx-auto hidden h-6 w-1/2 items-center justify-center rounded-md bg-white text-[0.7rem] text-muted ring-1 ring-line sm:flex">
           Alaskova Education · Dashboard
         </div>
-        <span className="ml-auto rounded-full bg-white px-2 py-0.5 text-[0.65rem] font-medium text-steel ring-1 ring-line">
+        <span className="ml-auto rounded-full bg-white px-2 py-0.5 text-[0.65rem] font-medium text-navy-soft ring-1 ring-line">
           Demo content
         </span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-[10.5rem_1fr]">
-        <aside className="hidden bg-deep p-3 sm:block" aria-hidden>
+        <aside className="hidden bg-navy-2 p-3 sm:block" aria-hidden>
           <ul className="space-y-0.5">
             {sidebar.map((s, i) => (
               <li key={s.label}>
@@ -76,7 +76,7 @@ export function DashboardMock({ className }: { className?: string }) {
           </ul>
         </aside>
 
-        <div className="space-y-5 bg-mist/60 p-4 sm:p-5">
+        <div className="space-y-5 bg-paper/60 p-4 sm:p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="font-display text-base font-semibold tracking-tight sm:text-lg">
@@ -91,7 +91,7 @@ export function DashboardMock({ className }: { className?: string }) {
 
           {/* Continue reading */}
           <section aria-label="Continue reading">
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-steel">
+            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-navy-soft">
               Continue reading
             </h3>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -105,7 +105,7 @@ export function DashboardMock({ className }: { className?: string }) {
                     <p className="truncate text-[0.8rem] font-semibold">{b.title}</p>
                     <p className="text-[0.7rem] text-muted">Chapter {i + 4}</p>
                     <div
-                      className="mt-2 h-1.5 overflow-hidden rounded-full bg-mist-2"
+                      className="mt-2 h-1.5 overflow-hidden rounded-full bg-paper-2"
                       role="progressbar"
                       aria-valuenow={b.progress}
                       aria-valuemin={0}
@@ -113,13 +113,13 @@ export function DashboardMock({ className }: { className?: string }) {
                       aria-label={`${b.title} reading progress`}
                     >
                       <motion.div
-                        className="h-full rounded-full bg-gradient-to-r from-ocean to-bright"
+                        className="h-full rounded-full bg-gradient-to-r from-navy-2 to-gold"
                         initial={reduce ? false : { width: 0 }}
                         animate={{ width: `${b.progress}%` }}
                         transition={{ duration: 1.1, delay: 0.5 + i * 0.15, ease: [0.22, 1, 0.36, 1] }}
                       />
                     </div>
-                    <p className="mt-1 text-[0.65rem] font-medium text-steel">
+                    <p className="mt-1 text-[0.65rem] font-medium text-navy-soft">
                       {b.progress}% complete
                     </p>
                   </div>
@@ -131,7 +131,7 @@ export function DashboardMock({ className }: { className?: string }) {
           {/* Library */}
           <section aria-label="My library">
             <div className="mb-2 flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-steel">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-navy-soft">
                 My library
               </h3>
               <span className="flex items-center gap-1 text-[0.7rem] text-muted">
@@ -158,7 +158,7 @@ export function DashboardMock({ className }: { className?: string }) {
           </section>
 
           {/* Subscription */}
-          <div className="flex items-center justify-between rounded-xl bg-gradient-to-r from-deep to-steel p-3.5 text-white">
+          <div className="on-dark flex items-center justify-between rounded-xl bg-gradient-to-r from-navy-2 to-navy p-3.5 text-white">
             <div>
               <p className="text-[0.7rem] uppercase tracking-wider text-white/70">
                 Subscription

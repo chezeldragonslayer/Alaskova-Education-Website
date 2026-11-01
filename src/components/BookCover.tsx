@@ -6,11 +6,11 @@ import type { DemoBook } from "@/lib/demo";
  * replace this in Phase 2 via Supabase Storage.
  */
 const tones = [
-  "from-deep via-steel to-ocean",
-  "from-midnight via-deep to-steel",
-  "from-ocean via-bright to-ocean",
-  "from-steel via-ocean to-bright",
-  "from-midnight via-steel to-deep",
+  "from-navy-2 via-navy to-navy",
+  "from-navy via-navy-2 to-navy",
+  "from-navy-soft via-navy-2 to-navy",
+  "from-navy-2 via-navy-soft to-navy-2",
+  "from-navy via-navy to-navy-2",
 ];
 
 export function BookCover({
@@ -28,7 +28,7 @@ export function BookCover({
       role="img"
       aria-label={`Demonstration cover for ${book.title}`}
       className={clsx(
-        "relative aspect-[3/4] overflow-hidden rounded-lg bg-gradient-to-br text-white shadow-[0_10px_24px_-10px_rgb(3_32_72/0.55)]",
+        "relative aspect-[3/4] overflow-hidden rounded-lg bg-gradient-to-br text-white shadow-[0_10px_24px_-10px_rgb(15_30_61/0.55)]",
         compact ? "p-[8%]" : "p-[10%]",
         tones[book.tone],
         className,
@@ -40,10 +40,13 @@ export function BookCover({
       />
       <div
         aria-hidden
-        className="absolute -right-1/4 -top-1/4 size-3/4 rounded-full bg-white/10 blur-xl"
+        className="absolute -right-1/4 -top-1/4 size-3/4 rounded-full bg-gold/15 blur-xl"
       />
+      {/* Gold rules, like a cloth-bound textbook. */}
+      <div aria-hidden className="absolute inset-x-[10%] top-[6%] h-px bg-gold/70" />
+      <div aria-hidden className="absolute inset-x-[10%] bottom-[6%] h-px bg-gold/70" />
       <div className="relative flex h-full flex-col justify-between">
-        <span className={clsx("font-semibold uppercase tracking-[0.18em] text-white/75", compact ? "sr-only" : "text-[0.55rem]")}>
+        <span className={clsx("font-semibold uppercase tracking-[0.2em] text-gold", compact ? "sr-only" : "text-[0.55rem]")}>
           {book.subject}
         </span>
         <span className={clsx("mt-auto font-display font-bold leading-tight tracking-tight", compact ? "line-clamp-4 text-[0.55rem] sm:text-[0.6rem]" : "text-[0.8rem] sm:text-sm")}>

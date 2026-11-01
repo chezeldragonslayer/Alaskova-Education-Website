@@ -17,7 +17,7 @@ export function RefreshWhilePending() {
   }, [router]);
 
   return (
-    <p role="status" className="flex items-center gap-3 rounded-2xl bg-mist-2 px-5 py-4 text-sm font-medium text-steel ring-1 ring-line">
+    <p role="status" className="flex items-center gap-3 rounded-2xl bg-paper-2 px-5 py-4 text-sm font-medium text-navy-soft ring-1 ring-line">
       <Loader2 className="animate-spin" size={18} aria-hidden />
       Payment received. We’re activating your access — this usually takes a few seconds.
     </p>

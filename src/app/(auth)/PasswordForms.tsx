@@ -7,15 +7,15 @@ import { Loader2 } from "lucide-react";
 import { requestPasswordReset, updatePassword, type FormState } from "./actions";
 
 const field =
-  "mt-1.5 h-12 w-full rounded-xl bg-white px-4 text-base ring-1 ring-line placeholder:text-muted/70 focus:outline-none focus:ring-2 focus:ring-bright";
+  "mt-1.5 h-12 w-full rounded-xl bg-white px-4 text-base ring-1 ring-line placeholder:text-muted/70 focus:outline-none focus:ring-2 focus:ring-gold-ink";
 const submit =
-  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-ocean text-base font-semibold text-white shadow-[0_8px_20px_-8px_rgb(23_107_192/0.8)] transition-colors hover:bg-steel disabled:opacity-60";
+  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-navy text-base font-semibold text-white shadow-[0_8px_20px_-8px_rgb(15_30_61/0.8)] transition-colors hover:bg-navy-2 disabled:opacity-60";
 
 function Status({ state }: { state: FormState }) {
   return (
     <div aria-live="polite" className="min-h-5 text-sm">
       {state.error && <p role="alert" id="form-error" className="font-medium text-red-700">{state.error}</p>}
-      {state.message && <p className="font-medium text-steel">{state.message}</p>}
+      {state.message && <p className="font-medium text-navy-soft">{state.message}</p>}
     </div>
   );
 }
@@ -35,7 +35,7 @@ export function ForgotPasswordForm() {
         Email me a reset link
       </button>
       <p className="text-center text-sm text-muted">
-        Remembered it? <Link href="/login" className="font-semibold text-ocean underline underline-offset-4">Sign in</Link>
+        Remembered it? <Link href="/login" className="font-semibold text-gold-ink underline underline-offset-4">Sign in</Link>
       </p>
     </form>
   );
