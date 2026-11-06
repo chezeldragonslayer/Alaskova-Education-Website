@@ -28,6 +28,7 @@ function deps(over: Partial<SyncDeps> = {}, current = sub()) {
     userForCustomer: vi.fn(async () => null),
     subscriptionForCharge: vi.fn(async () => "sub_1"),
     cancelSubscriptionNow: vi.fn(async () => {}),
+    retrieveCharge: vi.fn(async () => ({ id: "ch_1", payment_intent: "pi_1" }) as unknown as Stripe.Charge),
     ...over,
   };
   return { d, rows };
@@ -171,5 +172,20 @@ describe("refunds end access immediately (owner policy)", () => {
     expect(isFullRefund({ refunded: true, amount: 1199, amount_refunded: 1199 })).toBe(true);
     expect(isFullRefund({ refunded: false, amount: 1199, amount_refunded: 1199 })).toBe(true);
     expect(isFullRefund({ refunded: false, amount: 1199, amount_refunded: 600 })).toBe(false);
+  });
+});
+
+describe("bank disputes end access immediately (owner policy)", () => {
+  it("a dispute cancels the subscription the disputed charge paid for", async () => {
+    const { d, rows } = deps({}, sub({ status: "canceled" }));
+    await processStripeEvent(evt("charge.dispute.created", { id: "dp_1", charge: "ch_1" }), d);
+    expect(d.retrieveCharge).toHaveBeenCalledWith("ch_1");
+    expect(d.cancelSubscriptionNow).toHaveBeenCalledWith("sub_1");
+    expect(grantsAccess(rows[0].status, rows[0].current_period_end)).toBe(false);
+  });
+  it("a dispute on a non-subscription payment changes nothing", async () => {
+    const { d } = deps({ subscriptionForCharge: vi.fn(async () => null) });
+    await processStripeEvent(evt("charge.dispute.created", { id: "dp_1", charge: "ch_1" }), d);
+    expect(d.cancelSubscriptionNow).not.toHaveBeenCalled();
   });
 });

@@ -1,8 +1,6 @@
 import "server-only";
 import { createSupabaseAdmin } from "@/lib/supabase/server";
 import { getStripe } from "./client";
-import { rewardReferral } from "@/lib/referrals";
-import { realRewardDeps } from "@/lib/referrals-db";
 import { invoiceSubscription, type SyncDeps } from "./sync";
 
 /** Real dependencies for the webhook: Stripe API + Supabase (service role). */
@@ -62,15 +60,15 @@ export function realSyncDeps(): SyncDeps {
       if (!invoiceId) return null;
       return invoiceSubscription(await stripe.invoices.retrieve(invoiceId));
     },
+    retrieveCharge: (chargeId) => stripe.charges.retrieve(chargeId),
     async cancelSubscriptionNow(subscriptionId) {
       const current = await stripe.subscriptions.retrieve(subscriptionId);
       if (current.status === "canceled" || current.status === "incomplete_expired") return;
       await stripe.subscriptions.cancel(
         subscriptionId,
-        { cancellation_details: { comment: "Payment refunded: access ended immediately (Alaskova Education policy)." } },
+        { cancellation_details: { comment: "Payment refunded or disputed: access ended immediately (Alaskova Education policy)." } },
         { idempotencyKey: `refund-cancel-${subscriptionId}` },
       );
     },
-    rewardReferral: (input) => rewardReferral(input, realRewardDeps()),
   };
 }

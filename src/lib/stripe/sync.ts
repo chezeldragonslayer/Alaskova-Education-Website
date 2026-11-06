@@ -12,6 +12,7 @@ import type Stripe from "stripe";
  *  - Each event id is claimed in `stripe_events`; duplicates are acknowledged and skipped.
  *  - Owner policy: a FULL refund ends access immediately. When a payment is fully refunded (in the Stripe Dashboard or
  *    anywhere else), the subscription it paid for is cancelled at once. Partial refunds leave access alone.
+ *  - Owner policy: a bank dispute (chargeback) also ends access immediately, whatever its outcome.
  */
 export type SubscriptionRow = {
   id: string;
@@ -34,10 +35,10 @@ export type SyncDeps = {
   userForCustomer(customerId: string): Promise<string | null>;
   /** The subscription a charge paid for (via its invoice), or null if it wasn't a subscription payment. */
   subscriptionForCharge(charge: Stripe.Charge): Promise<string | null>;
+  /** Fetch a charge (a dispute names its charge by id). */
+  retrieveCharge(chargeId: string): Promise<Stripe.Charge>;
   /** Cancel a subscription immediately (no-op if it has already ended). */
   cancelSubscriptionNow(subscriptionId: string): Promise<void>;
-  /** Optional: called for each real (non-zero) monthly payment. Used for referral rewards, paid in instalments. */
-  rewardReferral?(input: { userId: string; invoiceId: string; unitAmount: number; currency: string }): Promise<unknown>;
 };
 
 const id = (x: string | { id: string } | null | undefined) =>
@@ -127,33 +128,23 @@ export async function processStripeEvent(
       const invoice = event.data.object as Stripe.Invoice;
       const subId = invoiceSubscriptionId(invoice);
       if (!subId) break;
-      const { sub, row } = await syncSubscription(subId, deps);
-      // Referral reward instalment: only on the subscription's monthly invoices (first one or renewals), and only if
-      // money actually changed hands. rewardReferral decides whether an instalment is still owed.
-      if (
-        event.type === "invoice.paid" &&
-        (invoice.billing_reason === "subscription_create" || invoice.billing_reason === "subscription_cycle") &&
-        invoice.id &&
-        (invoice.amount_paid ?? 0) > 0 &&
-        row &&
-        deps.rewardReferral
-      ) {
-        const price = sub.items?.data?.[0]?.price;
-        if (price?.unit_amount && price.currency) {
-          await deps.rewardReferral({
-            userId: row.user_id,
-            invoiceId: invoice.id,
-            unitAmount: price.unit_amount,
-            currency: price.currency,
-          });
-        }
-      }
+      await syncSubscription(subId, deps);
       break;
     }
     case "charge.refunded": {
       const charge = event.data.object as Stripe.Charge;
       if (!isFullRefund(charge)) break; // partial refund (e.g. a goodwill credit): access continues
       const subId = await deps.subscriptionForCharge(charge);
+      if (!subId) break;
+      await deps.cancelSubscriptionNow(subId);
+      await syncSubscription(subId, deps);
+      break;
+    }
+    case "charge.dispute.created": {
+      const dispute = event.data.object as Stripe.Dispute;
+      const chargeId = typeof dispute.charge === "string" ? dispute.charge : dispute.charge?.id;
+      if (!chargeId) break;
+      const subId = await deps.subscriptionForCharge(await deps.retrieveCharge(chargeId));
       if (!subId) break;
       await deps.cancelSubscriptionNow(subId);
       await syncSubscription(subId, deps);
