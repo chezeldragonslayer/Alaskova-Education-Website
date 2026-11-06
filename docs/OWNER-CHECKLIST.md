@@ -1,58 +1,90 @@
-# Owner checklist: everything left before launch
+# Alaskova Education launch tracker
 
-In order. Each step says where it is done. Detailed click-by-click steps are in `GO-LIVE.md` (the step numbers in
-brackets), and the tests are in `TEST-PLAN.md`. Never paste a secret key into a chat, email or document; only into
-Render's Environment screen.
+Updated 7 November 2026. Paste into Notion: each `- [ ]` line becomes a checkbox. Never paste a secret key into a
+chat, email or document; only into Render's Environment screen. Detailed steps: `GO-LIVE.md`,
+`CONNECT-MOLECULAR-ATLAS.md` and `REPOSITIONING-PLAN.md`.
 
-## A. Decide (no dashboards needed)
+## 1. Decisions
+- [ ] Bio wording: approve the website version of your bio (or keep your original)
+- [ ] Headline now that you're an intern pharmacist: keep "Built by a pharmacy student, for pharmacy students" (you built it as a student) or switch to "Built by a pharmacy graduate…"
+- [ ] Instagram handle for every "Follow us" button
+- [ ] Coming-soon modules: Instagram "follow for news" only (recommended) or also an email waitlist
+- [ ] Measuring Instagram sign-ups: private "came from Instagram" note on each account (recommended) or nothing
+- [ ] Analytics: none at launch (recommended) or a privacy-friendly tool such as Plausible
+- [ ] GST: registered or not (ask your accountant); sets one line in the terms
+- [ ] Sole trader or company (Pty Ltd) (ask your accountant); as a sole trader your full name appears in the terms and on the ABN register
+- [ ] Change-of-mind refunds: none for part-months (recommended) or e.g. a full refund within 7 days of the first payment
+- [ ] Bank disputes (chargebacks): end access straight away (recommended) or at the end of the paid month
+- [ ] Minimum age: 18+, or younger with a parent's permission (recommended)
+- [ ] Support reply time you promise: 2 business days (recommended)
+- [ ] Notice before a price change: 30 days (recommended)
 
-- [ ] **GST:** are you registered for GST (or will you be)? Ask your accountant. Then tell the agent which line to use
-      on the terms page.
-- [ ] **Change-of-mind refunds:** none, or e.g. "full refund if asked within 7 days of the first payment".
-- [ ] **Analytics:** none, or a privacy-friendly tool (see the agent's advice).
-- [ ] **Business details** for `src/lib/business.ts`: legal entity name, ABN, address for notices, support email, state
-      for the governing law, plus minimum age, support reply time, and notice period for price changes.
-- [ ] **About page:** your name, a short bio and a photo.
-- [ ] **Book description:** the final blurb for Molecular Atlas (`src/lib/catalogue.ts`).
+## 2. Details to send the website agent
+- [ ] Business details: legal name, ABN, address for notices, support email, state whose law applies
+- [x] About page: first name (Chelsea), role (Intern Pharmacist), photo, bio (received 7 Nov)
+- [ ] Final book description for Molecular Atlas
+- [ ] 3 to 5 screenshots of the real book (after it's connected)
 
-## B. Set up accounts
+## 3. Accounts and services
+- [ ] Domain: buy it; plan www.<domain> for the site and atlas.<domain> for the book
+- [ ] Support email address on the domain; check mail arrives
+- [ ] Resend: verify the domain, get SMTP details (sign-up and password-reset emails)
+- [ ] Supabase email settings: custom SMTP (Resend) on, Confirm email on, two email templates changed (GO-LIVE 4)
+- [ ] Anthropic API key in a "Molecular Atlas" workspace with a monthly spending limit
+- [ ] Supabase Pro (backups; no pausing)
+- [ ] Render: both services on a paid always-on plan (Starter), 1 instance each, before launch
 
-- [ ] **Domain:** buy/choose it; plan `www.<domain>` for the site and `atlas.<domain>` for the book. (GO-LIVE 1)
-- [ ] **Support email address** on that domain, e.g. `support@<domain>`, and check you can receive mail.
-- [ ] **Resend** (or another email sender): verify the domain, get SMTP details. (GO-LIVE 4.2)
-- [ ] **Anthropic API key** for the AI tutor, with a monthly spending limit set in the Anthropic console.
-- [ ] **Supabase:** upgrade to Pro (backups, no pausing). (GO-LIVE 4.7)
-- [ ] **Render:** both services on a paid always-on plan, one instance each. (GO-LIVE 5, 6)
+## 4. Connect the book (Render)
+- [ ] Book service > Environment: delete ALASKOVA_PUBLIC_KEY
+- [ ] Book service: the four ALASKOVA_ addresses use alaskova-education-website.onrender.com (with "-website")
+- [ ] Book service: ANTHROPIC_API_KEY set; deploy shows Live with no red ConfigError
+- [ ] Website service: MODULE_URL_MOLECULAR_ATLAS = https://molecular-atlas.onrender.com
+- [ ] Tell the website agent "book connected" (it checks the link from outside)
+- [ ] Molecular Atlas agent: allow 90-minute reading sessions, then set SESSION_MINUTES=90
+- [ ] Give the Molecular Atlas agent docs/FOR-MODULE-AGENT.md (new brand, pharmaceutical wording now allowed)
 
-## C. Test everything in Stripe TEST mode
+## 5. Test everything (Stripe sandbox)
+- [ ] Subscribe with 4242 4242 4242 4242; the book appears in My library
+- [ ] Stripe webhook deliveries show 200 OK
+- [ ] Subscribe again is refused (no double charge)
+- [ ] Read now opens the book (no "token=" in the address); Back to my library works
+- [ ] AI tutor answers a question
+- [ ] Final exam and certificate work (only then can the website mention them)
+- [ ] Non-subscribers and signed-out visitors are refused
+- [ ] Cancel in Manage billing: "Access until <date>"
+- [ ] Full refund in Stripe: dashboard shows "Ended" within seconds
+- [ ] Resubscribe works
+- [ ] Sign-up email arrives; password reset works
+- [ ] Google and Microsoft sign-in work (in Safari/Chrome; Google won't work inside Instagram's browser)
+- [ ] Referral: a friend's first payment gives 1 free month of credit
+- [ ] Contact form message appears in Supabase > support_requests
+- [ ] Everything works on your phone, in Safari/Chrome and inside Instagram's browser
 
-- [ ] Supabase SQL editor: run `supabase/migrations/0003_support_requests.sql`, then `0004_referral_instalments.sql`
-      (0001 and 0002 should already be done).
-- [ ] Stripe (test mode) > Developers > Webhooks > your endpoint > add the event **`charge.refunded`**, so a full
-      refund ends access automatically.
-- [ ] Supabase: custom SMTP on, Confirm email on, the two email templates changed. (GO-LIVE 4)
-- [ ] Check the book's Render service has the matching settings, including `ANTHROPIC_API_KEY`. (GO-LIVE 6)
-- [ ] Work through all 26 tests in `TEST-PLAN.md`. Note anything that fails and send it to the agent.
+## 6. Website agent builds (repositioning, REPOSITIONING-PLAN.md section 12)
+- [ ] New homepage ("Built by a pharmacy student, for pharmacy students")
+- [ ] Molecular Atlas page (/molecular-atlas), with pricing and what you'll learn
+- [ ] Modules page and coming-soon page (no prices, "In development")
+- [ ] About & mission page with your photo and bio
+- [ ] /start page for your Instagram bio link, with Instagram-browser tips
+- [ ] New navigation, redirects, page titles and link previews
+- [ ] You review every page on your phone
 
-## D. Legal
+## 7. Legal
+- [ ] Business details in (section 2), then a lawyer reviews terms, privacy and refunds
+- [ ] Website agent removes the "Draft" banners and sets the date
 
-- [ ] Fill in the business details (A), then have a **lawyer review** the terms, privacy policy and refunds pages.
-- [ ] After review, ask the agent to remove the "Draft" banners and set the "last updated" date.
+## 8. Launch day (in this order: CONNECT-MOLECULAR-ATLAS.md part D)
+- [ ] Domain on both Render services; "Certificate issued" on both
+- [ ] Website settings: new domain; new signing key with kid alaskova-module-2
+- [ ] Book settings: four ALASKOVA_ addresses on the new domain
+- [ ] Supabase: Site URL and redirect URL; Google and Microsoft sign-in on the new domain
+- [ ] Stripe live mode: A$11.99 monthly product, live keys and price in Render, live webhook (9 events incl. charge.refunded), customer portal
+- [ ] Clear sandbox records in Supabase (before any real customer)
+- [ ] Website agent runs the final check against the domain
 
-## E. Switch to live
-
-- [ ] Stripe: activate the account, create the live A$11.99 monthly product, live webhook, customer portal settings
-      (cancel at end of period), failed-payment emails. (GO-LIVE 2)
-- [ ] **New signing key** for the book (the test one was shared in a chat), with a new key id. (GO-LIVE 3)
-- [ ] Render: replace test keys with live ones, set `NEXT_PUBLIC_SITE_URL` to your domain, health check `/healthz`.
-      (GO-LIVE 5)
-- [ ] Supabase: Site URL and redirect URLs to your domain; Google and Microsoft sign-in set to production with the new
-      domain. (GO-LIVE 4)
-- [ ] Book's Render service: point `ALASKOVA_*` settings at your domain. (GO-LIVE 6)
-
-## F. Launch day
-
-- [ ] Ask the agent to run the smoke test against your domain (every line must pass).
-- [ ] Buy a subscription with your own card, open the book, cancel, refund yourself.
-- [ ] Set up uptime monitoring for both `/healthz` addresses. (GO-LIVE 8)
-- [ ] From now on, check `support_requests` in Supabase every business day.
+## 9. After launch
+- [ ] Buy, read, cancel and refund with your own card
+- [ ] Uptime monitoring on both /healthz addresses
+- [ ] Check Supabase > support_requests every business day
+- [ ] Process account-deletion requests (GO-LIVE step 9)
+- [ ] Instagram content plan (REPOSITIONING-PLAN.md section 10)
