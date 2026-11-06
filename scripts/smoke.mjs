@@ -65,10 +65,9 @@ check("webhook without a Stripe signature is refused", hook.status === 400 || ho
 const forged = await get("/api/stripe/webhook", { method: "POST", body: "{}", headers: { "stripe-signature": "t=1,v1=forged" } });
 check("webhook with a forged signature is refused", forged.status === 400 || forged.status === 503, forged.status);
 
-const ref = await get("/r/not-a-code");
-check("invalid referral link sets no cookie", !(ref.headers.get("set-cookie") ?? "").includes("alaskova_ref"));
-const goodRef = await get("/r/ABCD2345");
-check("referral link remembers the code and goes to sign-up", loc(goodRef).endsWith("/register") && (goodRef.headers.get("set-cookie") ?? "").includes("HttpOnly"), loc(goodRef));
+const oldRef = await get("/r/ABCD2345");
+check("old referral links go to the home page", loc(oldRef).replace(/\/$/, "") === base.replace(/\/$/, "") || loc(oldRef).endsWith("/"), loc(oldRef));
+check("old referral links set no cookie", !(oldRef.headers.get("set-cookie") ?? "").includes("alaskova_ref"));
 
 const confirm = await get("/auth/confirm?token_hash=x&type=bogus");
 check("email-confirm route rejects junk", loc(confirm).includes("/login?error=callback"), loc(confirm));

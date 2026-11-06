@@ -6,8 +6,6 @@ import { getUser } from "@/lib/supabase/server";
 import { getStripe } from "@/lib/stripe/client";
 import { getSubscriptions } from "@/lib/access";
 import { ensureStripeCustomer } from "@/lib/stripe/customer";
-import { attachReferral } from "@/lib/referrals-db";
-import { REFERRAL_COOKIE } from "@/lib/referrals";
 import { blocksNewCheckout, grantsAccess, isSameOrigin, rateLimit } from "@/lib/security";
 
 
@@ -43,17 +41,6 @@ export async function POST(request: NextRequest) {
 
     const stripe = getStripe();
 
-    // If they arrived through a friend's referral link, record it (rules are enforced in attachReferral).
-    // A referral problem must never stop someone subscribing, so it's logged and ignored on failure.
-    const refCode = request.cookies.get(REFERRAL_COOKIE)?.value;
-    if (refCode) {
-      try {
-        await attachReferral(user.id, refCode);
-      } catch (err) {
-        console.error("referral attach failed", err instanceof Error ? err.message : err);
-      }
-    }
-
     // Find or create the Stripe customer for this user.
     const customerId = await ensureStripeCustomer(user.id, user.email);
 
@@ -72,7 +59,14 @@ export async function POST(request: NextRequest) {
       mode: "subscription",
       customer: customerId,
       client_reference_id: user.id,
-      line_items: [{ price: env.stripePriceForBook(slug), quantity: 1 }],
+      // With STRIPE_TAX_RATE_GST set (an inclusive 10% rate), invoices show the GST included in the price.
+      line_items: [
+        {
+          price: env.stripePriceForBook(slug),
+          quantity: 1,
+          ...(env.gstTaxRateId() ? { tax_rates: [env.gstTaxRateId()!] } : {}),
+        },
+      ],
       subscription_data: { metadata },
       metadata,
       // Redirect is for UX only. Access is granted by the verified webhook, not by this URL.

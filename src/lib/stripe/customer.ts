@@ -4,7 +4,7 @@ import { getStripe } from "./client";
 
 /**
  * Finds or creates the Stripe customer for a user and records the link.
- * The idempotency key means two simultaneous calls (checkout + a referral reward) end up with one customer.
+ * The idempotency key means two simultaneous calls end up with one customer.
  */
 export async function ensureStripeCustomer(userId: string, email: string | undefined | null) {
   const admin = createSupabaseAdmin();
