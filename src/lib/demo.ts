@@ -35,7 +35,7 @@ export const faqs = [
   },
   {
     q: "How does the subscription work?",
-    a: "You subscribe to a textbook for $11.99 per month, pay securely through Stripe, and your access is activated once payment is confirmed. Renewal dates, billing frequency and cancellation terms are shown clearly before checkout.",
+    a: "You subscribe to a textbook for A$8.99 per month (GST included), pay securely through Stripe, and your access is activated once payment is confirmed. Renewal dates, billing frequency and cancellation terms are shown clearly before checkout.",
   },
   {
     q: "Can I cancel at any time?",

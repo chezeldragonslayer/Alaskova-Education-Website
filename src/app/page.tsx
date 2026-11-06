@@ -154,7 +154,7 @@ export default function HomePage() {
                   ))}
                 </ul>
                 <h3 className="h3 mt-5 !text-3xl">{featured.title}</h3>
-                <p className="lead mt-3 max-w-xl">A textbook for organic chemistry, published by {featured.publisher}.</p>
+                <p className="lead mt-3 max-w-xl">An interactive pharmaceutical organic chemistry textbook: 229 lessons, more than 700 practice problems and 160+ real medicines as worked examples.</p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <ButtonLink href={`/catalogue/${featured.slug}`} size="lg">
                     View textbook <ArrowRight size={18} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
@@ -244,7 +244,7 @@ export default function HomePage() {
             <p className="mt-3 font-display text-5xl font-bold tracking-tight">
               {formatPrice(plan.priceCents)}<span className="text-lg font-medium text-white/70"> / month</span>
             </p>
-            <p className="mt-2 text-sm text-white/70">Billed monthly. Renews until cancelled.</p>
+            <p className="mt-2 text-sm text-white/70">Includes GST. Billed monthly. Renews until cancelled.</p>
             <ul className="mt-7 space-y-3 text-[0.9375rem]">
               {["Online access to the full textbook", "Progress tracking on your device", "Manage or cancel from your account"].map((pt) => (
                 <li key={pt} className="flex gap-3"><span aria-hidden className="text-gold">✓</span>{pt}</li>

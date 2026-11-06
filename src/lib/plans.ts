@@ -3,8 +3,9 @@
  * actually charged; this file drives display only and is replaced by
  * database/Stripe-synced plans in Phase 2.
  *
- * Owner-confirmed: $11.99 per month, one subscription = one textbook.
- * Owner-confirmed: prices are in Australian dollars (AUD). TO CONFIRM: GST treatment, and whether an annual option exists.
+ * One subscription = one textbook.
+ * Owner-confirmed (7 Nov 2026): A$8.99 per month, GST included (Alaskova Pty Ltd is GST-registered).
+ * TO CONFIRM: whether an annual option exists.
  */
 export type Plan = {
   id: string;
@@ -19,7 +20,7 @@ export const plans: Plan[] = [
   {
     id: "molecular-atlas-monthly",
     name: "Molecular Atlas",
-    priceCents: 1199,
+    priceCents: 899,
     interval: "month",
     bookSlug: "molecular-atlas",
   },

@@ -38,4 +38,6 @@ export const env = {
     process.env[`MODULE_URL_${slug.toUpperCase().replace(/[^A-Z0-9]/g, "_")}`] ?? null,
   moduleSigningKeyPem: () => need("ALASKOVA_MODULE_PRIVATE_KEY"),
   moduleKeyId: () => process.env.ALASKOVA_MODULE_KID ?? "alaskova-module-1",
+  /** Optional Stripe tax rate (txr_...) for 10% GST, created as INCLUSIVE so the price stays A$8.99. */
+  gstTaxRateId: () => process.env.STRIPE_TAX_RATE_GST?.trim() || null,
 };

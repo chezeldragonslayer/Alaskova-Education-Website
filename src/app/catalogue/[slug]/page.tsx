@@ -122,7 +122,7 @@ export default async function BookPage({ params, searchParams }: { params: Promi
                 {formatPrice(plan.priceCents)}
                 <span className="text-base font-medium text-muted"> / month</span>
               </p>
-              <p className="mt-2 text-sm text-muted">One subscription includes this textbook. Billed monthly until you cancel.</p>
+              <p className="mt-2 text-sm text-muted">Includes GST. One subscription includes this textbook. Billed monthly until you cancel.</p>
             </>
           ) : (
             <p className="mt-3 text-muted">Subscription details coming soon.</p>

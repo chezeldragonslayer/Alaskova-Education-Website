@@ -43,7 +43,7 @@ export default function PricingPage() {
                       {formatPrice(plan.priceCents)}
                       <span className="text-lg font-medium text-white/75"> / month</span>
                     </p>
-                    <p className="mt-2 text-sm text-white/75">Billed monthly. Renews until cancelled.</p>
+                    <p className="mt-2 text-sm text-white/75">Includes GST. Billed monthly. Renews until cancelled.</p>
                     <BookCover book={{ title: book.title, subject: book.subjects[0], tone: book.tone }} className="mt-8 w-28 ring-1 ring-white/20" />
                   </div>
                   <div className="p-8 sm:p-10">
