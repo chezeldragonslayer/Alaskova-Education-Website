@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Fact, LegalPage, SupportEmail } from "@/components/LegalPage";
+import { LegalPage, SupportEmail } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
   title: "Cancellation & refunds",
@@ -32,7 +32,7 @@ export default function RefundsPage() {
       <ul>
         <li>
           Because you keep access for the rest of the paid month after cancelling, we do not normally refund part-months
-          when you change your mind. <Fact value="[TO BE CONFIRMED: change-of-mind policy, e.g. a full refund if requested within 7 days of the first payment]" />
+          when you change your mind.
         </li>
         <li>
           If you were charged by mistake (for example twice for the same textbook, or after you cancelled), contact us and
@@ -58,11 +58,13 @@ export default function RefundsPage() {
       <p>
         Email <SupportEmail /> (or use the <Link href="/support#contact">contact form</Link>) from the address you
         subscribed with, and tell us the date of the charge. We aim to reply within{" "}
-        <Fact value="[TO BE CONFIRMED: response time, e.g. 2 business days]" />. Approved refunds go back to the card you
+        2 business days. Approved refunds go back to the card you
         paid with and usually appear within 5 to 10 business days.
       </p>
       <p>
-        Please contact us before disputing a charge with your bank; we can usually fix billing problems faster.
+        Please contact us before disputing a charge with your bank; we can usually fix billing problems faster. If a
+        charge is disputed, the subscription it paid for is cancelled and access ends straight away while the dispute is
+        resolved.
       </p>
     </LegalPage>
   );

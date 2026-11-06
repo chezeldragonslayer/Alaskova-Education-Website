@@ -27,7 +27,6 @@ export default function PrivacyPage() {
         <li><strong>If you sign in with Google or Microsoft:</strong> the name and email address that service shares with us. We do not receive your Google or Microsoft password.</li>
         <li><strong>Subscription details:</strong> which textbook you subscribe to, the subscription status, renewal and end dates, and the Stripe customer number linked to your account.</li>
         <li><strong>Payment details:</strong> entered directly into Stripe. Stripe stores your card; we only see things like the card brand, the last four digits and your invoices.</li>
-        <li><strong>Referrals:</strong> your referral code, who referred you (if anyone), and whether a referral reward was paid.</li>
         <li><strong>Messages you send us:</strong> what you write in the contact form or by email, with your name and email.</li>
         <li><strong>Technical information:</strong> your IP address, used briefly in memory to stop abuse (such as repeated sign-in attempts), and standard server logs kept by our hosting provider.</li>
       </ul>
@@ -51,7 +50,6 @@ export default function PrivacyPage() {
       <p>We use only cookies that the site needs to work:</p>
       <ul>
         <li>sign-in cookies that keep you signed in (on this site and in the reader);</li>
-        <li>a referral cookie, kept for 30 days, if you arrive through a friend&rsquo;s referral link;</li>
         <li>Stripe&rsquo;s own cookies on its checkout and billing pages, for fraud prevention.</li>
       </ul>
       <p>We do not use advertising or analytics cookies, and we do not sell or share your information for advertising.</p>
@@ -60,7 +58,6 @@ export default function PrivacyPage() {
       <ul>
         <li>to create and secure your account and let you sign in;</li>
         <li>to take payment, unlock the textbook you pay for, and manage your subscription;</li>
-        <li>to run the refer-a-friend program;</li>
         <li>to answer your questions and send you essential emails about your account (confirmation, password reset, billing);</li>
         <li>to prevent fraud and abuse, and to meet our legal and tax obligations.</li>
       </ul>
