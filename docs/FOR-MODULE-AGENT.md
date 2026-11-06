@@ -37,9 +37,9 @@ exactly; nothing in the module needs to change for launch. Paste the block below
 >    saved in the browser, light and dark themes, practice and review, and a personal notebook. It no longer mentions
 >    bookmarks or adjustable text size, because the module does not have them yet. If you add either, tell the owner so
 >    the main site's copy can be updated.
-> 8. **Wording.** The owner's instruction for the main site is that Molecular Atlas is an *organic chemistry* textbook
->    and must never be described as pharmaceutical. Your README says "organic and medicinal chemistry". Please check
->    that wording with the owner.
+> 8. **Wording.** Update (7 November 2026): the owner has withdrawn the earlier "never describe it as
+>    pharmaceutical" rule. Molecular Atlas may be called a pharmaceutical textbook, and your README's "organic and
+>    medicinal chemistry" is fine.
 > 9. **Single instance.** Both services keep state in memory (your used `jti`s and `/launch` rate limit; the main
 >    site's rate limits), so both must run as exactly one instance on an always-on plan.
 > 10. **New brand (revision 4).** The owner has a new logo: a crowned navy lion with a gold staff and serpent. The main

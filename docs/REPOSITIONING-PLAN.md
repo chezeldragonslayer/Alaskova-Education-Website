@@ -13,14 +13,21 @@ placeholder for a fact only the owner can supply.
 
 | # | Decision | Why it matters | Recommendation |
 |---|---|---|---|
-| D1 | **"Pharmacy context" wording replaces an earlier rule.** The original brief said Molecular Atlas must never be described as pharmaceutical. This brief positions it with a pharmacy context. | The two conflict; the newer brief wins, but please confirm. | Use "organic chemistry, taught through medicines". It is accurate: modules 8 to 10 are medicinal chemistry, drug design and case studies, and lessons use 164 real medicines as examples. Avoid "pharmaceutical textbook". |
-| D2 | **Who "built by pharmacy students" names.** | The hero claim is only credible if the About page shows who you are. | Name the founder(s), year and degree (university optional). |
+| D1 | ~~Pharmacy wording~~ **Decided (7 Nov 2026):** Molecular Atlas may be called a **pharmaceutical textbook**. | The earlier "never pharmaceutical" rule is withdrawn. | Use "an interactive pharmaceutical organic chemistry textbook" or "organic chemistry, taught through medicines". Both are accurate (modules 8 to 10, 164 real medicines). |
+| D2 | **How the founder appears on the site.** | The hero says "built by pharmacy students"; a real person behind it is what makes that believable to a stranger arriving from Instagram. | Owner's choice of level (see the note below the table). Minimum: first name + "pharmacy student" + photo, matching Instagram. |
 | D3 | **Instagram handle** for every "Follow for launch news" button. | Coming-soon pages need somewhere to send people. | `[@INSTAGRAM_HANDLE]` |
 | D4 | **Waitlist or Instagram-only for coming-soon modules.** A "notify me" email list collects personal data (privacy policy, storage, a way to unsubscribe). | Affects what gets built. | Launch with "Follow us on Instagram for launch news" (no data collected). Add an email waitlist later if wanted. |
 | D5 | **Certificate of completion.** The book has a final exam and a certificate page. | A certificate can be mistaken for an accredited qualification. | Mention it only after you have tested it, always as "a certificate of completion, not an accredited qualification or CPD". |
 | D6 | **AI study tutor.** Built, but needs your Anthropic key and has not been tested through the website. | Must not be advertised until it works. | Mention only after test step 10 in `CONNECT-MOLECULAR-ATLAS.md` passes. |
 | D7 | **Product screenshots or a short screen recording** of the real book. | Instagram visitors decide visually; we must not show invented screens. | Owner captures 3 to 5 screenshots from the real book after it is connected. |
 | D8 | **Measuring Instagram sign-ups.** | You will want to know if Instagram works. | Option A: Stripe and Supabase numbers only (no tracking). Option B: a first-party "came from Instagram" flag stored with the account (one privacy-policy line, no third-party tracker). Avoid the Meta pixel for now. |
+
+**Note on D2 (founder on the site).** Not needed for legal or clinical reasons: the site gives no clinical advice.
+It is a trust signal. Options, from least to most personal: (a) no name, "Founded by a pharmacy student" plus a link
+to the Instagram account where you are the face; (b) first name, photo and "pharmacy student"; (c) full name, degree
+and year. (b) is recommended. Separately, if you trade as a sole trader, your legal name appears in the terms and on
+the public ABN register anyway; a company (Pty Ltd) avoids that. If Alaskova is currently just you, say "Built by a
+pharmacy student, for pharmacy students" until others join.
 
 ---
 
@@ -367,7 +374,7 @@ agent.
 **Phase 1: before the first Instagram campaign**
 - [ ] [Owner] Decide D1 to D8 (section 0).
 - [ ] [Owner] Supply: founder name(s), degree and year, short story, photo, Instagram handle.
-- [ ] [Owner] Move both Render services to paid always-on plans.
+- [ ] [Owner] Move both Render services to paid always-on plans (owner confirmed: before launch).
 - [ ] [Owner] Connect and test the book (`CONNECT-MOLECULAR-ATLAS.md` parts A to C); note which features worked.
 - [ ] [Owner] Capture 3 to 5 real screenshots of the book (D7).
 - [ ] [Agent] New header and footer navigation (section 3).

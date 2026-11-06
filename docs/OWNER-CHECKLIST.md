@@ -14,7 +14,6 @@ Render's Environment screen.
       for the governing law, plus minimum age, support reply time, and notice period for price changes.
 - [ ] **About page:** your name, a short bio and a photo.
 - [ ] **Book description:** the final blurb for Molecular Atlas (`src/lib/catalogue.ts`).
-- [ ] **Molecular Atlas wording:** its own README says "organic and medicinal chemistry"; confirm what you want.
 
 ## B. Set up accounts
 
