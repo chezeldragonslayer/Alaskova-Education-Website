@@ -14,7 +14,7 @@ placeholder for a fact only the owner can supply.
 | # | Decision | Why it matters | Recommendation |
 |---|---|---|---|
 | D1 | ~~Pharmacy wording~~ **Decided (7 Nov 2026):** Molecular Atlas may be called a **pharmaceutical textbook**. | The earlier "never pharmaceutical" rule is withdrawn. | Use "an interactive pharmaceutical organic chemistry textbook" or "organic chemistry, taught through medicines". Both are accurate (modules 8 to 10, 164 real medicines). |
-| D2 | **How the founder appears on the site.** | The hero says "built by pharmacy students"; a real person behind it is what makes that believable to a stranger arriving from Instagram. | Owner's choice of level (see the note below the table). Minimum: first name + "pharmacy student" + photo, matching Instagram. |
+| D2 | **How the founder appears on the site.** | The hero says "built by a pharmacy student"; a real person behind it is what makes that believable to a stranger arriving from Instagram. | Owner's choice of level (see the note below the table). Minimum: first name + "pharmacy student" + photo, matching Instagram. |
 | D3 | **Instagram handle** for every "Follow for launch news" button. | Coming-soon pages need somewhere to send people. | `[@INSTAGRAM_HANDLE]` |
 | D4 | **Waitlist or Instagram-only for coming-soon modules.** A "notify me" email list collects personal data (privacy policy, storage, a way to unsubscribe). | Affects what gets built. | Launch with "Follow us on Instagram for launch news" (no data collected). Add an email waitlist later if wanted. |
 | D5 | **Certificate of completion.** The book has a final exam and a certificate page. | A certificate can be mistaken for an accredited qualification. | Mention it only after you have tested it, always as "a certificate of completion, not an accredited qualification or CPD". |
@@ -26,14 +26,14 @@ placeholder for a fact only the owner can supply.
 It is a trust signal. Options, from least to most personal: (a) no name, "Founded by a pharmacy student" plus a link
 to the Instagram account where you are the face; (b) first name, photo and "pharmacy student"; (c) full name, degree
 and year. (b) is recommended. Separately, if you trade as a sole trader, your legal name appears in the terms and on
-the public ABN register anyway; a company (Pty Ltd) avoids that. If Alaskova is currently just you, say "Built by a
-pharmacy student, for pharmacy students" until others join.
+the public ABN register anyway; a company (Pty Ltd) avoids that. Owner-confirmed headline: "Built by a pharmacy student, for pharmacy
+students." Change to the plural only when others join.
 
 ---
 
 ## 1. Positioning and voice
 
-**One line:** Alaskova Education makes study resources by pharmacy students, for pharmacy students, connecting what
+**One line:** Alaskova Education makes study resources built by a pharmacy student, for pharmacy students, connecting what
 you learn at university to how medicines are discovered, made and used.
 
 **Message pillars**
@@ -49,7 +49,7 @@ the accuracy of a lecturer. Australian spelling. Short sentences. No hype.
 
 | Say | Don't say |
 |---|---|
-| "Built by pharmacy students, for pharmacy students." (once D2 is confirmed) | "The best pharmacy resource", "number one", "trusted by thousands" |
+| "Built by a pharmacy student, for pharmacy students." (owner-confirmed wording; plural only once others join) | "The best pharmacy resource", "number one", "trusted by thousands" |
 | "Designed to help you consolidate…" | "Guarantees you'll pass" or "get you a job" |
 | "Topics that can be hard to find in one place" | "Things pharmacy schools never teach you" |
 | "Covers organic and medicinal chemistry found in many pharmacy degrees" | "Matches your university's course" or "accredited" |
@@ -109,7 +109,7 @@ Account · Legal.
 
 **Hero**
 - Eyebrow: `ALASKOVA EDUCATION`
-- Headline: **Built by pharmacy students, for pharmacy students.**
+- Headline: **Built by a pharmacy student, for pharmacy students.**
 - Subheading: We create study resources that connect what you learn in lectures to how medicines are discovered,
   made and used. Our first workbook, Molecular Atlas, teaches organic chemistry through real medicines.
 - Primary button: **Explore Molecular Atlas** → `/molecular-atlas`
@@ -137,7 +137,7 @@ Account · Legal.
 - Heading: **From lecture theatre to laboratory.**
 - Body: Your degree gives you the foundations. We want to show where they lead: how the chemistry you study becomes
   a medicine, how medicines are made to strict standards, and the many careers that make it happen. Everything we
-  make is written by pharmacy students and checked against the literature.
+  make is written by a pharmacy student and checked against the literature.
   *(Only keep "checked against the literature" if true: the book's repository has a citation audit, so it is.)*
 
 **Section: Coming soon**
@@ -246,7 +246,7 @@ the badge is text (not colour alone) so it is clear to screen readers.
   "covers").
   - *Example for GMP:* What it will cover: why GMP exists; quality systems and documentation; how manufacturing is
     inspected; what it means for your career.
-- Box: **Have an idea?** We're a student-led team and we'd like to hear what you want to learn. → Suggest a topic
+- Box: **Have an idea?** Alaskova is student-led, and we'd like to hear what you want to learn. → Suggest a topic
 - Button: **Follow `[@INSTAGRAM_HANDLE]` for launch news**
 - Small print: Topics, scope and timing may change as modules are developed.
 
@@ -256,7 +256,7 @@ the badge is text (not colour alone) so it is clear to screen readers.
 
 **Hero**
 - Eyebrow: `ABOUT ALASKOVA EDUCATION`
-- Heading: **Built by pharmacy students, for pharmacy students.**
+- Heading: **Built by a pharmacy student, for pharmacy students.**
 - Intro: Alaskova Education started with a simple idea: the best way to understand pharmacy is to see the science in
   action. We make resources that help students consolidate what they learn and see where it leads.
 
@@ -269,7 +269,7 @@ discovered, made, checked and used, and the many careers that make that happen. 
 - **Critical thinking:** understanding over memorising.
 - **Scientific credibility:** accurate, referenced, and honest about what we don't cover.
 - **Industry access:** showing students the roles beyond the dispensary.
-- **Student-led innovation:** created by students, shaped by student feedback.
+- **Student-led innovation:** created by a student, shaped by student feedback.
 
 **What we offer today**
 - **Molecular Atlas**, an interactive organic chemistry workbook. → Explore
