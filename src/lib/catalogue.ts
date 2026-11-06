@@ -23,10 +23,10 @@ export const catalogue: CatalogueBook[] = [
   {
     slug: "molecular-atlas",
     title: "Molecular Atlas",
-    subjects: ["Organic Chemistry"],
+    subjects: ["Organic Chemistry", "Medicinal Chemistry"],
     publisher: "Alaskova Education",
     description:
-      "A textbook covering organic chemistry. (Placeholder description — to be replaced with the final text.)",
+      "An interactive pharmaceutical organic chemistry textbook. Across 229 lessons in ten modules, Molecular Atlas takes you from the foundations of organic chemistry through mechanisms, functional groups and spectroscopy to medicinal chemistry and drug design, using more than 160 real medicines as worked examples. It is built around 14 core rules that explain why reactions happen, with more than 700 practice problems to test yourself as you go.",
     tone: 1,
   },
 ];

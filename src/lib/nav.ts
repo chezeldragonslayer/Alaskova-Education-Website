@@ -16,6 +16,7 @@ export const footerNav = {
     { href: "/about", label: "About Alaskova Education" },
     { href: "/support", label: "Support centre" },
     { href: "/support#contact", label: "Contact us" },
+    { href: "https://www.instagram.com/alaskova/", label: "Instagram" },
   ],
   Account: [
     { href: "/login", label: "Sign in" },
