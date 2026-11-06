@@ -11,36 +11,49 @@ Never paste a secret key into a chat, an email, a document or the repository. Pa
 
 | Decision | Where it lands |
 |---|---|
-| ~~Currency~~ **Decided: AUD** (site shows A$11.99). Still open: GST registration and wording | Stripe price in AUD; terms page GST line |
+| ~~Currency and GST~~ **Decided:** A$8.99 per month in AUD, GST included (Alaskova Pty Ltd is GST-registered) | Stripe price A$8.99 AUD; inclusive GST tax rate (step 2.2) |
 | ~~Grace period~~ **Decided: none.** Access pauses as soon as a renewal fails (current behaviour) | done |
 | **Decided:** a full refund ends access immediately (automatic). Still open: whether you offer change-of-mind refunds at all | refunds page; built into the webhook |
-| ~~Referral safeguards~~ **Decided: instalments** (1 free month per friend's paid month, up to 3). Built. Optional extra: refuse rewards when the friend pays with the referrer's own card | done |
+| ~~Referral programme~~ **Decided: removed** (7 Nov 2026) | done |
 | Legal entity name, ABN, address, support email, governing state, minimum age | `src/lib/business.ts` and the age line in the terms **[Agent or Owner]** |
 | ~~AI tutor~~ **Decided: on** | privacy policy updated; set `ANTHROPIC_API_KEY` on the module (step 6) |
 | Analytics: none (current), or a privacy-friendly tool | privacy policy must change first |
 | Lawyer review of the three legal pages, then remove the "Draft" banner and set `legalUpdated` | `src/components/LegalPage.tsx`, `src/lib/business.ts` |
 
-## 1. Domain **[Owner]**
+## 1. Domain: alaskovaeducation.com (DNS at Wix) **[Owner]**
 
-1. Choose the domain, e.g. `www.<domain>` for this site and `atlas.<domain>` for the book.
-2. Render > this service > Settings > Custom Domains > add `www.<domain>` (and the bare domain, redirecting to www).
-   Add the DNS records Render shows at your registrar. Render issues the HTTPS certificate automatically; wait until it
-   shows "Certificate issued".
-3. Do the same on the Molecular Atlas service for `atlas.<domain>`.
+The domain's DNS is managed by Wix (nameservers `ns2/ns3.wixdns.net`) and currently points at Wix. Email for
+`support@alaskovaeducation.com` runs through **Zoho**: never delete the `MX` records (`mx.zoho.com.au`, `mx2`, `mx3`) or
+any `TXT` records for SPF/DKIM while doing this.
+
+1. **Render, website service** > Settings > Custom Domains > **Add**: `alaskovaeducation.com`, then
+   `www.alaskovaeducation.com`. Render shows the DNS record each one needs (an `A` record for the bare domain and a
+   `CNAME` for www). Keep that screen open.
+2. **Render, book service** > Settings > Custom Domains > **Add** `atlas.alaskovaeducation.com` (a `CNAME`).
+3. **Wix** > Domains > alaskovaeducation.com > **Manage DNS records**. If Wix says the domain is connected to a Wix
+   site, first disconnect it from that site (Wix > Domains > ⋯ > "Disconnect from site"); the domain and email stay.
+   - `A` record, host `@`: replace Wix's values with the address Render showed (remove the other Wix `A` records).
+   - `CNAME`, host `www`: change to what Render showed (e.g. `alaskova-education-website.onrender.com`).
+   - `CNAME`, host `atlas`: add, pointing to what Render showed for the book (e.g. `molecular-atlas.onrender.com`).
+4. Back in Render, wait until all three show **Verified** and **Certificate issued** (minutes to a few hours).
+5. Only then do steps 4 (Supabase), 5 (Render settings) and 6 (book settings) below. Switching settings before the
+   domain works would take the site offline.
 
 ## 2. Stripe: switch from test to live **[Owner]**
 
 Test-mode products, prices, keys and webhooks do **not** carry over to live mode.
 
 1. Turn off "Test mode" (top right). Complete Stripe's account activation (business details, bank account).
-2. Product catalogue > **Add product** "Molecular Atlas", recurring, monthly, **$11.99 in the confirmed currency**.
-   Copy the live `price_...` id.
+2. Product catalogue > **Add product** "Molecular Atlas", recurring, monthly, **A$8.99 AUD**, "Include tax in
+   price": **yes**. Copy the live `price_...` id. Then Product catalogue > **Tax rates** > New: "GST", 10%, Australia,
+   **Inclusive**; put its `txr_...` id into Render as `STRIPE_TAX_RATE_GST`. Settings > Business > Tax details: add the
+   ABN, so invoices are valid tax invoices.
 3. Developers > API keys: copy the **live secret key** (`sk_live_...`). A restricted key with write access to Customers,
    Checkout Sessions, Subscriptions, Billing Portal, Customer balance transactions and read access to Prices also works.
-4. Developers > Webhooks > **Add endpoint** `https://www.<domain>/api/stripe/webhook`, events:
+4. Developers > Webhooks > **Add endpoint** `https://alaskovaeducation.com/api/stripe/webhook`, events:
    `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`,
    `customer.subscription.deleted`, `customer.subscription.paused`, `customer.subscription.resumed`, `invoice.paid`,
-   `invoice.payment_failed`, **`charge.refunded`**. Copy its **signing secret** (`whsec_...`).
+   `invoice.payment_failed`, **`charge.refunded`**, **`charge.dispute.created`** (10 events). Copy its **signing secret** (`whsec_...`).
 5. Settings > Billing > **Customer portal** (live mode): allow updating payment methods, viewing invoices, and cancelling
    **at the end of the billing period** (the refunds page promises this). Add links to your terms and privacy pages.
 6. Settings > Billing > Subscriptions and emails: turn on emails for failed payments and expiring cards, and Smart
@@ -49,7 +62,8 @@ Test-mode products, prices, keys and webhooks do **not** carry over to live mode
    refund, cancels the subscription in Stripe straight away and ends their access within seconds. A **partial** refund
    (for example a goodwill credit) does not end access. To end access without refunding, cancel the subscription
    immediately instead.
-8. Disputes: Stripe emails you. Respond in Stripe with the evidence; consider cancelling the subscription.
+8. Disputes: the website cancels the disputed subscription automatically (owner policy). Stripe emails you; respond in
+   Stripe with the evidence.
 
 ## 3. Signing key for the book: replace the test key **[Owner]**
 
@@ -59,7 +73,7 @@ The current key was shared in a chat, so it must not be used in production.
    public key. Do not paste them anywhere except step 2.
 2. Render > this site > Environment: replace `ALASKOVA_MODULE_PRIVATE_KEY` with the new private key and set
    `ALASKOVA_MODULE_KID` to a **new** value, e.g. `alaskova-module-2`. Save (Render redeploys).
-3. Check `https://www.<domain>/.well-known/jwks.json` shows the new `kid`.
+3. Check `https://alaskovaeducation.com/.well-known/jwks.json` shows the new `kid`.
 4. If the module uses `ALASKOVA_JWKS_URL` (recommended) nothing else is needed: it fetches the new key the first time it
    sees the new `kid`. If it uses a pasted `ALASKOVA_PUBLIC_KEY`, replace that with the new public key at the same time.
 5. Future rotations: repeat steps 1 to 4 with the next `kid`. Because launch passes last 60 seconds, there is no
@@ -71,9 +85,9 @@ The current key was shared in a chat, so it must not be used in production.
 2. Authentication > SMTP Settings: **enable custom SMTP**. Supabase's built-in sender allows only a handful of emails an
    hour and is not for real customers. Resend is a simple choice: create an account, verify your domain (it gives you
    DNS records: SPF, DKIM, and add a DMARC record), create an SMTP password, and enter host `smtp.resend.com`, port 465,
-   user `resend`, the password, sender `no-reply@<domain>`, name "Alaskova Education". Then raise the email rate limit
+   user `resend`, the password, sender `no-reply@alaskovaeducation.com`, name "Alaskova Education". Then raise the email rate limit
    under Authentication > Rate Limits.
-3. Authentication > URL Configuration: Site URL `https://www.<domain>`. Redirect URLs: `https://www.<domain>/**`.
+3. Authentication > URL Configuration: Site URL `https://alaskovaeducation.com`. Redirect URLs: `https://alaskovaeducation.com/**`.
    Remove the onrender.com and localhost entries once live.
 4. Authentication > Email Templates (so links work when opened on another device):
    - Confirm signup: link to
@@ -95,7 +109,7 @@ The current key was shared in a chat, so it must not be used in production.
 2. Instances: **1**. The sign-in and contact-form rate limits are kept in memory and only work on a single instance.
 3. Settings > Health Check Path: `/healthz`.
 4. Build command `npm ci && npm run build`, start command `npm start`, Node 22 or later.
-5. Environment: every name in `.env.example`, with **live** values. `NEXT_PUBLIC_SITE_URL=https://www.<domain>`.
+5. Environment: every name in `.env.example`, with **live** values. `NEXT_PUBLIC_SITE_URL=https://alaskovaeducation.com`.
    Changing `NEXT_PUBLIC_*` values needs a redeploy (they are built into the pages, as are sitemap.xml and robots.txt).
 6. Auto-deploy from `main`: on. Every commit to `main` goes live, so only merge tested changes.
 
@@ -103,27 +117,27 @@ The current key was shared in a chat, so it must not be used in production.
 
 | Setting | Value |
 |---|---|
-| `ALASKOVA_JWKS_URL` | `https://www.<domain>/.well-known/jwks.json` (and leave `ALASKOVA_PUBLIC_KEY` empty) |
-| `ALASKOVA_RETURN_URL` | `https://www.<domain>/read/molecular-atlas` |
-| `ALASKOVA_ORIGIN` | `https://www.<domain>` |
-| `ALASKOVA_LIBRARY_URL` | `https://www.<domain>/dashboard` (`/library` also works; it redirects) |
+| `ALASKOVA_JWKS_URL` | `https://alaskovaeducation.com/.well-known/jwks.json` (and leave `ALASKOVA_PUBLIC_KEY` empty) |
+| `ALASKOVA_RETURN_URL` | `https://alaskovaeducation.com/read/molecular-atlas` |
+| `ALASKOVA_ORIGIN` | `https://alaskovaeducation.com` |
+| `ALASKOVA_LIBRARY_URL` | `https://alaskovaeducation.com/dashboard` (`/library` also works; it redirects) |
 | `ALASKOVA_ISSUER` / `MODULE_AUDIENCE` | `alaskova-education` / `molecular-atlas` |
 | Instances | **1** (it remembers used launch passes in memory) on a paid always-on plan |
 | Health check | `/healthz` |
 | `ANTHROPIC_API_KEY` | your Anthropic API key (turns the AI tutor on; keep it secret) |
 
-On **this** site set `MODULE_URL_MOLECULAR_ATLAS=https://atlas.<domain>`.
+On **this** site set `MODULE_URL_MOLECULAR_ATLAS=https://atlas.alaskovaeducation.com`.
 
 ## 7. Final checks on the live site **[Owner]**
 
-1. `npm run smoke -- https://www.<domain>`: every line PASS.
+1. `npm run smoke -- https://alaskovaeducation.com`: every line PASS.
 2. Subscribe with your own real card, open the book, then cancel in Manage billing and refund yourself in Stripe.
 3. Send yourself a password reset and a contact-form message.
 
 ## 8. Monitoring **[Owner]**
 
-- **Uptime**: a free external monitor (UptimeRobot, Better Stack) checking `https://www.<domain>/healthz` and
-  `https://atlas.<domain>/healthz` every few minutes, alerting you by email or SMS.
+- **Uptime**: a free external monitor (UptimeRobot, Better Stack) checking `https://alaskovaeducation.com/healthz` and
+  `https://atlas.alaskovaeducation.com/healthz` every few minutes, alerting you by email or SMS.
 - **Stripe**: Developers > Webhooks shows failed deliveries; Stripe also emails you if the endpoint keeps failing.
 - **Render**: Logs, and email notifications for failed deploys (Account settings > Notifications).
 - **Contact form and deletion requests**: until email notifications are built, check Supabase > Table editor >
@@ -136,7 +150,7 @@ On **this** site set `MODULE_URL_MOLECULAR_ATLAS=https://atlas.<domain>`.
 1. Supabase > `support_requests`, open rows with kind `account_deletion`.
 2. Stripe > Customers > search the email > cancel any active subscription (immediately) and decide on any refund.
 3. Supabase > Authentication > Users > the user > Delete user. This removes their profile, subscription records,
-   referral code and referrals automatically.
+   and any old referral records automatically.
 4. Email them that it is done; set the request's `status` to `done` and `handled_at` to now.
 Stripe keeps its own billing records, which you need for tax.
 

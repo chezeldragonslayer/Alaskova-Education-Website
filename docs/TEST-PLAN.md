@@ -11,7 +11,7 @@ Each step is marked:
 - **Not testable from code**: depends on something outside this repository (email delivery, Google/Microsoft, the
   Molecular Atlas service).
 
-What has already been run (21 October 2026): `npm test` 109 tests passing; `npm run smoke -- http://localhost:3100`
+What has already been run (21 October 2026): `npm test` 87 tests passing; `npm run smoke -- http://localhost:3100`
 40/40 against a local production build with **no** Supabase or Stripe keys. Nothing has yet been run against a
 configured Supabase project or a Stripe account.
 
@@ -20,7 +20,7 @@ configured Supabase project or a Stripe account.
 1. Supabase project created, migrations `0001`, `0002`, `0003` and `0004` run, in that order (Supabase > SQL editor).
 2. Render environment variables set with **test** Stripe keys (`sk_test_...`, the test `whsec_...`, the test
    `price_...`). See `.env.example`.
-3. Stripe webhook endpoint added for the events listed in GO-LIVE.md, step 2, **including `charge.refunded`** (add it to
+3. Stripe webhook endpoint added for the events listed in GO-LIVE.md, step 2, **including `charge.refunded` and `charge.dispute.created`** (add it to
    your existing test-mode endpoint).
 4. Run `npm run smoke -- https://<your Render address>` and confirm every line says PASS.
 5. Use a fresh private/incognito window for each "person" in the tests. Use real email addresses you can open
@@ -35,7 +35,7 @@ configured Supabase project or a Stripe account.
 | 3 | Sign up with Microsoft | "Continue with Microsoft". | Same as 2. | Owner |
 | 4 | Wrong password | Sign in with a wrong password. | "Incorrect email or password." The email you typed stays in the box. | Owner (message wording: automated) |
 | 5 | Password reset | Sign in page > "Forgot your password?" > enter email > open the email > choose a new password. | Lands on My account with "Your password has been changed." The old password no longer works. | Owner |
-| 6 | Subscribe | Catalogue > Molecular Atlas > Subscribe to read. Card `4242 4242 4242 4242`, any future date, any CVC, any postcode. | Stripe checkout shows **A$11.99 per month** (AUD). After paying, the dashboard says access is activating, then shows Molecular Atlas under My library within a few seconds. Stripe > Customers shows the customer with an active subscription. | Owner (webhook handling: automated) |
+| 6 | Subscribe | Catalogue > Molecular Atlas > Subscribe to read. Card `4242 4242 4242 4242`, any future date, any CVC, any postcode. | Stripe checkout shows **A$8.99 per month** (AUD). After paying, the dashboard says access is activating, then shows Molecular Atlas under My library within a few seconds. Stripe > Customers shows the customer with an active subscription. | Owner (webhook handling: automated) |
 | 7 | No double subscription | While subscribed, open the book page in a second tab and press Subscribe again (or press it twice quickly during test 6). | You are sent to the dashboard with "You already have an active subscription". Stripe shows only **one** subscription. | Automated (logic) + Owner (confirm in Stripe) |
 | 8 | Read now | Dashboard > Read now. | The book opens on the module's address. The address bar shows no `token=`. "Back to my library" returns to the dashboard. | Not testable from code (needs the module running); Automated: token contents match INTEGRATION.md |
 | 9 | Signed out access refused | Sign out, then open `/dashboard`, `/account`, `/read/molecular-atlas` directly. | Each goes to the sign-in page. | Automated (smoke) |
@@ -47,8 +47,6 @@ configured Supabase project or a Stripe account.
 | 15 | Resubscribe | After 14, Subscribe again with `4242...`. | A new subscription; access returns. | Owner (logic: automated) |
 | 16 | Replayed webhook ignored | Stripe > Developers > Webhooks > your endpoint > pick a delivered event > **Resend**. | Delivery shows 200 with `"result":"duplicate"`. Nothing changes on the dashboard. | Automated (idempotency) + Owner (resend) |
 | 17 | Forged webhook refused | (Done by the smoke test.) | 400 "Invalid signature". | Automated (smoke) |
-| 18 | Referral reward | Person A: dashboard > copy referral link. Person B (new browser): open the link, register, subscribe with `4242...`. | Stripe > Person A's customer > "Credit balance" shows a credit of **one** month (A$11.99), described "Referral reward: 1 free month (your friend's payment 1 of 3)". A's dashboard: Friends subscribed 1, Free months earned 1. When B's second and third months are paid, one more month is added each time, then no more. | Owner (rules: automated) |
-| 19 | Referral abuse refused | Signed in as Person A, open A's own link and subscribe. | No credit for referring yourself. A throwaway second account earns one month per month it pays, so it never earns more than it costs. | Automated (rules) |
 | 20 | Expired module session | Open the book, wait past the module's session time (default 45 minutes; or ask the module agent for a short test setting), then click a link in the book. | The browser briefly returns to `/read/molecular-atlas` and comes straight back to the same page of the book, no sign-in needed. If the subscription ended in the meantime, you land on the subscribe page instead. | Not testable from code here (module side) |
 | 21 | Account page | My account: change your name; check email, sign-in method and subscription; Manage billing opens Stripe. | All shown correctly. | Owner |
 | 22 | Contact form | Support > send a message. | "Thanks, we've got your message". The message appears in Supabase > Table editor > `support_requests`. Sending 4 in a row is refused for a few minutes. | Owner (validation and limits: automated) |
@@ -62,8 +60,7 @@ configured Supabase project or a Stripe account.
 | File | Covers |
 |---|---|
 | `tests/security.test.ts` | open-redirect guard, CSRF origin check, rate limiter (including spoofed addresses and memory bound), access rules, double-subscription guard, dashboard status wording |
-| `tests/sync.test.ts` | webhook idempotency, out-of-order and stale events, past_due, cancel at period end, paused, unpaid, deleted, resubscribe, full refund ends access, partial refund doesn't, unattributable subscriptions, retries |
-| `tests/referrals.test.ts` | codes, self/repeat/existing-customer refusal, 1 month per paid month up to 3, throwaway accounts never profit, cap, $0 invoices, failed payments, webhook retries, no double credit after Stripe's 24-hour window |
+| `tests/sync.test.ts` | webhook idempotency, out-of-order and stale events, past_due, cancel at period end, paused, unpaid, deleted, resubscribe, full refund ends access, partial refund doesn't, bank dispute ends access, unattributable subscriptions, retries |
 | `tests/module-token.test.ts` | launch token claims and lifetime against INTEGRATION.md, unique `jti`, wrong audience/issuer/key, tampering, `alg: none`, JWKS has no private part |
 | `tests/support.test.ts` | contact form validation, honeypot, display names |
 | `scripts/smoke.mjs` | 40 outside-in checks of a running site: pages, health check, private-route redirects and caching, 404, security headers, robots/sitemap, JWKS, CSRF refusals, forged webhooks, referral cookie, auth redirects |

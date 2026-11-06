@@ -61,26 +61,26 @@ Follow `docs/GO-LIVE.md`; this is the order that avoids broken links.
 
 16. **Everything in `docs/OWNER-CHECKLIST.md` sections A, B and D is done**: GST wording, business details, lawyer
     review (drafts banner removed), Resend email, Supabase Pro, paid Render plans.
-17. **Domain**: add `www.<domain>` to the website service and `atlas.<domain>` to the book's service in Render
+17. **Domain**: add `alaskovaeducation.com` to the website service and `atlas.alaskovaeducation.com` to the book's service in Render
     (Settings > Custom Domains), add the DNS records, wait for "Certificate issued" on both.
-18. **Website settings** (Render > website > Environment): `NEXT_PUBLIC_SITE_URL=https://www.<domain>`,
-    `MODULE_URL_MOLECULAR_ATLAS=https://atlas.<domain>`.
+18. **Website settings** (Render > website > Environment): `NEXT_PUBLIC_SITE_URL=https://alaskovaeducation.com`,
+    `MODULE_URL_MOLECULAR_ATLAS=https://atlas.alaskovaeducation.com`.
 19. **New signing key** (the current one was shared in a chat): on your computer, in this repository, run
     `node scripts/generate-module-keys.mjs`. Put the private key into `ALASKOVA_MODULE_PRIVATE_KEY` and set
     `ALASKOVA_MODULE_KID=alaskova-module-2` on the website. Save; wait for Live.
 20. **Book settings** (Render > book > Environment): change the four addresses from part A step 3 to
-    `https://www.<domain>/...` (`ALASKOVA_JWKS_URL`, `ALASKOVA_RETURN_URL`, `ALASKOVA_ORIGIN`, `ALASKOVA_LIBRARY_URL`).
+    `https://alaskovaeducation.com/...` (`ALASKOVA_JWKS_URL`, `ALASKOVA_RETURN_URL`, `ALASKOVA_ORIGIN`, `ALASKOVA_LIBRARY_URL`).
     Save; wait for Live.
-21. **Supabase**: Site URL `https://www.<domain>`, redirect URL `https://www.<domain>/**`; Google and Microsoft
+21. **Supabase**: Site URL `https://alaskovaeducation.com`, redirect URL `https://alaskovaeducation.com/**`; Google and Microsoft
     sign-in updated to the new domain (GO-LIVE step 4).
-22. **Stripe live mode** (GO-LIVE step 2): activate the account; create the live product (A$11.99 monthly); copy the
-    live secret key and price id into Render; add the live webhook to `https://www.<domain>/api/stripe/webhook` with
-    the same **9 events** (including `charge.refunded`) and put its signing secret into Render; set up the customer
+22. **Stripe live mode** (GO-LIVE step 2): activate the account; create the live product (A$8.99 monthly); copy the
+    live secret key and price id into Render; add the live webhook to `https://alaskovaeducation.com/api/stripe/webhook` with
+    the same **10 events** (including `charge.refunded` and `charge.dispute.created`) and put its signing secret into Render; set up the customer
     portal (cancel at end of billing period).
 23. **Clear the sandbox records** in Supabase (SQL editor), exactly as you did when moving to the sandbox, so sandbox
     customers and subscriptions don't block real ones. Only do this before any real customer has paid.
-24. Tell the agent "live". It runs the smoke test against `https://www.<domain>` (every line must pass).
+24. Tell the agent "live". It runs the smoke test against `https://alaskovaeducation.com` (every line must pass).
 25. **Real purchase**: subscribe with your own card, open the book, use the tutor, then refund yourself in full in
     Stripe and confirm access ends.
-26. **Monitoring**: an uptime monitor on `https://www.<domain>/healthz` and `https://atlas.<domain>/healthz`.
+26. **Monitoring**: an uptime monitor on `https://alaskovaeducation.com/healthz` and `https://atlas.alaskovaeducation.com/healthz`.
     From now on, check Supabase > `support_requests` every business day.

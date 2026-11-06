@@ -26,7 +26,7 @@ chat, email or document; only into Render's Environment screen. Detailed steps: 
 - [ ] 3 to 5 screenshots of the real book (after it's connected)
 
 ## 3. Accounts and services
-- [ ] Domain: buy it; plan www.<domain> for the site and atlas.<domain> for the book
+- [ ] Domain: buy it; plan alaskovaeducation.com for the site and atlas.alaskovaeducation.com for the book
 - [ ] Support email address on the domain; check mail arrives
 - [ ] Resend: verify the domain, get SMTP details (sign-up and password-reset emails)
 - [ ] Supabase email settings: custom SMTP (Resend) on, Confirm email on, two email templates changed (GO-LIVE 4)
@@ -78,7 +78,7 @@ chat, email or document; only into Render's Environment screen. Detailed steps: 
 - [ ] Website settings: new domain; new signing key with kid alaskova-module-2
 - [ ] Book settings: four ALASKOVA_ addresses on the new domain
 - [ ] Supabase: Site URL and redirect URL; Google and Microsoft sign-in on the new domain
-- [ ] Stripe live mode: A$11.99 monthly product, live keys and price in Render, live webhook (9 events incl. charge.refunded), customer portal
+- [ ] Stripe live mode: A$8.99 monthly product, live keys and price in Render, live webhook (9 events incl. charge.refunded), customer portal
 - [ ] Clear sandbox records in Supabase (before any real customer)
 - [ ] Website agent runs the final check against the domain
 

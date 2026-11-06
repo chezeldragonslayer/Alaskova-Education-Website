@@ -77,8 +77,7 @@ Sources: the Molecular Atlas repository (`CURRICULUM.md`, its search index and r
 | AI study tutor | Built, **not yet tested end to end** (D6) | Hold until tested |
 | Final exam and certificate of completion | Built, **not yet tested** (D5) | Hold until tested |
 | Interactive mechanisms and spectra | Built per the book's README | Use after you have tried one |
-| A$11.99 per month, one subscription = one workbook, cancel any time in the billing portal | Live on the site | "A$11.99/month · cancel any time" |
-| Refer a friend: 1 free month each time a referred friend pays, for their first 3 payments | Live | Use on the dashboard and in an Instagram post |
+| A$8.99 per month, one subscription = one workbook, cancel any time in the billing portal | Live on the site | "A$8.99/month · cancel any time" |
 | Study time | The curriculum's internal plan budgets 400 hours | **Don't publish**: it is a planning estimate |
 
 ---
@@ -89,7 +88,7 @@ Sources: the Molecular Atlas repository (`CURRICULUM.md`, its search index and r
 |---|---|---|---|---|
 | Home | `/` | Who we are + Molecular Atlas + what's coming | Explore Molecular Atlas | **Rewrite** |
 | Start (Instagram link in bio) | `/start` | Fast, mobile-only route from Instagram to the workbook | Start Molecular Atlas | **New** |
-| Molecular Atlas | `/molecular-atlas` | The sales page for the only product | Start learning, A$11.99/month | **New** (replaces `/catalogue/molecular-atlas`, which redirects here) |
+| Molecular Atlas | `/molecular-atlas` | The sales page for the only product | Start learning, A$8.99/month | **New** (replaces `/catalogue/molecular-atlas`, which redirects here) |
 | Modules | `/modules` | One available card + coming-soon cards | Per card | **Replaces** `/catalogue` (redirects) |
 | Coming soon | `/modules/coming-soon` | All in-development modules, honest status | Follow on Instagram | **New** |
 | Pricing | `/pricing` | One plan, what's included, billing FAQs | Start Molecular Atlas | **Edit copy** |
@@ -114,7 +113,7 @@ Account · Legal.
   made and used. Our first workbook, Molecular Atlas, teaches organic chemistry through real medicines.
 - Primary button: **Explore Molecular Atlas** → `/molecular-atlas`
 - Secondary link: See what's coming → `/modules/coming-soon`
-- Under the buttons: A$11.99/month · Cancel any time · Secure checkout by Stripe
+- Under the buttons: A$8.99/month · Cancel any time · Secure checkout by Stripe
 - Visual: the stacked lion logo or (once D7 is done) a real screenshot of a lesson, labelled "Molecular Atlas".
 
 **Section: Now available**
@@ -130,7 +129,7 @@ Account · Legal.
 
 **Section: How it works** (three steps)
 1. **Create your free account.** Sign up with your email, Google or Microsoft account.
-2. **Subscribe to Molecular Atlas.** A$11.99 a month through Stripe. Cancel any time from your account.
+2. **Subscribe to Molecular Atlas.** A$8.99 a month through Stripe. Cancel any time from your account.
 3. **Start learning.** Open it from your library. Your progress saves as you go in the browser you study in.
 
 **Section: Why Alaskova**
@@ -150,7 +149,7 @@ Account · Legal.
 1. *Who is Molecular Atlas for?* Pharmacy students studying organic or medicinal chemistry, and anyone who wants to
    understand the chemistry behind medicines. It isn't affiliated with any university, so check your unit outline for
    what you need to know.
-2. *What does it cost?* A$11.99 a month for full access to Molecular Atlas. Cancel any time; you keep access until the
+2. *What does it cost?* A$8.99 a month for full access to Molecular Atlas. Cancel any time; you keep access until the
    end of the month you've paid for.
 3. *Does my progress save?* Yes, automatically, in the browser you study in. Use the same device and browser to pick
    up where you left off.
@@ -160,7 +159,7 @@ Account · Legal.
 **Final call to action**
 - Heading: **Start with Molecular Atlas.**
 - Line: Organic chemistry, taught through the medicines you'll meet in practice.
-- Button: **Start learning, A$11.99/month** → `/molecular-atlas`
+- Button: **Start learning, A$8.99/month** → `/molecular-atlas`
 
 ---
 
@@ -172,7 +171,7 @@ Account · Legal.
 - Subtitle: **Organic chemistry, taught through medicines.**
 - Body: An interactive workbook that takes you from the foundations of organic chemistry to how medicines are
   designed, using 160+ real drugs as examples along the way.
-- Price box: **A$11.99/month** · Cancel any time · Secure checkout by Stripe
+- Price box: **A$8.99/month** · Cancel any time · Secure checkout by Stripe
 - Button: **Start learning** (signed out: create account, then checkout; subscribed: **Open Molecular Atlas**)
 
 **Who it's for**
@@ -208,15 +207,14 @@ Account · Legal.
   qualification).
 
 **Pricing**
-- **A$11.99 per month** · Full access to Molecular Atlas · Cancel any time from your account · You keep access until
+- **A$8.99 per month** · Full access to Molecular Atlas · Cancel any time from your account · You keep access until
   the end of the month you've paid for · Payments by Stripe; we never see your card number
-- Refer a friend: **Get a free month each time a friend you refer pays, for their first 3 months.**
 
 **FAQ:** the five from the homepage, plus: *Can I cancel?* · *What happens to my notes if I cancel?* (They stay in
 your browser, but you won't be able to open the workbook until you subscribe again.) · *Is there a free trial?*
 (Not at the moment. You can cancel any time.)
 
-**Final call to action:** **Start learning, A$11.99/month**
+**Final call to action:** **Start learning, A$8.99/month**
 
 ---
 
@@ -224,7 +222,7 @@ your browser, but you won't be able to open the workbook until you subscribe aga
 
 | Card | Badge | Title | Description | Button |
 |---|---|---|---|---|
-| Available | **Available now** (gold) | Molecular Atlas | Organic chemistry, taught through medicines. 229 lessons, 700+ practice problems. | **Start learning, A$11.99/mo** |
+| Available | **Available now** (gold) | Molecular Atlas | Organic chemistry, taught through medicines. 229 lessons, 700+ practice problems. | **Start learning, A$8.99/mo** |
 | Soon | **In development** (grey) | Pharmaceutical Industry Careers | The roles behind medicines, from manufacturing and quality to regulatory affairs and R&D, and the paths into them. | Follow for updates |
 | Soon | **In development** | Good Manufacturing Practice (GMP) | How medicines are made safely and consistently: the principles, the quality systems and why they exist. | Follow for updates |
 | Soon | **In development** | Pharmaceutical Compounding | The science of preparing medicines: formulation, calculations, stability and quality. | Follow for updates |
@@ -291,13 +289,13 @@ Follow `[@INSTAGRAM_HANDLE]` to hear as each one takes shape.
 |---|---|---|
 | Header | Start learning | Sign in |
 | Home hero | Explore Molecular Atlas | See what's coming |
-| Molecular Atlas (signed out / not subscribed) | Start learning, A$11.99/month | See what's inside |
+| Molecular Atlas (signed out / not subscribed) | Start learning, A$8.99/month | See what's inside |
 | Molecular Atlas (subscribed) | Open Molecular Atlas | My library |
 | Coming soon | Follow `[@INSTAGRAM_HANDLE]` for launch news | Suggest a topic |
 | About | Explore Molecular Atlas | Follow us on Instagram |
 | `/start` | Start Molecular Atlas | What's inside? |
 | Dashboard (no subscription) | Start Molecular Atlas | – |
-| Dashboard (subscribed) | Read now | Refer a friend |
+| Dashboard (subscribed) | Read now | My account |
 
 Rule: one primary button per screen, always showing the price or "cancel any time" next to it.
 
@@ -315,7 +313,7 @@ Instagram post / story / reel
    ▼
 Create account  (email form first; Microsoft button; Google button hidden inside Instagram, see below)
    ▼  email sign-up only: confirm email (link opens back on the book page, Subscribe ready)
-Stripe Checkout (A$11.99/month; card, plus Apple Pay / Google Pay outside Instagram's browser)
+Stripe Checkout (A$8.99/month; card, plus Apple Pay / Google Pay outside Instagram's browser)
    ▼
 Dashboard: "You're subscribed" → [Read now] → Molecular Atlas welcome and plan setup
 ```
@@ -344,7 +342,6 @@ student.
 - "One medicine, one rule": a carousel using a drug from the book (e.g. aspirin) to explain one of the 14 rules, ending
   "Learn all 14 in Molecular Atlas: link in bio".
 - A 20-second screen recording of a real lesson and practice problem (D7).
-- Refer-a-friend reminder: "Study with a friend: you get a free month each time they pay, for their first 3 months."
 - Coming-soon teasers that say "in development" and ask "What should we cover next?"
 
 ---
