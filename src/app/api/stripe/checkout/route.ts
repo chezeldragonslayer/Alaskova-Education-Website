@@ -14,7 +14,11 @@ const redirect303 = (url: string) => NextResponse.redirect(url, { status: 303 })
 
 export async function POST(request: NextRequest) {
   const site = siteUrl();
-  if (!isSameOrigin(request, site)) return new NextResponse("Forbidden", { status: 403 });
+  // Refused (cross-site request, or the site's address setting doesn't match the address in use): no checkout is
+  // created. Send the visitor back to the page on the same address with a message rather than a blank error.
+  if (!isSameOrigin(request, site)) {
+    return NextResponse.redirect(new URL("/molecular-atlas?checkout=blocked", request.url), { status: 303 });
+  }
 
   const form = await request.formData();
   const slug = String(form.get("book") ?? "");

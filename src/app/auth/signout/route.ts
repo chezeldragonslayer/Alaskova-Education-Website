@@ -5,7 +5,7 @@ import { isSameOrigin } from "@/lib/security";
 
 export async function POST(request: NextRequest) {
   if (!isSameOrigin(request, siteUrl())) {
-    return new NextResponse("Forbidden", { status: 403 });
+    return NextResponse.redirect(new URL("/dashboard?notice=refresh", request.url), { status: 303 });
   }
   if (authConfigured()) {
     const supabase = await createSupabaseServer();

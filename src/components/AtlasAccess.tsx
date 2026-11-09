@@ -13,6 +13,7 @@ const messages: Record<string, string> = {
   cancelled: "Checkout was cancelled. You haven’t been charged.",
   error: "We couldn’t start checkout. Please try again.",
   unavailable: "Checkout isn’t available yet.",
+  blocked: "We couldn’t start checkout from this page. Please refresh the page and try again.",
   required: "You need an active subscription to read Molecular Atlas.",
 };
 

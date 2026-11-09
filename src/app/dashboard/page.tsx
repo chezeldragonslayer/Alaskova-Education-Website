@@ -27,6 +27,8 @@ const notices: Record<string, string> = {
   "billing:none": "You don’t have a billing account yet — it’s created when you subscribe.",
   "billing:unavailable": "Billing isn’t available right now.",
   "billing:error": "We couldn’t open the billing portal. Please try again.",
+  "billing:blocked": "We couldn’t open the billing portal from this page. Please refresh the page and try again.",
+  refresh: "That didn’t go through. Please refresh the page and try again.",
   "billing:fix": "You already have a subscription for that textbook that needs attention. Use Manage billing below to update your card or resume it, rather than subscribing again.",
 };
 
@@ -43,7 +45,7 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
   const active = subs.filter((s) => grantsAccess(s.status, s.current_period_end));
   const name =
     (user.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? user.email?.split("@")[0] ?? "there";
-  const notice = sp.already ? notices.already : sp.reader ? notices[`reader:${sp.reader}`] : sp.billing ? notices[`billing:${sp.billing}`] : null;
+  const notice = sp.already ? notices.already : sp.reader ? notices[`reader:${sp.reader}`] : sp.billing ? notices[`billing:${sp.billing}`] : sp.notice ? notices[sp.notice] : null;
   const pending = sp.checkout === "success" && active.length === 0;
   const libraryBooks = active.map((s) => ({ s, book: getBook(s.book_slug) })).filter((x) => x.book);
   const others = catalogue.filter((b) => !active.some((s) => s.book_slug === b.slug));

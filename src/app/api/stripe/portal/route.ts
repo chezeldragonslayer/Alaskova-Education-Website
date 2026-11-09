@@ -10,7 +10,9 @@ const redirect303 = (url: string) => NextResponse.redirect(url, { status: 303 })
 /** Sends the signed-in user to the Stripe Customer Portal (cancel, update card, invoices). */
 export async function POST(request: NextRequest) {
   const site = siteUrl();
-  if (!isSameOrigin(request, site)) return new NextResponse("Forbidden", { status: 403 });
+  if (!isSameOrigin(request, site)) {
+    return NextResponse.redirect(new URL("/dashboard?billing=blocked", request.url), { status: 303 });
+  }
 
   const user = await getUser();
   if (!user) return redirect303(`${site}/login?next=/dashboard`);

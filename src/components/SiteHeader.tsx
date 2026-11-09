@@ -77,7 +77,7 @@ export function SiteHeader() {
           <ButtonLink href="/login" variant="ghost">
             Sign in
           </ButtonLink>
-          <ButtonLink href="/molecular-atlas">Start learning</ButtonLink>
+          <ButtonLink href="/molecular-atlas#start">Start learning</ButtonLink>
         </div>
 
         <button
@@ -123,7 +123,7 @@ export function SiteHeader() {
                 ))}
               </ul>
               <div className="mt-auto grid gap-3 pt-8">
-                <ButtonLink href="/molecular-atlas" size="lg" onClick={() => setOpen(false)}>
+                <ButtonLink href="/molecular-atlas#start" size="lg" onClick={() => setOpen(false)}>
                   Start learning
                 </ButtonLink>
                 <ButtonLink href="/login" variant="secondary" size="lg" onClick={() => setOpen(false)}>

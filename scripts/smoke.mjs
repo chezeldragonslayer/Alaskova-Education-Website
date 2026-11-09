@@ -65,7 +65,8 @@ if (jwksRes.status === 200) {
 
 for (const path of ["/api/stripe/checkout", "/api/stripe/portal", "/auth/signout"]) {
   const r = await get(path, { method: "POST", headers: { origin: "https://evil.example" } });
-  check(`POST ${path} from another site is refused (CSRF)`, r.status === 403, r.status);
+  const l = loc(r);
+  check(`POST ${path} from another site is refused (CSRF)`, r.status === 403 || (r.status === 303 && !/stripe\.com|supabase/.test(l) && /blocked|refresh/.test(l)), `${r.status} ${l}`);
 }
 const hook = await get("/api/stripe/webhook", { method: "POST", body: "{}" });
 check("webhook without a Stripe signature is refused", hook.status === 400 || hook.status === 503, hook.status);
