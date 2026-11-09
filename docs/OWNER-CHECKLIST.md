@@ -33,12 +33,11 @@ chat, email or document; only into Render's Environment screen. Details: `GO-LIV
 ## 4. Accounts and services
 - [ ] Resend: verify alaskovaeducation.com (add its DNS records in Wix; keep a single SPF record on the root, Zoho stays)
 - [ ] Supabase email: custom SMTP (Resend) on, Confirm email on, two email templates changed (GO-LIVE step 4)
-- [ ] Anthropic API key in a "Molecular Atlas" workspace with a monthly spending limit
 - [ ] Supabase Pro
 - [ ] Render: both services on paid Starter plans, 1 instance each, before launch
 
 ## 5. Connect the book
-- [ ] Book service: delete ALASKOVA_PUBLIC_KEY; four ALASKOVA_ addresses correct; ANTHROPIC_API_KEY set; deploy Live
+- [ ] Book service: delete ALASKOVA_PUBLIC_KEY; four ALASKOVA_ addresses correct; deploy Live
 - [ ] Website service: MODULE_URL_MOLECULAR_ATLAS set (the onrender.com address until the domain is live)
 - [ ] Tell the website agent "book connected"
 - [ ] Molecular Atlas agent: allow 90-minute sessions, then SESSION_MINUTES=90
@@ -47,7 +46,7 @@ chat, email or document; only into Render's Environment screen. Details: `GO-LIV
 ## 6. Test everything (Stripe sandbox)
 - [ ] Subscribe with 4242 4242 4242 4242: checkout shows A$8.99 including GST; the book appears in My library
 - [ ] Webhook deliveries show 200 OK; subscribing twice is refused
-- [ ] Read now opens the book; Back to my library works; the AI tutor answers
+- [ ] Read now opens the book; Back to my library works
 - [ ] Final exam and certificate work (only then can the website mention them)
 - [ ] Non-subscribers and signed-out visitors are refused
 - [ ] Cancel: "Access until <date>"; full refund: "Ended"; resubscribe works

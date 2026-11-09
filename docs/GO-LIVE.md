@@ -16,7 +16,7 @@ Never paste a secret key into a chat, an email, a document or the repository. Pa
 | **Decided:** a full refund ends access immediately (automatic). Still open: whether you offer change-of-mind refunds at all | refunds page; built into the webhook |
 | ~~Referral programme~~ **Decided: removed** (7 Nov 2026) | done |
 | Legal entity name, ABN, address, support email, governing state, minimum age | `src/lib/business.ts` and the age line in the terms **[Agent or Owner]** |
-| ~~AI tutor~~ **Decided: on** | privacy policy updated; set `ANTHROPIC_API_KEY` on the module (step 6) |
+| ~~AI tutor~~ **Removed from the reader, 9 November 2026** | nothing to set; the privacy policy no longer mentions Anthropic |
 | Analytics: none (current), or a privacy-friendly tool | privacy policy must change first |
 | Lawyer review of the three legal pages, then remove the "Draft" banner and set `legalUpdated` | `src/components/LegalPage.tsx`, `src/lib/business.ts` |
 
@@ -124,7 +124,6 @@ The current key was shared in a chat, so it must not be used in production.
 | `ALASKOVA_ISSUER` / `MODULE_AUDIENCE` | `alaskova-education` / `molecular-atlas` |
 | Instances | **1** (it remembers used launch passes in memory) on a paid always-on plan |
 | Health check | `/healthz` |
-| `ANTHROPIC_API_KEY` | your Anthropic API key (turns the AI tutor on; keep it secret) |
 
 On **this** site set `MODULE_URL_MOLECULAR_ATLAS=https://atlas.alaskovaeducation.com`.
 

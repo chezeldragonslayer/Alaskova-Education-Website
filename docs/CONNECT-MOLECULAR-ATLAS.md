@@ -21,8 +21,6 @@ Book address: whatever Render gives the book's service, e.g. `https://molecular-
    | `ALASKOVA_RETURN_URL` | `SITE/read/molecular-atlas` |
    | `ALASKOVA_ORIGIN` | `SITE` |
    | `ALASKOVA_LIBRARY_URL` | `SITE/dashboard` |
-   | `ANTHROPIC_API_KEY` | your Anthropic API key (set a monthly spending limit in the Anthropic console first) |
-   | `TUTOR_MODEL` | leave empty (the book picks its default) |
    | `ALASKOVA_PROGRESS_URL`, `MODULE_SIGNING_KEY` | leave **both empty** (progress stays in the learner's browser) |
 
    `NODE_ENV`, `ALASKOVA_ISSUER`, `MODULE_AUDIENCE`, `SESSION_SECRET` and `SESSION_MINUTES` are filled in by the
@@ -45,14 +43,14 @@ Book address: whatever Render gives the book's service, e.g. `https://molecular-
 |---|---|---|
 | 8 | Signed in with a sandbox subscription: Dashboard > **Read now** | The book opens. The address bar shows BOOK, with **no** `token=` in it. |
 | 9 | In the book: **Back to my library** | The Alaskova Education dashboard. |
-| 10 | Open the AI tutor in a lesson and ask a question | An answer appears. |
+| 10 | In a lesson, open a hint, then reveal the full solution | Hints appear one at a time and the full solution is always available beside them. |
 | 11 | In the book, click around for a while, then come back after the session time (45 minutes by default) and click a link | A brief flash, then the same page of the book. No sign-in needed. |
 | 12 | Sign in as a second person with **no** subscription and open `SITE/read/molecular-atlas` and then `BOOK` directly | Both end on the "You need an active subscription" page. |
 | 13 | Signed out, in a private window, open `BOOK` | Ends on the Alaskova Education sign-in page. |
 | 14 | With person 1: refund their sandbox payment in full in Stripe, then (within 45 minutes) click in the book | At the next session check they land on the subscribe page; the dashboard says **Ended**. |
-| 15 | On a phone: sign in, Read now, read a page, use the tutor | Everything fits the screen; nothing cut off. |
+| 15 | On a phone: sign in, Read now, read a page, answer a problem | Everything fits the screen; nothing cut off. |
 
-If anything differs, send the agent a screenshot of that step. Book-side problems (pages, tutor, layout) go to the
+If anything differs, send the agent a screenshot of that step. Book-side problems (pages, layout) go to the
 Molecular Atlas agent; anything before the book opens goes to the website agent.
 
 ## Part D. Launch day
@@ -80,7 +78,7 @@ Follow `docs/GO-LIVE.md`; this is the order that avoids broken links.
 23. **Clear the sandbox records** in Supabase (SQL editor), exactly as you did when moving to the sandbox, so sandbox
     customers and subscriptions don't block real ones. Only do this before any real customer has paid.
 24. Tell the agent "live". It runs the smoke test against `https://alaskovaeducation.com` (every line must pass).
-25. **Real purchase**: subscribe with your own card, open the book, use the tutor, then refund yourself in full in
+25. **Real purchase**: subscribe with your own card, open the book, read a lesson, then refund yourself in full in
     Stripe and confirm access ends.
 26. **Monitoring**: an uptime monitor on `https://alaskovaeducation.com/healthz` and `https://atlas.alaskovaeducation.com/healthz`.
     From now on, check Supabase > `support_requests` every business day.

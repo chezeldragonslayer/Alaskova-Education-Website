@@ -80,10 +80,6 @@ export default function TermsPage() {
           The textbooks are educational material. They are not professional, safety or medical advice. Do not carry out
           chemistry experiments described in the textbooks without proper supervision, training and safety equipment.
         </li>
-        <li>
-          If the reader offers an AI study tutor, its answers are generated automatically and can be wrong. Check
-          important points against the textbook itself.
-        </li>
       </ul>
 
       <h2>6. Your rights under Australian Consumer Law</h2>

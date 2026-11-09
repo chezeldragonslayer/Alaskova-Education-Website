@@ -18,7 +18,7 @@ placeholder for a fact only the owner can supply.
 | D3 | **Instagram handle** for every "Follow for launch news" button. | Coming-soon pages need somewhere to send people. | `[@INSTAGRAM_HANDLE]` |
 | D4 | **Waitlist or Instagram-only for coming-soon modules.** A "notify me" email list collects personal data (privacy policy, storage, a way to unsubscribe). | Affects what gets built. | Launch with "Follow us on Instagram for launch news" (no data collected). Add an email waitlist later if wanted. |
 | D5 | **Certificate of completion.** The book has a final exam and a certificate page. | A certificate can be mistaken for an accredited qualification. | Mention it only after you have tested it, always as "a certificate of completion, not an accredited qualification or CPD". |
-| D6 | **AI study tutor.** Built, but needs your Anthropic key and has not been tested through the website. | Must not be advertised until it works. | Mention only after test step 10 in `CONNECT-MOLECULAR-ATLAS.md` passes. |
+| D6 | ~~**AI study tutor.**~~ **Removed from the reader, 9 November 2026.** | Never advertise it. | Nothing to do; the lines that would have mentioned it are gone. |
 | D7 | **Product screenshots or a short screen recording** of the real book. | Instagram visitors decide visually; we must not show invented screens. | Owner captures 3 to 5 screenshots from the real book after it is connected. |
 | D8 | **Measuring Instagram sign-ups.** | You will want to know if Instagram works. | Option A: Stripe and Supabase numbers only (no tracking). Option B: a first-party "came from Instagram" flag stored with the account (one privacy-policy line, no third-party tracker). Avoid the Meta pixel for now. |
 
@@ -74,7 +74,7 @@ Sources: the Molecular Atlas repository (`CURRICULUM.md`, its search index and r
 | Modules: Foundations, The Universal Rules, Organic Foundations, Mechanisms, Functional Groups, Structure Determination, Synthesis, Medicinal Chemistry, Drug Design, Case Studies | Verified | as listed |
 | Table of contents, lesson navigation, practice, spaced review, notebook, search, glossary, knowledge map ("Atlas"), light and dark themes | Built; covered by the book's own automated tests (reported by its agent, not re-run here) | Use after you have clicked through each once |
 | Progress saves automatically **in the browser you use** (not across devices) | Built (INTEGRATION.md) | "Saves your progress in your browser" + "use the same device" |
-| AI study tutor | Built, **not yet tested end to end** (D6) | Hold until tested |
+| AI study tutor | **Removed** (D6) | Never mention |
 | Final exam and certificate of completion | Built, **not yet tested** (D5) | Hold until tested |
 | Interactive mechanisms and spectra | Built per the book's README | Use after you have tried one |
 | A$8.99 per month, one subscription = one workbook, cancel any time in the billing portal | Live on the site | "A$8.99/month · cancel any time" |
@@ -201,8 +201,6 @@ Account · Legal.
 - **See the connections:** the Atlas map shows how topics link together
 - **Study your way:** light and dark themes, on any device with a modern browser
 - **Your progress saves automatically** in the browser you use
-- *(After testing, add)* **Stuck? Ask the AI study tutor.** Answers are generated automatically and can be wrong, so
-  check them against the lesson.
 - *(After testing, add)* **Finish with a final exam** and earn a certificate of completion (not an accredited
   qualification).
 
@@ -382,14 +380,14 @@ agent.
 - [ ] [Agent] Build `/start` (section 10).
 - [ ] [Agent] Instagram in-app browser handling: sign-in options, open-in-browser tips.
 - [ ] [Agent] After email confirmation, return new students to `/molecular-atlas` with Subscribe ready.
-- [ ] [Agent] Update pricing and FAQ copy; keep the AI tutor and certificate lines out until D5 and D6 are tested.
+- [ ] [Agent] Update pricing and FAQ copy; keep the certificate line out until D5 is tested. There is no AI tutor line: the feature was removed.
 - [ ] [Agent] Update terms and privacy wording ("textbooks" → "textbooks and workbooks"; D8 line if chosen).
 - [ ] [Agent] Update `sitemap.xml`, page titles, descriptions and link previews for each new page.
 - [ ] [Agent] Run all checks (lint, typecheck, tests, build, smoke test), check every page at 360px and 768px.
 - [ ] [Owner] Read every page on your phone, inside Instagram's browser and in Safari or Chrome.
 
 **Phase 2: after launch**
-- [ ] [Agent] Add the AI tutor and certificate lines once tested.
+- [ ] [Agent] Add the certificate line once tested.
 - [ ] [Agent] Optional email waitlist for coming-soon modules (D4), with privacy policy update.
 - [ ] [Agent] Optional first-party Instagram source flag (D8).
 - [ ] [Book agent] Apply the new navy and gold branding to Molecular Atlas (`FOR-MODULE-AGENT.md` item 10).

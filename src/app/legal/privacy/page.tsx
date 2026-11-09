@@ -11,7 +11,11 @@ export const metadata: Metadata = {
 
 /*
  * DRAFT. Lists only what the code actually collects (see docs/LAUNCH-AUDIT.md). Update it BEFORE adding analytics,
- * marketing email, cross-device progress sync, or switching on the Molecular Atlas AI tutor. A lawyer must review it.
+ * marketing email or cross-device progress sync. A lawyer must review it.
+ *
+ * The Molecular Atlas AI tutor was removed from the reader on 9 November 2026. Nothing is sent to Anthropic any
+ * more, so the paragraph describing it and the Anthropic entry in the disclosure list have been deleted. Do not
+ * reinstate either unless the feature itself comes back.
  */
 export default function PrivacyPage() {
   return (
@@ -37,13 +41,6 @@ export default function PrivacyPage() {
         account number from us, never your name or email. Your reading progress, answers, notes and notebook are saved in
         your own web browser on your device, not on our servers, so they do not follow you to another device and are lost
         if you clear your browser data.
-      </p>
-      <p>
-        The reader includes an AI study tutor. When you use it, we send our AI provider, Anthropic, what is needed to
-        answer: your conversation with the tutor, the lesson or practice question you are on, your progress and recent
-        mistakes in the book, and the first name you chose in the reader&rsquo;s settings (if you set one). Your account
-        email and your account name are never sent. Please do not type other personal information into the tutor. The
-        conversation is kept in your browser with your other study data.
       </p>
 
       <h2>Cookies</h2>
@@ -71,7 +68,6 @@ export default function PrivacyPage() {
         <li><strong>Stripe</strong>: payments and invoices.</li>
         <li><strong>Render</strong> (with Cloudflare): hosting for the website and the reader. <Fact value="[TO BE CONFIRMED: Render region]" /></li>
         <li><strong>Google or Microsoft</strong>: only if you choose to sign in with them.</li>
-        <li><strong>Anthropic</strong>: the AI study tutor in the reader (only what you type into the tutor).</li>
         <li><strong><Fact value="[TO BE CONFIRMED: email provider, e.g. Resend]" /></strong>: sending account emails.</li>
       </ul>
       <p>
