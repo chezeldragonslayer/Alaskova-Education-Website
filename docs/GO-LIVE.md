@@ -29,7 +29,7 @@ any `TXT` records for SPF/DKIM while doing this.
 1. **Render, website service** > Settings > Custom Domains > **Add**: `alaskovaeducation.com`, then
    `www.alaskovaeducation.com`. Render shows the DNS record each one needs (an `A` record for the bare domain and a
    `CNAME` for www). Keep that screen open.
-2. **Render, book service** > Settings > Custom Domains > **Add** `atlas.alaskovaeducation.com` (a `CNAME`).
+2. **Render, book service** > Settings > Custom Domains > **Add** `molecularatlas.alaskovaeducation.com` (a `CNAME`).
 3. **Wix** > Domains > alaskovaeducation.com > **Manage DNS records**. If Wix says the domain is connected to a Wix
    site, first disconnect it from that site (Wix > Domains > ⋯ > "Disconnect from site"); the domain and email stay.
    - `A` record, host `@`: replace Wix's values with the address Render showed (remove the other Wix `A` records).
@@ -69,11 +69,13 @@ Test-mode products, prices, keys and webhooks do **not** carry over to live mode
 
 The current key was shared in a chat, so it must not be used in production.
 
-1. On your own computer, in this repository: `node scripts/generate-module-keys.mjs`. It prints a new private key and
-   public key. Do not paste them anywhere except step 2.
+1. On your own computer, in this repository: `node scripts/generate-module-keys.mjs`. It writes the new private key
+   to `module-private-key.pem` (gitignored) and prints only the public key — a secret echoed to a terminal ends up in
+   scrollback, shell history and any transcript, which is how the key you are replacing leaked.
 2. Render > this site > Environment: replace `ALASKOVA_MODULE_PRIVATE_KEY` with the new private key and set
    `ALASKOVA_MODULE_KID` to a **new** value, e.g. `alaskova-module-2`. Save (Render redeploys).
-3. Check `https://alaskovaeducation.com/.well-known/jwks.json` shows the new `kid`.
+3. Check `https://alaskovaeducation.com/.well-known/jwks.json` shows the new `kid`, then **delete
+   `module-private-key.pem`**. The book needs no change: it reads the JWKS and refetches on an unknown `kid`.
 4. If the module uses `ALASKOVA_JWKS_URL` (recommended) nothing else is needed: it fetches the new key the first time it
    sees the new `kid`. If it uses a pasted `ALASKOVA_PUBLIC_KEY`, replace that with the new public key at the same time.
 5. Future rotations: repeat steps 1 to 4 with the next `kid`. Because launch passes last 60 seconds, there is no
@@ -125,7 +127,7 @@ The current key was shared in a chat, so it must not be used in production.
 | Instances | **1** (it remembers used launch passes in memory) on a paid always-on plan |
 | Health check | `/healthz` |
 
-On **this** site set `MODULE_URL_MOLECULAR_ATLAS=https://atlas.alaskovaeducation.com`.
+On **this** site set `MODULE_URL_MOLECULAR_ATLAS=https://molecularatlas.alaskovaeducation.com`.
 
 ## 7. Final checks on the live site **[Owner]**
 
@@ -136,7 +138,7 @@ On **this** site set `MODULE_URL_MOLECULAR_ATLAS=https://atlas.alaskovaeducation
 ## 8. Monitoring **[Owner]**
 
 - **Uptime**: a free external monitor (UptimeRobot, Better Stack) checking `https://alaskovaeducation.com/healthz` and
-  `https://atlas.alaskovaeducation.com/healthz` every few minutes, alerting you by email or SMS.
+  `https://molecularatlas.alaskovaeducation.com/healthz` every few minutes, alerting you by email or SMS.
 - **Stripe**: Developers > Webhooks shows failed deliveries; Stripe also emails you if the endpoint keeps failing.
 - **Render**: Logs, and email notifications for failed deploys (Account settings > Notifications).
 - **Contact form and deletion requests**: until email notifications are built, check Supabase > Table editor >

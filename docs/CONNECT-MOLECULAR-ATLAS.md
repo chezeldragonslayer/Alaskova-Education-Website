@@ -59,13 +59,14 @@ Follow `docs/GO-LIVE.md`; this is the order that avoids broken links.
 
 16. **Everything in `docs/OWNER-CHECKLIST.md` sections A, B and D is done**: GST wording, business details, lawyer
     review (drafts banner removed), Resend email, Supabase Pro, paid Render plans.
-17. **Domain**: add `alaskovaeducation.com` to the website service and `atlas.alaskovaeducation.com` to the book's service in Render
+17. **Domain**: add `alaskovaeducation.com` to the website service and `molecularmolecularatlas.alaskovaeducation.com` to the book's service in Render
     (Settings > Custom Domains), add the DNS records, wait for "Certificate issued" on both.
 18. **Website settings** (Render > website > Environment): `NEXT_PUBLIC_SITE_URL=https://alaskovaeducation.com`,
-    `MODULE_URL_MOLECULAR_ATLAS=https://atlas.alaskovaeducation.com`.
+    `MODULE_URL_MOLECULAR_ATLAS=https://molecularmolecularatlas.alaskovaeducation.com`.
 19. **New signing key** (the current one was shared in a chat): on your computer, in this repository, run
-    `node scripts/generate-module-keys.mjs`. Put the private key into `ALASKOVA_MODULE_PRIVATE_KEY` and set
-    `ALASKOVA_MODULE_KID=alaskova-module-2` on the website. Save; wait for Live.
+    `node scripts/generate-module-keys.mjs`. It writes the private key to `module-private-key.pem` and prints only
+    the public key. Put that one line into `ALASKOVA_MODULE_PRIVATE_KEY` and set `ALASKOVA_MODULE_KID=alaskova-module-2`
+    on the website. Save; wait for Live; confirm the new `kid` in the JWKS; delete the .pem file.
 20. **Book settings** (Render > book > Environment): change the four addresses from part A step 3 to
     `https://alaskovaeducation.com/...` (`ALASKOVA_JWKS_URL`, `ALASKOVA_RETURN_URL`, `ALASKOVA_ORIGIN`, `ALASKOVA_LIBRARY_URL`).
     Save; wait for Live.
@@ -80,5 +81,5 @@ Follow `docs/GO-LIVE.md`; this is the order that avoids broken links.
 24. Tell the agent "live". It runs the smoke test against `https://alaskovaeducation.com` (every line must pass).
 25. **Real purchase**: subscribe with your own card, open the book, read a lesson, then refund yourself in full in
     Stripe and confirm access ends.
-26. **Monitoring**: an uptime monitor on `https://alaskovaeducation.com/healthz` and `https://atlas.alaskovaeducation.com/healthz`.
+26. **Monitoring**: an uptime monitor on `https://alaskovaeducation.com/healthz` and `https://molecularatlas.alaskovaeducation.com/healthz`.
     From now on, check Supabase > `support_requests` every business day.

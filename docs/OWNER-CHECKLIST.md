@@ -20,10 +20,10 @@ chat, email or document; only into Render's Environment screen. Details: `GO-LIV
 
 ## 3. Domain: alaskovaeducation.com (GO-LIVE.md step 1)
 - [ ] Render > website service > Custom Domains: add alaskovaeducation.com and www.alaskovaeducation.com
-- [ ] Render > book service > Custom Domains: add atlas.alaskovaeducation.com
+- [ ] Render > book service > Custom Domains: add molecularatlas.alaskovaeducation.com
 - [ ] Wix > Domains > Manage DNS records: A record @ and CNAMEs www and atlas to the values Render shows (disconnect from any Wix site first; keep the Zoho MX and TXT records)
 - [ ] Wait until Render shows Verified + Certificate issued on all three
-- [ ] Then: Render website settings: NEXT_PUBLIC_SITE_URL=https://alaskovaeducation.com, MODULE_URL_MOLECULAR_ATLAS=https://atlas.alaskovaeducation.com
+- [ ] Then: Render website settings: NEXT_PUBLIC_SITE_URL=https://alaskovaeducation.com, MODULE_URL_MOLECULAR_ATLAS=https://molecularatlas.alaskovaeducation.com
 - [ ] Then: Render book settings: the four ALASKOVA_ addresses on https://alaskovaeducation.com
 - [ ] Then: Supabase > Authentication > URL Configuration: Site URL https://alaskovaeducation.com, redirect URL https://alaskovaeducation.com/**
 - [ ] Then: Stripe webhook endpoint address: https://alaskovaeducation.com/api/stripe/webhook
@@ -76,6 +76,6 @@ chat, email or document; only into Render's Environment screen. Details: `GO-LIV
 
 ## 10. After launch
 - [ ] Buy, read, cancel and refund with your own card
-- [ ] Uptime monitoring on https://alaskovaeducation.com/healthz and https://atlas.alaskovaeducation.com/healthz
+- [ ] Uptime monitoring on https://alaskovaeducation.com/healthz and https://molecularatlas.alaskovaeducation.com/healthz
 - [ ] Check Supabase > support_requests every business day; reply within 2 business days
 - [ ] Process account-deletion requests (GO-LIVE step 9)
