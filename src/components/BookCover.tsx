@@ -1,8 +1,7 @@
 import clsx from "clsx";
-import type { DemoBook } from "@/lib/demo";
 
 /**
- * Placeholder cover built from brand colours. Real covers (permitted uploads)
+ * Cover design built from brand colours (not a photo of a printed book). Real covers (permitted uploads)
  * replace this in Phase 2 via Supabase Storage.
  */
 const tones = [
@@ -18,7 +17,7 @@ export function BookCover({
   className,
   compact = false,
 }: {
-  book: Pick<DemoBook, "title" | "subject" | "tone">;
+  book: { title: string; subject: string; tone: 0 | 1 | 2 | 3 | 4 };
   className?: string;
   /** Small thumbnails: drop the subject line and tighten the title. */
   compact?: boolean;
@@ -26,7 +25,7 @@ export function BookCover({
   return (
     <div
       role="img"
-      aria-label={`Demonstration cover for ${book.title}`}
+      aria-label={`Cover of ${book.title}`}
       className={clsx(
         "relative aspect-[3/4] overflow-hidden rounded-lg bg-gradient-to-br text-white shadow-[0_10px_24px_-10px_rgb(15_30_61/0.55)]",
         compact ? "p-[8%]" : "p-[10%]",
