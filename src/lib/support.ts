@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /** Validation for the contact form. Pure, so it can be unit tested. */
-export const SUPPORT_TOPICS = ["account", "billing", "access", "technical", "privacy", "other"] as const;
+export const SUPPORT_TOPICS = ["suggestion", "account", "billing", "access", "technical", "privacy", "other"] as const;
 
 export const contactSchema = z.object({
   name: z.string().trim().min(1, "Enter your name.").max(100, "Use at most 100 characters for your name."),

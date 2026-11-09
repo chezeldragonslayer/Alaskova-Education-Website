@@ -32,3 +32,8 @@ describe("displayName", () => {
   it("falls back to name from Google/Microsoft", () => expect(displayName({ name: "Kim Ng" })).toBe("Kim Ng"));
   it("is empty when there is none", () => expect(displayName(undefined)).toBe(""));
 });
+
+describe("suggestion topic", () => {
+  it("accepts a suggestion from the contact form", () =>
+    expect(contactSchema.safeParse({ ...ok, topic: "suggestion", message: "Please add a module on pharmacokinetics." }).success).toBe(true));
+});

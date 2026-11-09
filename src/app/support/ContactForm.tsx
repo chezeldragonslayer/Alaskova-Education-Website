@@ -1,7 +1,7 @@
 "use client";
 
 import { keepValues } from "@/components/keepValues";
-import { useActionState } from "react";
+import { useActionState, useSyncExternalStore } from "react";
 import { Loader2 } from "lucide-react";
 import { sendContactMessage, type ContactState } from "./actions";
 
@@ -9,6 +9,7 @@ const field =
   "mt-1.5 w-full rounded-xl bg-white px-4 text-base text-navy ring-1 ring-line placeholder:text-muted/70 focus:outline-none focus:ring-2 focus:ring-gold-ink";
 
 const topics: [string, string][] = [
+  ["suggestion", "A suggestion or idea"],
   ["account", "My account or signing in"],
   ["billing", "Billing, cancelling or refunds"],
   ["access", "I can’t open my textbook"],
@@ -17,8 +18,13 @@ const topics: [string, string][] = [
   ["other", "Something else"],
 ];
 
+const noSubscribe = () => () => {};
+
 export function ContactForm() {
   const [state, action, pending] = useActionState<ContactState, FormData>(sendContactMessage, {});
+  // /support?topic=suggestion#contact opens the form with that topic already chosen.
+  const fromUrl = useSyncExternalStore(noSubscribe, () => new URLSearchParams(window.location.search).get("topic") ?? "", () => "");
+  const initialTopic = topics.some(([v]) => v === fromUrl) ? fromUrl : "";
   if (state.done) {
     return <p role="status" className="rounded-xl bg-white/10 px-4 py-3 font-medium text-white ring-1 ring-white/30">{state.message}</p>;
   }
@@ -35,7 +41,7 @@ export function ContactForm() {
       </div>
       <div className="sm:col-span-2">
         <label htmlFor="c-topic" className="text-sm font-medium">Topic</label>
-        <select id="c-topic" name="topic" required defaultValue="" className={`${field} h-12`} aria-describedby={err}>
+        <select key={initialTopic} id="c-topic" name="topic" required defaultValue={initialTopic} className={`${field} h-12`} aria-describedby={err}>
           <option value="" disabled>Choose a topic</option>
           {topics.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
         </select>

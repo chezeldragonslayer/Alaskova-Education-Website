@@ -68,10 +68,11 @@ export default function AboutPage() {
             <Image
               src="/about/chelsea.jpg"
               alt="Chelsea, founder of Alaskova Education"
-              width={1600}
-              height={1066}
-              sizes="(min-width: 768px) 400px, 100vw"
-              className="h-72 w-full object-cover object-[60%_35%] md:h-full"
+              width={880}
+              height={1083}
+              quality={90}
+              sizes="(min-width: 768px) 420px, 100vw"
+              className="h-96 w-full object-cover object-[50%_20%] md:h-full"
             />
             <div className="p-8 sm:p-10">
               <p className="eyebrow">Founder</p>
@@ -134,7 +135,7 @@ export default function AboutPage() {
             ))}
           </ul>
           <p className="mt-6 text-sm text-white/75">
-            Alaskova Pharmaceuticals does not operate today. Follow{" "}
+            Follow{" "}
             <a href={instagramUrl} rel="noopener noreferrer" className="font-semibold text-white underline underline-offset-4">
               @{business.instagram}
             </a>{" "}
@@ -143,9 +144,9 @@ export default function AboutPage() {
         </Reveal>
 
         <Reveal className="text-center">
-          <p className="mx-auto max-w-3xl font-display text-xl font-bold leading-snug text-navy sm:text-2xl">
-            Molecular Atlas is what we’re launching. Alaskova is what we’re building. Changing pharmaceutical innovation is
-            why we’re doing it.
+          <p className="mx-auto font-display text-xl font-bold leading-snug text-navy sm:text-2xl">
+            <span className="lg:block lg:whitespace-nowrap">Molecular Atlas is what we’re launching. Alaskova is what we’re building.</span>{" "}
+            <span className="lg:block lg:whitespace-nowrap">Changing pharmaceutical innovation is why we’re doing it.</span>
           </p>
         </Reveal>
       </section>

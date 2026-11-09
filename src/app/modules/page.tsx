@@ -54,8 +54,7 @@ export default function ModulesPage() {
           <p className="eyebrow">Coming soon · Beyond the curriculum</p>
           <h2 id="planned" className="h2 mt-3">What we’re building next</h2>
           <p className="lead mt-4 max-w-3xl">
-            These modules are in planning and <strong className="text-navy">not available yet</strong>. There’s nothing to
-            buy, and topics and timing may change as each one is developed.
+            These modules are in planning and not available yet.
           </p>
           <div className="mt-10"><ComingSoonGrid /></div>
           <div className="mt-10 flex flex-col gap-4 rounded-2xl bg-white p-6 ring-1 ring-line sm:flex-row sm:items-center sm:justify-between">
@@ -63,7 +62,7 @@ export default function ModulesPage() {
               <h3 className="font-display text-lg font-bold text-navy">Hear first when a module is released</h3>
               <p className="text-sm text-muted">
                 Release updates go out on Instagram. Have a topic you’d like covered?{" "}
-                <Link href="/support#contact" className="font-semibold text-gold-ink underline underline-offset-4">Tell us</Link>.
+                <Link href="/support?topic=suggestion#contact" className="font-semibold text-gold-ink underline underline-offset-4">Tell us</Link>.
               </p>
             </div>
             <ButtonLink href={instagramUrl}>

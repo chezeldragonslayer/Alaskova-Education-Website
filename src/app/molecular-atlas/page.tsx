@@ -66,7 +66,7 @@ export default function MolecularAtlasPage({ searchParams }: { searchParams: SP 
               ))}
             </ul>
           </div>
-          <div className="rounded-[1.75rem] bg-white p-5 shadow-lift ring-1 ring-line sm:p-8">
+          <div id="start" className="scroll-mt-24 rounded-[1.75rem] bg-white p-5 shadow-lift ring-1 ring-line sm:p-8">
             <div className="flex items-center gap-5">
               <BookCover book={{ title: "Molecular Atlas", subject: "Pharmaceutical organic chemistry", tone: 0 }} compact className="w-20 shrink-0" />
               <div>
@@ -129,7 +129,7 @@ export default function MolecularAtlasPage({ searchParams }: { searchParams: SP 
       <section id="how-it-works" className="scroll-mt-24 bg-paper py-14 lg:py-20" aria-labelledby="how">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <p className="eyebrow">How it works</p>
-          <h2 id="how" className="h2 mt-3">From Instagram to your first lesson in minutes</h2>
+          <h2 id="how" className="h2 mt-3">Start your first lesson in minutes</h2>
           <div className="mt-10"><AtlasSteps /></div>
         </div>
       </section>
