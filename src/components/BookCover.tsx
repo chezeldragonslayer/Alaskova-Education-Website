@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { AtlasCover } from "@/components/MolecularAtlasMark";
 
 /**
  * Cover design built from brand colours (not a photo of a printed book). Real covers (permitted uploads)
@@ -22,6 +23,8 @@ export function BookCover({
   /** Small thumbnails: drop the subject line and tighten the title. */
   compact?: boolean;
 }) {
+  // Molecular Atlas has its own designed front cover (logo mark, title, subtitle).
+  if (book.title === "Molecular Atlas") return <AtlasCover className={className} compact={compact} />;
   return (
     <div
       role="img"
