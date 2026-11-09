@@ -194,10 +194,11 @@ export default function HomePage() {
           <Image
             src="/about/chelsea.jpg"
             alt="Chelsea, founder of Alaskova Education"
-            width={160}
-            height={160}
-            sizes="160px"
-            className="size-36 shrink-0 rounded-full object-cover object-[55%_25%] ring-4 ring-white shadow-card"
+            width={880}
+            height={1083}
+            quality={90}
+            sizes="144px"
+            className="size-36 shrink-0 rounded-full object-cover object-[50%_18%] ring-4 ring-white shadow-card"
           />
           <div>
             <h2 id="founder" className="sr-only">From the founder</h2>
