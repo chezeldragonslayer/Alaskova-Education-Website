@@ -45,6 +45,15 @@ export const atlasQuestions: { q: string; a: string; where: string }[] = [
   },
 ];
 
+/**
+ * The question on the homepage hero card. From case study 10-01 (aspirin): aspirin acetylates cyclooxygenase
+ * permanently; endothelial cells make new enzyme within hours, platelets (no nucleus) cannot.
+ */
+export const heroQuestion = {
+  q: "Why can one low dose of aspirin affect a platelet for the rest of its life?",
+  where: "Case study: aspirin",
+};
+
 /** Interactive tools that exist in the book (src/components/interactive in the Molecular Atlas repository). */
 export const atlasTools = [
   "Step-through reaction mechanisms",

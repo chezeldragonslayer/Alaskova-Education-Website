@@ -16,7 +16,7 @@ import {
 } from "@/components/atlas/Sections";
 import { atlasFaqs } from "@/lib/faqs";
 import { formatPrice, planForBook } from "@/lib/plans";
-import { atlasQuestions, atlasScreenshots } from "@/lib/molecular-atlas";
+import { atlasScreenshots, heroQuestion } from "@/lib/molecular-atlas";
 import { instagramUrl } from "@/lib/business";
 
 const plan = planForBook("molecular-atlas")!;
@@ -76,7 +76,8 @@ export default function HomePage() {
             />
             <div className="relative -mt-10 ml-auto w-[88%] rounded-2xl bg-white p-5 shadow-lift ring-1 ring-line">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gold-ink">A question you’ll work through</p>
-              <p className="mt-2 font-display text-lg font-bold leading-snug text-navy">“{atlasQuestions[1].q}”</p>
+              <p className="mt-2 font-display text-lg font-bold leading-snug text-navy">“{heroQuestion.q}”</p>
+              <p className="mt-2 text-xs text-muted">Explored in: {heroQuestion.where}</p>
             </div>
           </Reveal>
         </div>
