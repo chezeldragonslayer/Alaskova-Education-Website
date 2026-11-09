@@ -10,17 +10,17 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Alaskova Education — Digital Textbooks, Simplified",
+    default: "Alaskova Education — Built by a pharmacy student, for pharmacy students",
     template: "%s · Alaskova Education",
   },
   description:
-    "Discover a simpler way to access your course textbooks. Search the catalogue, build your digital library and read online with Alaskova Education.",
+    "Understand the science behind medicines. Molecular Atlas is an interactive pharmaceutical organic chemistry textbook for pharmacy students.",
   openGraph: {
     type: "website",
     siteName: "Alaskova Education",
-    title: "Alaskova Education — All Your Textbooks. One Smarter Way to Study.",
+    title: "Alaskova Education — Built by a pharmacy student, for pharmacy students",
     description:
-      "A modern, technology-driven way to access and manage your course textbooks.",
+      "Understand the science behind medicines. Go beyond the pharmacy curriculum with Molecular Atlas.",
     images: [{ url: "/brand/alaskova-social.png", width: 1200, height: 630, alt: "Alaskova Education" }],
   },
   alternates: { canonical: "/" },

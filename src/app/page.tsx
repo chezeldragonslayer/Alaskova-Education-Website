@@ -1,287 +1,238 @@
-import {
-  ArrowRight,
-  BookOpenCheck,
-  CreditCard,
-  Library,
-  MonitorSmartphone,
-  Search,
-  Sparkles,
-  UserRound,
-  GraduationCap,
-  LayoutGrid,
-} from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, Compass, Lightbulb, Microscope, Users } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 import { Reveal } from "@/components/Reveal";
-import { DashboardMock } from "@/components/DashboardMock";
-import { HeroSearch } from "@/components/HeroSearch";
-import { BookCover } from "@/components/BookCover";
-import { DemoBadge } from "@/components/DemoBadge";
 import { Faq } from "@/components/Faq";
-import { faqs } from "@/lib/demo";
-import { catalogue } from "@/lib/catalogue";
+import { BookCover } from "@/components/BookCover";
+import { ComingSoonGrid } from "@/components/ComingSoon";
+import {
+  AtlasDifference,
+  AtlasFacts,
+  AtlasHighlights,
+  AtlasPricing,
+  AtlasQuestions,
+  AtlasScreenshots,
+  AtlasTools,
+} from "@/components/atlas/Sections";
+import { atlasFaqs } from "@/lib/faqs";
 import { formatPrice, planForBook } from "@/lib/plans";
+import { atlasQuestions, atlasScreenshots } from "@/lib/molecular-atlas";
+import { instagramUrl } from "@/lib/business";
 
-const featured = catalogue[0];
-const plan = planForBook(featured.slug)!;
+const plan = planForBook("molecular-atlas")!;
+const price = formatPrice(plan.priceCents);
 
-const steps = [
-  {
-    icon: Search,
-    title: "Find your textbooks",
-    body: "Search by title or subject and see straight away what is included in your subscription.",
-  },
-  {
-    icon: CreditCard,
-    title: "Choose a subscription",
-    body: "Pick the plan that fits your studies. Billing, renewal and cancellation terms are clear before you pay.",
-  },
-  {
-    icon: Library,
-    title: "Access your digital library",
-    body: "Open your textbooks in one place, read online, and pick up where you left off.",
-  },
-];
-
-const benefits = [
-  { icon: MonitorSmartphone, title: "Convenient digital access", body: "Read on the devices you already use, without carrying a stack of books." },
-  { icon: LayoutGrid, title: "One centralised library", body: "Every textbook you can access, organised in a single, searchable place." },
-  { icon: CreditCard, title: "Simple subscription management", body: "Update your card, see your invoices or cancel from your account through a secure billing portal." },
-  { icon: Search, title: "A searchable catalogue", body: "Browse by subject, or search for a title straight away." },
-  { icon: BookOpenCheck, title: "Online reading", body: "Lesson-by-lesson navigation, practice and review, and light or dark themes." },
-  { icon: GraduationCap, title: "Built around students", body: "A calm, fast interface designed for studying, not for browsing a store." },
+const pillars = [
+  { icon: Microscope, t: "Deep scientific understanding", d: "Reasoning from first principles, not memorising lists." },
+  { icon: Compass, t: "Industry-relevant education", d: "Connecting what you study to how medicines are discovered, made and regulated." },
+  { icon: Lightbulb, t: "Curiosity and critical thinking", d: "Asking why a medicine looks and behaves the way it does." },
+  { icon: Users, t: "Student empowerment", d: "Built by a pharmacy student, shaped by what students tell us they need." },
 ];
 
 export default function HomePage() {
   return (
     <>
-      {/* HERO */}
+      {/* HERO: who we are, the product, the price, one main action */}
       <section className="relative isolate overflow-hidden">
         <div aria-hidden className="aurora absolute inset-0 -z-10" />
         <div aria-hidden className="bg-grid absolute inset-0 -z-10" />
-        <div className="mx-auto grid max-w-7xl items-center gap-14 px-5 pb-20 pt-10 sm:px-8 lg:grid-cols-[1fr_1.15fr] lg:gap-10 lg:pb-28 lg:pt-16">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 pb-16 pt-10 sm:px-8 lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:pb-24 lg:pt-16">
           <div className="min-w-0">
             <Reveal>
-              <p className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3.5 py-1.5 text-[0.8125rem] font-medium text-navy-soft ring-1 ring-line shadow-card">
-                <Sparkles size={14} className="text-gold" aria-hidden />
-                Digital textbook subscriptions
-              </p>
+              <p className="eyebrow">Alaskova Education</p>
+              <span className="gold-rule mt-3" aria-hidden />
             </Reveal>
             <Reveal delay={0.05}>
-              <h1 className="h1 mt-6 text-navy">
-                All Your Textbooks.{" "}
-                <span className="gradient-text">One Smarter Way to Study.</span>
-              </h1>
+              <h1 className="h1 mt-5 text-navy">Built by a pharmacy student, for pharmacy students.</h1>
             </Reveal>
-            <Reveal delay={0.12}>
-              <p className="lead mt-6 max-w-xl">
-                Discover a simpler way to access your course textbooks. Explore
-                digital learning resources, organise your studies, and take your
-                education further with Alaskova Education.
+            <Reveal delay={0.1}>
+              <p className="mt-5 font-display text-xl font-bold text-navy-2 sm:text-2xl">
+                Understand the science behind medicines. Go beyond the pharmacy curriculum.
+              </p>
+              <p className="lead mt-4 max-w-xl">
+                Discover interactive pharmaceutical education that connects molecular chemistry to real medicines,
+                strengthens your scientific understanding, and prepares you to think beyond traditional pharmacy practice.
               </p>
             </Reveal>
-            <Reveal delay={0.2}>
-              <div className="mt-8">
-                <HeroSearch />
-              </div>
-            </Reveal>
-            <Reveal delay={0.28}>
+            <Reveal delay={0.15}>
               <div className="mt-8 flex flex-wrap gap-3">
-                <ButtonLink href="/catalogue" size="lg">
-                  Explore Textbooks <ArrowRight size={18} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
+                <ButtonLink href="/molecular-atlas" size="lg">
+                  Explore Molecular Atlas <ArrowRight size={18} aria-hidden />
                 </ButtonLink>
-                <ButtonLink href="/how-it-works" variant="secondary" size="lg">
-                  How It Works
+                <ButtonLink href="/modules#coming-soon" variant="secondary" size="lg">
+                  See what’s coming
                 </ButtonLink>
               </div>
+              <p className="mt-4 text-sm text-muted">
+                Molecular Atlas: {price}/month including GST · Cancel any time · Secure checkout by Stripe
+              </p>
             </Reveal>
           </div>
 
-          <Reveal delay={0.15} y={32} className="relative min-w-0">
-            <div aria-hidden className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-gold/25 via-gold/10 to-transparent blur-2xl" />
-            <DashboardMock className="lg:[transform:perspective(1800px)_rotateY(-6deg)_rotateX(2deg)] lg:origin-left" />
-            <p className="mt-3 text-center text-xs text-muted">
-              Interactive preview of the student dashboard · demonstration content
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28" aria-labelledby="how">
-        <Reveal className="max-w-2xl">
-          <p className="eyebrow">How Alaskova Education works</p>
-          <h2 id="how" className="h2 mt-3">From search to reading in three steps.</h2>
-          <p className="lead mt-4">Find the resources you need, build your digital library, and focus on what matters most — learning.</p>
-        </Reveal>
-        <ol className="relative mt-14 grid gap-6 md:grid-cols-3">
-          <div aria-hidden className="absolute left-[16%] right-[16%] top-9 hidden h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent md:block" />
-          {steps.map((s, i) => (
-            <li key={s.title}>
-              <Reveal delay={i * 0.1} className="h-full">
-                <div className="relative h-full rounded-2xl bg-white p-7 shadow-card ring-1 ring-line transition-all duration-300 hover:-translate-y-1 hover:shadow-lift">
-                  <div className="flex items-center justify-between">
-                    <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-navy-2 to-navy text-white shadow-glow">
-                      <s.icon size={22} aria-hidden />
-                    </span>
-                    <span className="font-display text-4xl font-bold text-paper-2" aria-hidden>0{i + 1}</span>
-                  </div>
-                  <h3 className="h3 mt-6 !text-xl">{s.title}</h3>
-                  <p className="mt-2 text-muted">{s.body}</p>
-                </div>
-              </Reveal>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {/* FEATURED */}
-      <section className="bg-paper py-20 lg:py-28" aria-labelledby="featured">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8">
-          <Reveal className="max-w-2xl">
-            <p className="eyebrow">Featured textbook</p>
-            <h2 id="featured" className="h2 mt-3">Written by Alaskova Education. Read anywhere.</h2>
-            <p className="lead mt-4">Alaskova Education publishes its own digital textbooks, so you can see exactly what each title covers and what is included in your subscription.</p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <article className="mt-12 grid items-center gap-8 rounded-[1.75rem] bg-white p-6 shadow-card ring-1 ring-line sm:p-10 md:grid-cols-[15rem_1fr] lg:grid-cols-[18rem_1fr] lg:gap-14">
-              <div className="mx-auto w-48 md:w-full">
-                <BookCover book={{ title: featured.title, subject: featured.subjects[0], tone: featured.tone }} className="transition-transform duration-500 hover:-rotate-1 hover:scale-[1.03]" />
-              </div>
-              <div>
-                <ul className="flex flex-wrap gap-2" aria-label="Subjects">
-                  {featured.subjects.map((s) => (
-                    <li key={s} className="rounded-full bg-gold/10 px-3 py-1 text-[0.8125rem] font-semibold text-navy-soft ring-1 ring-gold/25">{s}</li>
-                  ))}
-                </ul>
-                <h3 className="h3 mt-5 !text-3xl">{featured.title}</h3>
-                <p className="lead mt-3 max-w-xl">An interactive pharmaceutical organic chemistry textbook: 229 lessons, more than 700 practice problems and 160+ real medicines as worked examples.</p>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  <ButtonLink href={`/catalogue/${featured.slug}`} size="lg">
-                    View textbook <ArrowRight size={18} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
-                  </ButtonLink>
-                  <ButtonLink href="/catalogue" variant="secondary" size="lg">Browse catalogue</ButtonLink>
-                </div>
-              </div>
-            </article>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* WHY ALASKOVA */}
-      <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28" aria-labelledby="why">
-        <Reveal className="mx-auto max-w-2xl text-center">
-          <p className="eyebrow">Why Alaskova Education?</p>
-          <h2 id="why" className="h2 mt-3">A technology platform that happens to provide textbooks.</h2>
-          <p className="lead mt-4">Not another online bookstore — a better student experience, from discovery to the last page.</p>
-        </Reveal>
-        <ul className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {benefits.map((b, i) => (
-            <li key={b.title}>
-              <Reveal delay={(i % 3) * 0.08} className="h-full">
-                <div className="group h-full rounded-2xl p-6 ring-1 ring-line transition-all duration-300 hover:bg-paper hover:ring-gold/30">
-                  <span className="grid size-11 place-items-center rounded-xl bg-paper-2 text-gold-ink transition-colors group-hover:bg-navy group-hover:text-white">
-                    <b.icon size={20} aria-hidden />
-                  </span>
-                  <h3 className="mt-5 font-display text-lg font-semibold tracking-tight">{b.title}</h3>
-                  <p className="mt-2 text-muted">{b.body}</p>
-                </div>
-              </Reveal>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* DIGITAL EXPERIENCE */}
-      <section className="on-dark relative overflow-hidden bg-navy py-20 text-white lg:py-28" aria-labelledby="experience">
-        <div aria-hidden className="absolute -left-32 top-0 size-[32rem] rounded-full bg-navy-2 blur-3xl" />
-        <div aria-hidden className="absolute -right-32 bottom-0 size-[28rem] rounded-full bg-gold/10 blur-3xl" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-5 sm:px-8 lg:grid-cols-2">
-          <Reveal>
-            <p className="eyebrow !text-gold">The Alaskova Education digital experience</p>
-            <h2 id="experience" className="h2 mt-3">Read the way you study.</h2>
-            <p className="mt-4 max-w-lg text-lg text-white/75">
-              A focused reader with lesson navigation, practice questions, a personal notebook and light or dark themes. Your progress is saved in your browser, so you can pick up where you left off on that device.
-            </p>
-            <ul className="mt-8 space-y-3 text-white/85">
-              {["Table of contents and lesson navigation", "Progress tracking, saved in your browser", "Light and dark reading themes", "Practice, review and a personal notebook"].map((t) => (
-                <li key={t} className="flex items-center gap-3">
-                  <span className="grid size-5 place-items-center rounded-full bg-gold/20 text-gold">✓</span>
-                  {t}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 text-sm text-white/60">Reader preview shown with demonstration content.</p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <div className="float-slow rounded-2xl bg-white p-6 text-navy shadow-lift sm:p-8" role="img" aria-label="Preview of the Alaskova Education reader layout (demonstration content)">
-              <div className="flex items-center justify-between text-xs text-muted">
-                <span className="font-medium text-navy-soft">Sample textbook · Chapter 4</span>
-                <DemoBadge>Demo</DemoBadge>
-              </div>
-              <h3 className="mt-5 font-display text-2xl font-bold tracking-tight">Sample chapter heading</h3>
-              <div className="mt-4 space-y-3" aria-hidden>
-                {[100, 94, 98, 70].map((w, i) => (<div key={i} className="skeleton h-3" style={{ width: `${w}%` }} />))}
-              </div>
-              <div className="mt-6 flex items-center gap-3 text-xs text-muted" aria-hidden>
-                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-paper-2"><div className="h-full w-[62%] rounded-full bg-gradient-to-r from-navy-2 to-gold" /></div>
-                62%
-              </div>
+          <Reveal delay={0.1} className="relative mx-auto w-full max-w-sm">
+            <BookCover
+              book={{ title: "Molecular Atlas", subject: "Pharmaceutical organic chemistry", tone: 0 }}
+              className="mx-auto w-56 sm:w-64"
+            />
+            <div className="relative -mt-10 ml-auto w-[88%] rounded-2xl bg-white p-5 shadow-lift ring-1 ring-line">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gold-ink">A question you’ll work through</p>
+              <p className="mt-2 font-display text-lg font-bold leading-snug text-navy">“{atlasQuestions[1].q}”</p>
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* PLANS */}
-      <section className="mx-auto max-w-5xl px-5 py-20 sm:px-8 lg:py-28" aria-labelledby="plans">
+      {/* MOLECULAR ATLAS: what it is */}
+      <section className="bg-paper py-16 lg:py-24" aria-labelledby="atlas">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <Reveal className="max-w-3xl">
+            <p className="eyebrow">Available now</p>
+            <h2 id="atlas" className="h2 mt-3">Molecular Atlas</h2>
+            <p className="lead mt-4">
+              An interactive digital organic chemistry textbook and workbook, designed for pharmacy students. Learn the
+              chemistry behind how medicines work, why they are selective, and how their structure shapes the way they
+              behave in the body.
+            </p>
+          </Reveal>
+          <div className="mt-10"><AtlasFacts /></div>
+          <div className="mt-10"><AtlasHighlights /></div>
+          <div className="mt-10">
+            <ButtonLink href="/molecular-atlas" size="lg">
+              See what’s inside <ArrowRight size={18} aria-hidden />
+            </ButtonLink>
+          </div>
+        </div>
+      </section>
+
+      {/* WHY IT MATTERS: real questions */}
+      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24" aria-labelledby="questions">
+        <Reveal className="max-w-3xl">
+          <p className="eyebrow">Why it matters to a pharmacy student</p>
+          <h2 id="questions" className="h2 mt-3">Questions you’ll learn to answer</h2>
+          <p className="lead mt-4">
+            Chemistry explains a great deal about medicines, though not everything. Molecular Atlas shows you how far the
+            chemistry goes, and where pharmacology and clinical judgement take over.
+          </p>
+        </Reveal>
+        <div className="mt-10"><AtlasQuestions /></div>
+      </section>
+
+      {/* HOW IT'S DIFFERENT */}
+      <section className="on-dark bg-navy py-16 text-white lg:py-24" aria-labelledby="different">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <p className="eyebrow !text-gold">How it’s different</p>
+          <h2 id="different" className="h2 mt-3 text-white">Not another organic chemistry textbook.</h2>
+          <div className="mt-10"><AtlasDifference /></div>
+          <div className="mt-12">
+            <h3 className="font-display text-lg font-bold text-white">Interactive tools inside the book</h3>
+            <div className="mt-4 [&_li]:bg-white/5 [&_li]:text-white [&_li]:ring-white/20 [&_svg]:text-gold"><AtlasTools /></div>
+          </div>
+        </div>
+      </section>
+
+      {atlasScreenshots.length > 0 && (
+        <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24" aria-labelledby="inside">
+          <h2 id="inside" className="h2">Inside Molecular Atlas</h2>
+          <div className="mt-8"><AtlasScreenshots /></div>
+        </section>
+      )}
+
+      {/* PRICE */}
+      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24" aria-labelledby="price">
         <Reveal className="mx-auto max-w-2xl text-center">
           <p className="eyebrow">Simple pricing</p>
-          <h2 id="plans" className="h2 mt-3">One textbook. One simple price.</h2>
-          <p className="lead mt-4">Subscribe to the textbook you need and cancel any time.</p>
+          <h2 id="price" className="h2 mt-3">One book. One monthly price.</h2>
+          <p className="lead mt-4">Learn at your own pace. Cancel any time, and subscribe again whenever you need it.</p>
         </Reveal>
-        <Reveal delay={0.1}>
-          <div className="on-dark mx-auto mt-12 max-w-md rounded-[1.75rem] bg-gradient-to-b from-navy-2 to-navy p-8 text-white shadow-lift ring-1 ring-gold/50 sm:p-10">
-            <p className="text-sm font-semibold text-gold">{featured.title}</p>
-            <p className="mt-3 font-display text-5xl font-bold tracking-tight">
-              {formatPrice(plan.priceCents)}<span className="text-lg font-medium text-white/70"> / month</span>
+        <div className="mt-10"><AtlasPricing /></div>
+      </section>
+
+      {/* WHY ALASKOVA EXISTS */}
+      <section className="bg-paper py-16 lg:py-24" aria-labelledby="why">
+        <div className="mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-[1fr_1.2fr]">
+          <Reveal>
+            <p className="eyebrow">Why Alaskova exists</p>
+            <h2 id="why" className="h2 mt-3">Pharmacy education should inspire more than memorisation.</h2>
+            <p className="lead mt-4">
+              Alaskova connects foundational science with the pharmaceutical industry, research, and the possibilities of
+              creating better medicines.
             </p>
-            <p className="mt-2 text-sm text-white/70">Includes GST. Billed monthly. Renews until cancelled.</p>
-            <ul className="mt-7 space-y-3 text-[0.9375rem]">
-              {["Online access to the full textbook", "Progress tracking on your device", "Manage or cancel from your account"].map((pt) => (
-                <li key={pt} className="flex gap-3"><span aria-hidden className="text-gold">✓</span>{pt}</li>
-              ))}
-            </ul>
-            <ButtonLink href="/pricing" variant="inverse" size="lg" className="mt-8 w-full">See pricing details</ButtonLink>
-          </div>
+            <ButtonLink href="/about" variant="secondary" className="mt-6">Read our mission</ButtonLink>
+          </Reveal>
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {pillars.map(({ icon: Icon, t, d }) => (
+              <li key={t} className="rounded-2xl bg-white p-5 ring-1 ring-line">
+                <Icon className="text-gold-ink" size={22} aria-hidden />
+                <h3 className="mt-3 font-display text-lg font-bold text-navy">{t}</h3>
+                <p className="mt-1 text-sm text-muted">{d}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* COMING SOON (clearly not for sale) */}
+      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:py-24" aria-labelledby="coming">
+        <Reveal className="max-w-3xl">
+          <p className="eyebrow">Beyond the curriculum</p>
+          <h2 id="coming" className="h2 mt-3">What we’re building next</h2>
+          <p className="lead mt-4">
+            Future modules on the parts of pharmacy that happen beyond the dispensary. They’re in planning and not available
+            yet.
+          </p>
         </Reveal>
+        <div className="mt-10"><ComingSoonGrid limit={3} showAll={false} /></div>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <ButtonLink href="/modules#coming-soon" variant="secondary">See all planned modules</ButtonLink>
+          <ButtonLink href={instagramUrl} variant="ghost">Follow @alaskova for release updates</ButtonLink>
+        </div>
+      </section>
+
+      {/* FOUNDER */}
+      <section className="bg-paper py-16 lg:py-20" aria-labelledby="founder">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 px-5 text-center sm:px-8 md:flex-row md:text-left">
+          <Image
+            src="/about/chelsea.jpg"
+            alt="Chelsea, founder of Alaskova Education"
+            width={160}
+            height={160}
+            sizes="160px"
+            className="size-36 shrink-0 rounded-full object-cover object-[55%_25%] ring-4 ring-white shadow-card"
+          />
+          <div>
+            <h2 id="founder" className="sr-only">From the founder</h2>
+            <p className="font-display text-2xl font-bold leading-snug text-navy">
+              “I want my ambition to give other people permission to be ambitious.”
+            </p>
+            <p className="mt-3 text-sm font-medium text-navy-soft">Chelsea · Intern Pharmacist · Founder of Alaskova Education</p>
+          </div>
+        </div>
       </section>
 
       {/* FAQ */}
-      <section className="bg-paper py-20 lg:py-28" aria-labelledby="faq">
-        <div className="mx-auto grid max-w-7xl gap-12 px-5 sm:px-8 lg:grid-cols-[1fr_1.6fr]">
-          <Reveal>
-            <p className="eyebrow">FAQ</p>
-            <h2 id="faq" className="h2 mt-3">Questions, answered.</h2>
-            <p className="lead mt-4">Can’t find what you’re looking for? Our support centre is here to help.</p>
-            <div className="mt-6"><ButtonLink href="/support" variant="secondary">Visit support</ButtonLink></div>
-          </Reveal>
-          <Reveal delay={0.1}><Faq items={faqs} /></Reveal>
+      <section className="mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[1fr_1.6fr] lg:py-24" aria-labelledby="faq">
+        <div>
+          <p className="eyebrow">FAQ</p>
+          <h2 id="faq" className="h2 mt-3">Questions, answered.</h2>
+          <ButtonLink href="/support" variant="secondary" className="mt-6">Visit support</ButtonLink>
         </div>
+        <Faq items={atlasFaqs} />
       </section>
 
       {/* FINAL CTA */}
-      <section className="px-5 py-20 sm:px-8 lg:py-28">
-        <Reveal>
-          <div className="on-dark relative isolate mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-navy via-navy-2 to-navy px-6 py-16 text-center text-white shadow-lift sm:px-12 lg:py-24">
-            <div aria-hidden className="absolute inset-0 -z-10 opacity-40 [background:radial-gradient(circle_at_20%_20%,rgb(255_255_255/0.25),transparent_45%),radial-gradient(circle_at_85%_90%,rgb(198_151_50/0.28),transparent_50%)]" />
-            <UserRound aria-hidden className="mx-auto text-white/70" size={28} />
-            <h2 className="h2 mx-auto mt-4 max-w-2xl">Your education. Elevated.</h2>
-            <p className="mx-auto mt-4 max-w-xl text-lg text-white/80">Find your textbooks, build your digital library and start studying smarter.</p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <ButtonLink href="/register" variant="inverse" size="lg">Get Started</ButtonLink>
-              <ButtonLink href="/catalogue" size="lg" className="!bg-white/10 !text-white ring-1 ring-white/30 hover:!bg-white/20 !shadow-none">Explore the Library</ButtonLink>
-            </div>
+      <section className="px-5 pb-20 sm:px-8 lg:pb-28">
+        <div className="on-dark relative isolate mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-navy via-navy-2 to-navy px-6 py-14 text-center text-white shadow-lift sm:px-12 lg:py-20">
+          <h2 className="h2 mx-auto max-w-2xl text-white">Start with Molecular Atlas.</h2>
+          <p className="mx-auto mt-4 max-w-xl text-lg text-white/85">
+            Organic chemistry, taught through the medicines you’ll meet in practice.
+          </p>
+          <div className="mt-8 flex justify-center">
+            <ButtonLink href="/molecular-atlas" variant="inverse" size="lg">
+              Explore Molecular Atlas <ArrowRight size={18} aria-hidden />
+            </ButtonLink>
           </div>
-        </Reveal>
+          <p className="mt-4 text-sm text-white/75">{price}/month including GST · Cancel any time</p>
+        </div>
       </section>
     </>
   );

@@ -1,32 +1,69 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import { ArrowRight, Compass, Lightbulb, Microscope, Users } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { ButtonLink } from "@/components/ui/Button";
-import Image from "next/image";
 import { Reveal } from "@/components/Reveal";
 import { instagramUrl, business } from "@/lib/business";
 
 export const metadata: Metadata = {
-  title: "About",
-  description: "Alaskova Education publishes digital textbooks and makes them simple to access.",
+  title: "Our mission",
+  description:
+    "Alaskova Education bridges university pharmacy education and real-world pharmaceutical science, industry practice, research and innovation.",
   alternates: { canonical: "/about" },
 };
+
+const pillars = [
+  { icon: Microscope, t: "Deep scientific understanding", d: "The reasoning behind medicines, not lists to memorise." },
+  { icon: Compass, t: "Industry-relevant education", d: "How medicines are discovered, developed, made and regulated." },
+  { icon: Lightbulb, t: "Curiosity and critical thinking", d: "Asking better questions, and being honest about what is still unknown." },
+  { icon: Users, t: "Student empowerment and innovation", d: "Giving students the confidence to contribute ideas, not just follow them." },
+];
+
+/** Long-term ambitions. NONE of these exists today; keep the label on this section. */
+const vision = [
+  "One-on-one mentoring",
+  "A pharmacy education podcast and interviews with professionals",
+  "Industry innovation workshops",
+  "Partnerships with universities and pharmaceutical companies",
+  "Structured student research projects",
+  "Industry placements and mentorship programmes",
+  "Alaskova Pharmaceuticals: a future teaching and innovation company",
+];
 
 export default function AboutPage() {
   return (
     <>
-      <PageHero eyebrow="About Alaskova Education" title={<>Making great textbooks <span className="gradient-text">simpler to reach.</span></>}>
-        Alaskova Education publishes its own digital textbooks and builds the technology to read them anywhere.
+      <PageHero eyebrow="Our mission" title={<>Built by a pharmacy student, <span className="gradient-text">for pharmacy students.</span></>}>
+        Alaskova Education bridges the gap between university pharmacy education and real-world pharmaceutical science,
+        industry practice, research and innovation.
       </PageHero>
-      <section className="mx-auto grid max-w-5xl gap-12 px-5 py-16 sm:px-8 lg:grid-cols-2 lg:py-24">
-        <Reveal>
-          <h2 className="h2">Our purpose</h2>
-          <p className="lead mt-4">Students shouldn’t have to hunt for the resources they need. We write textbooks and deliver them through a clean, modern platform so that access is simple, convenient and easy to manage.</p>
+
+      <section className="mx-auto grid max-w-5xl gap-12 px-5 py-16 sm:px-8 lg:py-24">
+        <Reveal className="max-w-3xl">
+          <h2 className="h2">Why we exist</h2>
+          <p className="lead mt-4">
+            Alaskova helps pharmacy students consolidate what they learn at university, understand the scientific reasoning
+            behind medicines, explore opportunities beyond community and hospital pharmacy, and build the confidence to
+            contribute to pharmaceutical innovation.
+          </p>
+          <p className="mt-5 font-display text-2xl font-bold leading-snug text-navy">
+            We don’t just want students to understand today’s medicines. We want them to develop the knowledge and
+            curiosity to improve tomorrow’s.
+          </p>
         </Reveal>
-        <Reveal delay={0.1}>
-          <h2 className="h2">What we do</h2>
-          <p className="lead mt-4">Alaskova Education publishes digital textbooks, starting with <strong className="font-semibold text-navy">Molecular Atlas</strong>, an interactive pharmaceutical organic chemistry textbook. Subscribers read online, track their progress, and manage their subscription from one account.</p>
-        </Reveal>
-        <Reveal className="overflow-hidden rounded-2xl bg-paper ring-1 ring-line lg:col-span-2">
+
+        <ul className="grid gap-4 sm:grid-cols-2">
+          {pillars.map(({ icon: Icon, t, d }) => (
+            <li key={t} className="rounded-2xl bg-white p-6 ring-1 ring-line">
+              <Icon className="text-gold-ink" size={22} aria-hidden />
+              <h3 className="mt-3 font-display text-lg font-bold text-navy">{t}</h3>
+              <p className="mt-1 text-sm text-muted">{d}</p>
+            </li>
+          ))}
+        </ul>
+
+        <Reveal className="overflow-hidden rounded-2xl bg-paper ring-1 ring-line">
           <div className="grid md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
             <Image
               src="/about/chelsea.jpg"
@@ -67,9 +104,50 @@ export default function AboutPage() {
             </div>
           </div>
         </Reveal>
-        <div className="lg:col-span-2">
-          <ButtonLink href="/catalogue" size="lg">Explore the textbook</ButtonLink>
-        </div>
+
+        <Reveal className="rounded-2xl bg-white p-8 shadow-card ring-1 ring-gold/40 sm:p-10">
+          <p className="eyebrow">What we offer today</p>
+          <h2 className="h3 mt-2">Molecular Atlas</h2>
+          <p className="mt-3 max-w-2xl text-muted">
+            An interactive pharmaceutical organic chemistry textbook and workbook, and our only product today. It is a study
+            resource, not an accredited course, and it isn’t affiliated with any university.
+          </p>
+          <ButtonLink href="/molecular-atlas" size="lg" className="mt-6">
+            Explore Molecular Atlas <ArrowRight size={18} aria-hidden />
+          </ButtonLink>
+        </Reveal>
+
+        <Reveal className="on-dark rounded-2xl bg-navy p-8 text-white sm:p-10">
+          <p className="eyebrow !text-gold">The future of Alaskova</p>
+          <h2 className="h3 mt-2 text-white">Where we want to go</h2>
+          <p className="mt-3 max-w-2xl text-white/85">
+            Our long-term ambition is to connect pharmacy students, universities and pharmaceutical companies through
+            education, mentorship, research projects, placements and student innovation.{" "}
+            <strong className="text-white">These are plans, not current products or services.</strong>
+          </p>
+          <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
+            {vision.map((v) => (
+              <li key={v} className="flex gap-3 text-white/90">
+                <span aria-hidden className="text-gold">◆</span>
+                {v}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-6 text-sm text-white/75">
+            Alaskova Pharmaceuticals does not operate today. Follow{" "}
+            <a href={instagramUrl} rel="noopener noreferrer" className="font-semibold text-white underline underline-offset-4">
+              @{business.instagram}
+            </a>{" "}
+            to see each idea take shape.
+          </p>
+        </Reveal>
+
+        <Reveal className="text-center">
+          <p className="mx-auto max-w-3xl font-display text-xl font-bold leading-snug text-navy sm:text-2xl">
+            Molecular Atlas is what we’re launching. Alaskova is what we’re building. Changing pharmaceutical innovation is
+            why we’re doing it.
+          </p>
+        </Reveal>
       </section>
     </>
   );
