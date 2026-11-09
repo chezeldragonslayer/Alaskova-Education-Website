@@ -11,7 +11,7 @@ const check = (name, ok, detail = "") => results.push({ name, ok: Boolean(ok), d
 const get = (path, init = {}) => fetch(base + path, { redirect: "manual", ...init });
 const loc = (r) => r.headers.get("location") ?? "";
 
-for (const p of ["/", "/catalogue", "/catalogue/molecular-atlas", "/pricing", "/how-it-works", "/about", "/support",
+for (const p of ["/", "/molecular-atlas", "/modules", "/pricing", "/about", "/support",
   "/legal/terms", "/legal/privacy", "/legal/refunds", "/login", "/register", "/forgot-password"]) {
   const r = await get(p);
   check(`GET ${p} is 200`, r.status === 200, r.status);
@@ -25,6 +25,13 @@ for (const p of ["/dashboard", "/account", "/read/molecular-atlas"]) {
 
 const health = await get("/healthz");
 check("health check answers ok", health.status === 200 && (await health.text()) === "ok", health.status);
+
+for (const [from, to] of [["/catalogue/molecular-atlas", "/molecular-atlas"], ["/catalogue", "/modules"], ["/how-it-works", "/molecular-atlas"]]) {
+  const r = await get(from);
+  check(`old address ${from} redirects to ${to}`, r.status >= 300 && r.status < 400 && loc(r).endsWith(to), `${r.status} ${loc(r)}`);
+}
+const ig = await get("/molecular-atlas?utm_source=instagram");
+check("Instagram links remember only the source, in a first-party cookie", /alaskova_src=instagram/.test(ig.headers.get("set-cookie") ?? ""), ig.headers.get("set-cookie"));
 
 const lib = await get("/library");
 check("/library redirects to the dashboard", loc(lib).endsWith("/dashboard"), loc(lib));
@@ -44,7 +51,7 @@ check("No X-Powered-By", !home.headers.has("x-powered-by"));
 const robots = await (await get("/robots.txt")).text();
 check("robots.txt disallows private pages", robots.includes("Disallow: /dashboard") && robots.includes("Sitemap:"));
 const sitemap = await get("/sitemap.xml");
-check("sitemap.xml lists the book", sitemap.status === 200 && (await sitemap.text()).includes("/catalogue/molecular-atlas"));
+check("sitemap.xml lists the book", sitemap.status === 200 && (await sitemap.text()).includes("/molecular-atlas"));
 
 const jwksRes = await get("/.well-known/jwks.json");
 if (jwksRes.status === 200) {

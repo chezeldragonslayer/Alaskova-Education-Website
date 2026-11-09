@@ -50,6 +50,7 @@ export default function PrivacyPage() {
       <p>We use only cookies that the site needs to work:</p>
       <ul>
         <li>sign-in cookies that keep you signed in (on this site and in the reader);</li>
+        <li>a &ldquo;source&rdquo; cookie, kept for 30 days, if you arrive from one of our links (for example from Instagram). It stores only the name of the source; if you subscribe, that name is saved with your subscription so we can tell which channels work;</li>
         <li>Stripe&rsquo;s own cookies on its checkout and billing pages, for fraud prevention.</li>
       </ul>
       <p>We do not use advertising or analytics cookies, and we do not sell or share your information for advertising.</p>

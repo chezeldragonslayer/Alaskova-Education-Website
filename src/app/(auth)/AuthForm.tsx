@@ -1,6 +1,7 @@
 "use client";
 
 import { keepValues } from "@/components/keepValues";
+import { InAppBrowserNotice, useInAppBrowser } from "@/components/InAppBrowserNotice";
 import { useActionState } from "react";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
@@ -16,13 +17,18 @@ export function AuthForm({ mode, next }: { mode: "login" | "register"; next: str
   );
   const isLogin = mode === "login";
 
+  // Google refuses to sign people in from inside Instagram's built-in browser, so don't offer it there.
+  const inApp = useInAppBrowser();
+  const providers = ([
+    ["google", "Continue with Google"],
+    ["azure", "Continue with Microsoft"],
+  ] as const).filter(([p]) => !(inApp && p === "google"));
+
   return (
     <div>
+      <InAppBrowserNotice variant="signin" />
       <div className="grid gap-3">
-        {([
-          ["google", "Continue with Google"],
-          ["azure", "Continue with Microsoft"],
-        ] as const).map(([p, label]) => (
+        {providers.map(([p, label]) => (
           <form key={p} action={signInWithProvider}>
             <input type="hidden" name="provider" value={p} />
             <input type="hidden" name="next" value={next} />

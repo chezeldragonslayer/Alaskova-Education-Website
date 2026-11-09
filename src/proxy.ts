@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { supabaseCookieOptions } from "@/lib/supabase/cookies";
+import { SOURCE_COOKIE, SOURCE_COOKIE_MAX_AGE, sourceFromParams } from "@/lib/attribution";
 
 /**
  * 1. Refreshes the Supabase session cookie on every request.
@@ -54,6 +55,17 @@ export async function proxy(request: NextRequest) {
   if (isPrivate) {
     response.headers.set("Cache-Control", "private, no-store");
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
+  // Remember where the visitor came from (e.g. ?utm_source=instagram); see src/lib/attribution.ts.
+  const source = sourceFromParams(request.nextUrl.searchParams);
+  if (source) {
+    response.cookies.set(SOURCE_COOKIE, source, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: request.nextUrl.protocol === "https:",
+      path: "/",
+      maxAge: SOURCE_COOKIE_MAX_AGE,
+    });
   }
   return response;
 }
