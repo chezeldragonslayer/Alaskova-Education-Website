@@ -1,11 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { billingConfigured, env, siteUrl } from "@/lib/env";
-import { getBook } from "@/lib/catalogue";
+import { bookPath, getBook } from "@/lib/catalogue";
 import { planForBook } from "@/lib/plans";
 import { getUser } from "@/lib/supabase/server";
 import { getStripe } from "@/lib/stripe/client";
 import { getSubscriptions } from "@/lib/access";
 import { ensureStripeCustomer } from "@/lib/stripe/customer";
+import { SOURCE_COOKIE, sourceFromCookie } from "@/lib/attribution";
 import { blocksNewCheckout, grantsAccess, isSameOrigin, rateLimit } from "@/lib/security";
 
 
@@ -18,17 +19,17 @@ export async function POST(request: NextRequest) {
   const form = await request.formData();
   const slug = String(form.get("book") ?? "");
   const book = getBook(slug);
-  if (!book || !planForBook(slug)) return redirect303(`${site}/catalogue`);
+  if (!book || !planForBook(slug)) return redirect303(`${site}/modules`);
 
   const user = await getUser();
   if (!user) {
-    return redirect303(`${site}/login?next=${encodeURIComponent(`/catalogue/${slug}`)}`);
+    return redirect303(`${site}/login?next=${encodeURIComponent(bookPath(slug))}`);
   }
   if (!rateLimit(`checkout:${user.id}`, 10, 60_000)) {
     return new NextResponse("Too many requests", { status: 429 });
   }
   if (!billingConfigured()) {
-    return redirect303(`${site}/catalogue/${slug}?checkout=unavailable`);
+    return redirect303(`${site}${bookPath(slug)}?checkout=unavailable`);
   }
 
   try {
@@ -54,7 +55,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const metadata = { user_id: user.id, book_slug: slug };
+    // source: which channel sent the student ("instagram" or "direct"); lets you count subscriptions by source in Stripe.
+    const metadata = { user_id: user.id, book_slug: slug, source: sourceFromCookie(request.cookies.get(SOURCE_COOKIE)?.value) };
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       customer: customerId,
@@ -71,12 +73,12 @@ export async function POST(request: NextRequest) {
       metadata,
       // Redirect is for UX only. Access is granted by the verified webhook, not by this URL.
       success_url: `${site}/dashboard?checkout=success`,
-      cancel_url: `${site}/catalogue/${slug}?checkout=cancelled`,
+      cancel_url: `${site}${bookPath(slug)}?checkout=cancelled`,
     });
     if (!session.url) throw new Error("Stripe returned no checkout URL");
     return redirect303(session.url);
   } catch (err) {
     console.error("checkout failed", err instanceof Error ? err.message : err);
-    return redirect303(`${site}/catalogue/${slug}?checkout=error`);
+    return redirect303(`${site}${bookPath(slug)}?checkout=error`);
   }
 }

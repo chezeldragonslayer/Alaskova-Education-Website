@@ -48,7 +48,7 @@ export function SiteHeader() {
         <nav aria-label="Primary" className="hidden lg:block">
           <ul className="flex items-center gap-1">
             {primaryNav.map((item) => {
-              const active = pathname.startsWith(item.href);
+              const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
                 <li key={item.href}>
                   <Link
@@ -77,7 +77,7 @@ export function SiteHeader() {
           <ButtonLink href="/login" variant="ghost">
             Sign in
           </ButtonLink>
-          <ButtonLink href="/register">Get started</ButtonLink>
+          <ButtonLink href="/molecular-atlas">Start learning</ButtonLink>
         </div>
 
         <button
@@ -123,8 +123,8 @@ export function SiteHeader() {
                 ))}
               </ul>
               <div className="mt-auto grid gap-3 pt-8">
-                <ButtonLink href="/register" size="lg" onClick={() => setOpen(false)}>
-                  Get started
+                <ButtonLink href="/molecular-atlas" size="lg" onClick={() => setOpen(false)}>
+                  Start learning
                 </ButtonLink>
                 <ButtonLink href="/login" variant="secondary" size="lg" onClick={() => setOpen(false)}>
                   Sign in

@@ -90,7 +90,7 @@ async function Account({ searchParams }: { searchParams: SP }) {
           </ul>
         ) : (
           <p className="mt-2 text-sm text-muted">
-            You don’t have a subscription yet. <Link href="/catalogue" className="text-gold-ink underline underline-offset-4">Explore textbooks</Link>.
+            You don’t have a subscription yet. <Link href="/molecular-atlas" className="text-gold-ink underline underline-offset-4">Explore Molecular Atlas</Link>.
           </p>
         )}
         {subs.length > 0 && (

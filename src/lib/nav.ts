@@ -1,27 +1,29 @@
+import { instagramUrl } from "@/lib/business";
+
 export const primaryNav = [
-  { href: "/catalogue", label: "Textbooks" },
-  { href: "/how-it-works", label: "How it works" },
+  { href: "/molecular-atlas", label: "Molecular Atlas" },
+  { href: "/modules", label: "Modules" },
   { href: "/pricing", label: "Pricing" },
-  { href: "/about", label: "About" },
+  { href: "/about", label: "Our mission" },
   { href: "/support", label: "Support" },
 ] as const;
 
 export const footerNav = {
-  Product: [
-    { href: "/catalogue", label: "Textbook catalogue" },
-    { href: "/pricing", label: "Subscription plans" },
-    { href: "/how-it-works", label: "How it works" },
+  Learn: [
+    { href: "/molecular-atlas", label: "Molecular Atlas" },
+    { href: "/modules#coming-soon", label: "Coming soon" },
+    { href: "/pricing", label: "Pricing" },
   ],
-  Company: [
-    { href: "/about", label: "About Alaskova Education" },
+  Alaskova: [
+    { href: "/about", label: "Our mission" },
     { href: "/support", label: "Support centre" },
     { href: "/support#contact", label: "Contact us" },
-    { href: "https://www.instagram.com/alaskova/", label: "Instagram" },
+    { href: instagramUrl, label: "Instagram" },
   ],
   Account: [
     { href: "/login", label: "Sign in" },
     { href: "/register", label: "Create account" },
-    { href: "/dashboard", label: "Student dashboard" },
+    { href: "/dashboard", label: "My library" },
     { href: "/account", label: "My account" },
   ],
   Legal: [

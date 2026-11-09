@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { safeNext } from "@/lib/security";
+import { bookPath } from "@/lib/catalogue";
 import { LogoEmblem } from "@/components/Logo";
 import { AuthForm } from "./AuthForm";
 
@@ -16,7 +17,7 @@ async function Inner({ mode, searchParams }: { mode: "login" | "register"; searc
   const sp = await searchParams;
   // ?book=slug (from a textbook page) returns the student to that book after signing up.
   const next = sp.book && /^[a-z0-9-]+$/.test(sp.book)
-    ? `/catalogue/${sp.book}`
+    ? bookPath(sp.book)
     : safeNext(sp.next);
   return (
     <>

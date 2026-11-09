@@ -35,6 +35,9 @@ export const allSubjects = Array.from(
   new Set(catalogue.flatMap((b) => b.subjects)),
 ).sort();
 
+/** Where a book's sales page lives. */
+export const bookPath = (slug: string) => (slug === "molecular-atlas" ? "/molecular-atlas" : "/modules");
+
 export function getBook(slug: string) {
   return catalogue.find((b) => b.slug === slug);
 }

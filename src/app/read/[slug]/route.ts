@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { env, siteUrl } from "@/lib/env";
-import { getBook } from "@/lib/catalogue";
+import { bookPath, getBook } from "@/lib/catalogue";
 import { getUser } from "@/lib/supabase/server";
 import { hasAccess } from "@/lib/access";
 import { signLaunchToken } from "@/lib/module-token";
@@ -20,13 +20,13 @@ export async function GET(_request: NextRequest, ctx: { params: Promise<{ slug: 
   const { slug } = await ctx.params;
   const site = siteUrl();
   const book = getBook(slug);
-  if (!book) return go(`${site}/catalogue`);
+  if (!book) return go(`${site}/modules`);
 
   const user = await getUser().catch(() => null);
   if (!user) return go(`${site}/login?next=${encodeURIComponent(`/read/${slug}`)}`);
 
   try {
-    if (!(await hasAccess(user.id, slug))) return go(`${site}/catalogue/${slug}?access=required`);
+    if (!(await hasAccess(user.id, slug))) return go(`${site}${bookPath(slug)}?access=required`);
 
     const moduleUrl = env.moduleUrlForBook(slug);
     if (!moduleUrl) return go(`${site}/dashboard?reader=coming-soon`);

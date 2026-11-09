@@ -11,8 +11,8 @@ export function SiteFooter() {
           {/* The reversed logo has a solid navy (#0F1E3D) background, identical to the footer, so it sits seamlessly here. */}
           <LogoHorizontal variant="reversed" width={220} className="-ml-3" />
           <p className="mt-6 max-w-xs text-sm leading-relaxed text-white/70">
-            A modern, technology-driven way to access and manage your course
-            textbooks.
+            Built by a pharmacy student, for pharmacy students. Interactive pharmaceutical education that connects
+            chemistry to real medicines.
           </p>
           <p className="mt-6 text-sm text-white/70">
             Support:{" "}

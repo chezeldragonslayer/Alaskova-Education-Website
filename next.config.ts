@@ -25,7 +25,14 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     // Molecular Atlas's "Back to my library" link may point at /library; the library is the dashboard.
-    return [{ source: "/library", destination: "/dashboard", permanent: false }];
+    return [
+      { source: "/library", destination: "/dashboard", permanent: false },
+      // Old addresses from before the November 2026 redesign keep working.
+      { source: "/catalogue/molecular-atlas", destination: "/molecular-atlas", permanent: true },
+      { source: "/catalogue/:slug", destination: "/modules", permanent: true },
+      { source: "/catalogue", destination: "/modules", permanent: true },
+      { source: "/how-it-works", destination: "/molecular-atlas", permanent: true },
+    ];
   },
   turbopack: {
     rules: {

@@ -7,10 +7,11 @@ import { authConfigured, billingConfigured } from "@/lib/env";
 import { getUser } from "@/lib/supabase/server";
 import { getSubscriptions } from "@/lib/access";
 import { describeSubscription, grantsAccess } from "@/lib/security";
-import { catalogue, getBook } from "@/lib/catalogue";
+import { bookPath, catalogue, getBook } from "@/lib/catalogue";
 import { BookCover } from "@/components/BookCover";
 import { ButtonLink } from "@/components/ui/Button";
 import { RefreshWhilePending } from "./RefreshWhilePending";
+import { InAppBrowserNotice } from "@/components/InAppBrowserNotice";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -78,6 +79,7 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
 
       <section className="mt-10" aria-labelledby="lib">
         <h2 id="lib" className="font-display text-xl font-semibold tracking-tight">My library</h2>
+        {libraryBooks.length > 0 && <div className="mt-5"><InAppBrowserNotice variant="reading" /></div>}
         {libraryBooks.length ? (
           <ul className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {libraryBooks.map(({ s, book }) => (
@@ -98,7 +100,7 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
             <BookOpen className="mx-auto text-navy-soft" size={32} aria-hidden />
             <h3 className="mt-4 font-display text-lg font-semibold">Your library is empty</h3>
             <p className="mx-auto mt-1 max-w-sm text-muted">Subscribe to a textbook and it will appear here, ready to read.</p>
-            <ButtonLink href="/catalogue" className="mt-5">Explore textbooks</ButtonLink>
+            <ButtonLink href="/molecular-atlas" className="mt-5">Explore Molecular Atlas</ButtonLink>
           </div>
         )}
       </section>
@@ -139,7 +141,7 @@ async function Dashboard({ searchParams }: { searchParams: SP }) {
           <ul className="mt-5 grid gap-3 sm:grid-cols-2">
             {others.map((b) => (
               <li key={b.slug}>
-                <Link href={`/catalogue/${b.slug}`} className="flex items-center justify-between rounded-2xl bg-white px-5 py-4 ring-1 ring-line transition-all hover:-translate-y-0.5 hover:shadow-card">
+                <Link href={bookPath(b.slug)} className="flex items-center justify-between rounded-2xl bg-white px-5 py-4 ring-1 ring-line transition-all hover:-translate-y-0.5 hover:shadow-card">
                   <span className="font-medium">{b.title}</span>
                   <span className="text-sm font-semibold text-gold-ink">View →</span>
                 </Link>
