@@ -20,8 +20,8 @@ export default function TermsPage() {
     <LegalPage eyebrow="Legal" title="Terms of service">
       <p>
         These terms apply when you create an account with or subscribe through Alaskova Education. Alaskova Education
-        is a trading name of <Fact value={business.legalEntity} /> (ABN <Fact value={business.abn} />), of{" "}
-        <Fact value={business.address} /> (&ldquo;we&rdquo;, &ldquo;us&rdquo;). By creating an account or subscribing
+        is a trading name of <Fact value={business.legalEntity} /> (ABN <Fact value={business.abn} />)
+        (&ldquo;we&rdquo;, &ldquo;us&rdquo;). By creating an account or subscribing
         you agree to these terms.
       </p>
 
@@ -127,7 +127,7 @@ export default function TermsPage() {
 
       <h2>12. Contact</h2>
       <p>
-        Questions about these terms: <SupportEmail />, or write to <Fact value={business.address} />.
+        Questions about these terms, and any legal notices: <SupportEmail />.
       </p>
     </LegalPage>
   );

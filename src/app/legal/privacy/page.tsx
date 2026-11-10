@@ -99,7 +99,7 @@ export default function PrivacyPage() {
 
       <h2>Questions and complaints</h2>
       <p>
-        Contact <SupportEmail /> or write to <Fact value={business.address} />. If you are not satisfied with our
+        Contact <SupportEmail />. If you are not satisfied with our
         response, you can complain to the Office of the Australian Information Commissioner at{" "}
         <a href="https://www.oaic.gov.au" rel="noopener noreferrer">oaic.gov.au</a>.
       </p>

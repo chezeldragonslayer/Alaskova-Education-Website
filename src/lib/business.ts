@@ -1,6 +1,7 @@
 /**
  * Business facts shown on the legal pages, the footer and the support page.
  *
+ * No postal address is published (owner's choice: it is a home address); notices and requests go to the support email.
  * OWNER: replace every value that starts with "[TO BE CONFIRMED" with the real details. Until you do, the site shows
  * the placeholder text as-is, so it is obvious on every page that it still needs filling in. Nothing here is a secret.
  */
@@ -10,13 +11,11 @@ export const business = {
   /** The legal entity that sells the subscriptions: a company ("Alaskova Education Pty Ltd") or a sole trader's name. */
   legalEntity: "Alaskova Pty Ltd",
   /** Australian Business Number. */
-  abn: "[TO BE CONFIRMED: ABN]",
-  /** Address for legal notices (can be a registered office or PO box). */
-  address: "[TO BE CONFIRMED: business address]",
+  abn: "22 703 973 700",
   /** Address customers write to for help, privacy requests and refunds. */
   supportEmail: "support@alaskovaeducation.com",
   /** State or territory whose law governs the terms (e.g. "New South Wales"). */
-  governingState: "[TO BE CONFIRMED: state or territory]",
+  governingState: "New South Wales",
   /** Business Instagram account (never a personal account). */
   instagram: "alaskova",
   /** Date the legal pages were last updated (update whenever the text changes). */
