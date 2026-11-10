@@ -103,3 +103,9 @@ export function describeSubscription(
       return { label: "Ended", detail: "No longer active", needsAction: false };
   }
 }
+
+/**
+ * A 303 to a path on whatever address the visitor is using. The Location is relative on purpose: behind Render's
+ * proxy, request.url is an internal address (http://localhost:10000), so it must not be used to build the URL.
+ */
+export const redirectHere = (path: string) => new Response(null, { status: 303, headers: { Location: path } });

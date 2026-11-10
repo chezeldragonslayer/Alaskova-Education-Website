@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { billingConfigured, siteUrl } from "@/lib/env";
 import { createSupabaseAdmin, getUser } from "@/lib/supabase/server";
 import { getStripe } from "@/lib/stripe/client";
-import { isSameOrigin, rateLimit } from "@/lib/security";
+import { isSameOrigin, rateLimit, redirectHere } from "@/lib/security";
 
 
 const redirect303 = (url: string) => NextResponse.redirect(url, { status: 303 });
@@ -11,7 +11,7 @@ const redirect303 = (url: string) => NextResponse.redirect(url, { status: 303 })
 export async function POST(request: NextRequest) {
   const site = siteUrl();
   if (!isSameOrigin(request, site)) {
-    return NextResponse.redirect(new URL("/dashboard?billing=blocked", request.url), { status: 303 });
+    return redirectHere("/dashboard?billing=blocked");
   }
 
   const user = await getUser();

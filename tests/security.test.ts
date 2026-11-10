@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  blocksNewCheckout, clientIp, describeSubscription, grantsAccess, isSameOrigin, rateLimit, safeNext,
+  blocksNewCheckout, clientIp, describeSubscription, grantsAccess, isSameOrigin, rateLimit, redirectHere, safeNext,
 } from "@/lib/security";
 
 describe("safeNext (open-redirect guard)", () => {
@@ -90,4 +90,12 @@ describe("describeSubscription", () => {
     expect(row("past_due", "2026-07-01T00:00:00Z")).toMatchObject({ label: "Payment failed", needsAction: true }));
   it("an active row past its end date reads as ended", () =>
     expect(row("active", "2026-05-01T00:00:00Z").label).toBe("Ended"));
+});
+
+describe("redirectHere (refused requests)", () => {
+  it("sends a relative 303, never an internal proxy address", () => {
+    const r = redirectHere("/molecular-atlas?checkout=blocked");
+    expect(r.status).toBe(303);
+    expect(r.headers.get("location")).toBe("/molecular-atlas?checkout=blocked");
+  });
 });

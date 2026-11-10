@@ -1,11 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { authConfigured, siteUrl } from "@/lib/env";
 import { createSupabaseServer } from "@/lib/supabase/server";
-import { isSameOrigin } from "@/lib/security";
+import { isSameOrigin, redirectHere } from "@/lib/security";
 
 export async function POST(request: NextRequest) {
   if (!isSameOrigin(request, siteUrl())) {
-    return NextResponse.redirect(new URL("/dashboard?notice=refresh", request.url), { status: 303 });
+    return redirectHere("/dashboard?notice=refresh");
   }
   if (authConfigured()) {
     const supabase = await createSupabaseServer();

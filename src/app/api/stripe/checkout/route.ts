@@ -7,7 +7,7 @@ import { getStripe } from "@/lib/stripe/client";
 import { getSubscriptions } from "@/lib/access";
 import { ensureStripeCustomer } from "@/lib/stripe/customer";
 import { SOURCE_COOKIE, sourceFromCookie } from "@/lib/attribution";
-import { blocksNewCheckout, grantsAccess, isSameOrigin, rateLimit } from "@/lib/security";
+import { blocksNewCheckout, grantsAccess, isSameOrigin, rateLimit, redirectHere } from "@/lib/security";
 
 
 const redirect303 = (url: string) => NextResponse.redirect(url, { status: 303 });
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
   // Refused (cross-site request, or the site's address setting doesn't match the address in use): no checkout is
   // created. Send the visitor back to the page on the same address with a message rather than a blank error.
   if (!isSameOrigin(request, site)) {
-    return NextResponse.redirect(new URL("/molecular-atlas?checkout=blocked", request.url), { status: 303 });
+    return redirectHere("/molecular-atlas?checkout=blocked");
   }
 
   const form = await request.formData();

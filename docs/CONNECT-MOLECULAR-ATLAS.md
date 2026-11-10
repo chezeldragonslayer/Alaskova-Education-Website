@@ -59,10 +59,10 @@ Follow `docs/GO-LIVE.md`; this is the order that avoids broken links.
 
 16. **Everything in `docs/OWNER-CHECKLIST.md` sections A, B and D is done**: GST wording, business details, lawyer
     review (drafts banner removed), Resend email, Supabase Pro, paid Render plans.
-17. **Domain**: add `alaskovaeducation.com` to the website service and `molecularmolecularatlas.alaskovaeducation.com` to the book's service in Render
+17. **Domain**: add `alaskovaeducation.com` to the website service and `molecularatlas.alaskovaeducation.com` to the book's service in Render
     (Settings > Custom Domains), add the DNS records, wait for "Certificate issued" on both.
 18. **Website settings** (Render > website > Environment): `NEXT_PUBLIC_SITE_URL=https://alaskovaeducation.com`,
-    `MODULE_URL_MOLECULAR_ATLAS=https://molecularmolecularatlas.alaskovaeducation.com`.
+    `MODULE_URL_MOLECULAR_ATLAS=https://molecularatlas.alaskovaeducation.com`.
 19. **New signing key** (the current one was shared in a chat): on your computer, in this repository, run
     `node scripts/generate-module-keys.mjs`. It writes the private key to `module-private-key.pem` and prints only
     the public key. Put that one line into `ALASKOVA_MODULE_PRIVATE_KEY` and set `ALASKOVA_MODULE_KID=alaskova-module-2`
