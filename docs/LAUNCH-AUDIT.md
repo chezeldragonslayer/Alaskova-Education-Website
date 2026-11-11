@@ -135,3 +135,17 @@ instead, both services must be updated within the same few minutes. Recommendati
 | Module rejects the token (wrong key, clock skew) | Module shows a short page with a button back to `/read/molecular-atlas`. No loop. |
 | Module session expires (30 to 60 minutes) | Module redirects to `/read/molecular-atlas`, which re-checks the subscription and issues a fresh pass, then the learner returns to the same page. |
 | Subscription cancelled or payment failed | At the next session expiry, `/read` refuses and the learner lands on the subscribe page. |
+
+## Legal pages implementation brief (11 November 2026)
+
+Applied parts A (terms), B (refunds), C (privacy) and D1–D6 in order; every "find" text matched.
+- D4 reverses the earlier owner decision (H4 above): a refund no longer cancels the subscription; a dispute pauses access
+  (status `disputed`, stored as `access_paused=dispute` on the Stripe subscription) and is restored when won or closed
+  as a warning, cancelled when lost. Webhook now needs `charge.dispute.closed`.
+- D1/D2: notice above the sign-in buttons; Stripe Checkout requires the terms checkbox (needs the Terms URL in Stripe)
+  and shows the key terms; acceptance time and version saved on `profiles` and `subscriptions` (migration 0005).
+- D5: "Close my account" cancels at period end and deletes the account when Stripe ends the subscription
+  (`customer.subscription.deleted`); with no access left it deletes straight away. Replaces the manual deletion request.
+- D3, D6: progress qualifier on the pricing bullet, short-month billing date in the pricing FAQ, contact-form notice.
+- D7 (cancellation email) not built: the site has no email sender of its own. D8 not applicable. D9 on hold until the
+  go-live date.

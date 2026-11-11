@@ -17,10 +17,10 @@ configured Supabase project or a Stripe account.
 
 ## Before you start
 
-1. Supabase project created, migrations `0001`, `0002`, `0003` and `0004` run, in that order (Supabase > SQL editor).
+1. Supabase project created, migrations `0001`, `0002`, `0003`, `0004` and `0005` run, in that order (Supabase > SQL editor).
 2. Render environment variables set with **test** Stripe keys (`sk_test_...`, the test `whsec_...`, the test
    `price_...`). See `.env.example`.
-3. Stripe webhook endpoint added for the events listed in GO-LIVE.md, step 2, **including `charge.refunded` and `charge.dispute.created`** (add it to
+3. Stripe webhook endpoint added for the events listed in GO-LIVE.md, step 2, **including `charge.dispute.created` and `charge.dispute.closed`** (add it to
    your existing test-mode endpoint).
 4. Run `npm run smoke -- https://<your Render address>` and confirm every line says PASS.
 5. Use a fresh private/incognito window for each "person" in the tests. Use real email addresses you can open
@@ -50,8 +50,9 @@ configured Supabase project or a Stripe account.
 | 20 | Expired module session | Open the book, wait past the module's session time (default 45 minutes; or ask the module agent for a short test setting), then click a link in the book. | The browser briefly returns to `/read/molecular-atlas` and comes straight back to the same page of the book, no sign-in needed. If the subscription ended in the meantime, you land on the subscribe page instead. | Not testable from code here (module side) |
 | 21 | Account page | My account: change your name; check email, sign-in method and subscription; Manage billing opens Stripe. | All shown correctly. | Owner |
 | 22 | Contact form | Support > send a message. | "Thanks, we've got your message". The message appears in Supabase > Table editor > `support_requests`. Sending 4 in a row is refused for a few minutes. | Owner (validation and limits: automated) |
-| 23 | Deletion request | My account > Delete my account > tick > Request. | Confirmation shown; a row with kind `account_deletion` in `support_requests`. Then follow GO-LIVE "Handling a deletion request". | Owner |
-| 24 | Refund ends access | In Stripe, refund a test subscription payment **in full**. | Within seconds Stripe shows the subscription as Canceled, the dashboard shows "Ended" and Read now refuses. A **partial** refund changes nothing. | Owner (logic: automated) |
+| 23 | Close account | (a) Account **without** a subscription: My account > Close my account > Close my account. (b) Account **with** an active subscription: same steps. | (a) Signed out, "Your account has been closed and deleted"; the user is gone from Supabase > Authentication. (b) The dialog names the end date; Stripe shows the subscription "Cancels" on that date; My account says the account is set to close. Then cancel it immediately in Stripe: the user is deleted within seconds. | Owner |
+| 24a | Terms at sign-up and checkout | Open /register and /login; start a checkout. | The notice with Terms and Privacy links sits above the Google/Microsoft buttons. Stripe checkout shows a required "I agree to the Terms…" checkbox and the key terms above Pay. After paying, Supabase > subscriptions has `terms_accepted_at`; after confirming a new account, profiles has it too. | Owner |
+| 24 | Refunds and disputes | (a) Refund a test payment in full. (b) Refund, then cancel the subscription immediately. (c) Pay with the dispute test card `4000 0000 0000 0259`, then win the dispute (Stripe test evidence `winning_evidence`) and, with a second subscription, lose it (`losing_evidence`). | (a) Subscription stays Active and Read now works. (b) Access ends. (c) While open: dashboard says "Paused" with the dispute message and Read now refuses; won: access returns; lost: subscription Canceled. | Owner (logic: automated) |
 | 25 | Pages and links | Click every footer link; open a made-up address like `/abc`. | No 404s except the made-up one, which shows the branded "We couldn't find that page". | Automated (smoke) |
 | 26 | Phone layout | Repeat 6, 8 and 21 on a phone. | Nothing cut off, no sideways scrolling. | Owner (360px and 768px layouts were checked by the agent for the new pages only) |
 
@@ -60,7 +61,7 @@ configured Supabase project or a Stripe account.
 | File | Covers |
 |---|---|
 | `tests/security.test.ts` | open-redirect guard, CSRF origin check, rate limiter (including spoofed addresses and memory bound), access rules, double-subscription guard, dashboard status wording |
-| `tests/sync.test.ts` | webhook idempotency, out-of-order and stale events, past_due, cancel at period end, paused, unpaid, deleted, resubscribe, full refund ends access, partial refund doesn't, bank dispute ends access, unattributable subscriptions, retries |
+| `tests/sync.test.ts` | webhook idempotency, out-of-order and stale events, past_due, cancel at period end, paused, unpaid, deleted, resubscribe, refunds never cancel, disputes pause then restore (won) or cancel (lost), terms consent at checkout, scheduled account closure, unattributable subscriptions, retries |
 | `tests/module-token.test.ts` | launch token claims and lifetime against INTEGRATION.md, unique `jti`, wrong audience/issuer/key, tampering, `alg: none`, JWKS has no private part |
 | `tests/support.test.ts` | contact form validation, honeypot, display names |
 | `scripts/smoke.mjs` | 40 outside-in checks of a running site: pages, health check, private-route redirects and caching, 404, security headers, robots/sitemap, JWKS, CSRF refusals, forged webhooks, referral cookie, auth redirects |

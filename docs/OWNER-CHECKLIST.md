@@ -9,7 +9,9 @@ chat, email or document; only into Render's Environment screen. Details: `GO-LIV
 - [ ] Render > website service > Environment: STRIPE_PRICE_MOLECULAR_ATLAS = the new price_... id; archive the old A$11.99 price in Stripe
 - [ ] Stripe sandbox > Tax rates > new: "GST", 10%, Australia, Inclusive; put its txr_... id into Render as STRIPE_TAX_RATE_GST
 - [ ] Stripe > Settings > Business > Tax details: add the ABN (invoices become valid tax invoices)
-- [ ] Stripe sandbox > Workbench > Webhooks > your endpoint: add the event charge.dispute.created (10 events in total)
+- [ ] Stripe sandbox > Workbench > Webhooks > your endpoint: add the events charge.dispute.created and charge.dispute.closed
+- [ ] Stripe (sandbox and live) > Settings > Business > Public details > Terms of service URL: https://alaskovaeducation.com/legal/terms (checkout fails without it)
+- [ ] Supabase > SQL editor: run supabase/migrations/0005_terms_acceptance.sql (records when people accepted the terms)
 
 ## 2. Details still needed
 - [ ] ABN (Alaskova Pty Ltd)
@@ -70,7 +72,7 @@ chat, email or document; only into Render's Environment screen. Details: `GO-LIV
 
 ## 9. Launch day
 - [ ] New signing key with kid alaskova-module-2 (GO-LIVE step 3)
-- [ ] Stripe live mode: A$8.99 incl. GST product, GST tax rate, live keys and price in Render, live webhook (10 events), customer portal
+- [ ] Stripe live mode: A$8.99 incl. GST product, GST tax rate, live keys and price in Render, live webhook (10 events, including charge.dispute.closed), customer portal
 - [ ] Clear sandbox records in Supabase (before any real customer)
 - [ ] Website agent runs the final check against alaskovaeducation.com
 

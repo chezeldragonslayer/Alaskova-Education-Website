@@ -28,12 +28,12 @@ Digital textbook subscription platform (Next.js App Router, TypeScript, Tailwind
 (switching to live), `docs/FOR-MODULE-AGENT.md` (notes for the book's agent). Connecting the finished book and launch order: `docs/CONNECT-MOLECULAR-ATLAS.md`.
 
 ## Setup (in order)
-1. **Supabase**: create a project. SQL editor: run `supabase/migrations/0001_init.sql`, then `0002_referrals.sql` (now unused, but later scripts expect it), then `0003_support_requests.sql` (contact form and deletion requests), then `0004_referral_instalments.sql`.
+1. **Supabase**: create a project. SQL editor: run `supabase/migrations/0001_init.sql`, then `0002_referrals.sql` (now unused, but later scripts expect it), then `0003_support_requests.sql` (contact form and deletion requests), then `0004_referral_instalments.sql`, then `0005_terms_acceptance.sql` (a new, empty project can run `supabase/setup-new-project.sql` instead).
    - Authentication > URL Configuration: Site URL = `NEXT_PUBLIC_SITE_URL`; add Redirect URL `NEXT_PUBLIC_SITE_URL/auth/callback`.
    - Authentication > Providers: enable Email, Google (needs a Google Cloud OAuth client) and Azure (Microsoft; needs an Entra app registration). Callback URL for both is shown in the Supabase provider screen.
    - Decide whether "Confirm email" stays on (recommended).
 2. **Stripe**: Products > create "Molecular Atlas" with a recurring monthly price of A$8.99 (set your currency). Copy the `price_...` id to `STRIPE_PRICE_MOLECULAR_ATLAS`.
-   - Developers > Webhooks > add endpoint `NEXT_PUBLIC_SITE_URL/api/stripe/webhook` for: `checkout.session.completed`, `customer.subscription.created|updated|deleted|paused|resumed`, `invoice.paid`, `invoice.payment_failed`, `charge.refunded`, `charge.dispute.created`. Copy the signing secret to `STRIPE_WEBHOOK_SECRET`.
+   - Developers > Webhooks > add endpoint `NEXT_PUBLIC_SITE_URL/api/stripe/webhook` for: `checkout.session.completed`, `customer.subscription.created|updated|deleted|paused|resumed`, `invoice.paid`, `invoice.payment_failed`, `charge.dispute.created`, `charge.dispute.closed`. Copy the signing secret to `STRIPE_WEBHOOK_SECRET`.
    - Settings > Billing > Customer portal: enable cancellation and payment-method updates.
 3. **Keys for the textbook module**: `node scripts/generate-module-keys.mjs`. Put the private key in `ALASKOVA_MODULE_PRIVATE_KEY`; give the module agent the public key or `/.well-known/jwks.json`.
 4. **Render**: new Web Service from this repo. Build `npm ci && npm run build`, start `npm start`, health check `/healthz`, one instance, add every variable from `.env.example`. Full production steps: `docs/GO-LIVE.md`.

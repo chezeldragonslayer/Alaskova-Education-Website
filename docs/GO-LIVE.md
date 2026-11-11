@@ -13,7 +13,7 @@ Never paste a secret key into a chat, an email, a document or the repository. Pa
 |---|---|
 | ~~Currency and GST~~ **Decided:** A$8.99 per month in AUD, GST included (Alaskova Pty Ltd is GST-registered) | Stripe price A$8.99 AUD; inclusive GST tax rate (step 2.2) |
 | ~~Grace period~~ **Decided: none.** Access pauses as soon as a renewal fails (current behaviour) | done |
-| **Decided:** a full refund ends access immediately (automatic). Still open: whether you offer change-of-mind refunds at all | refunds page; built into the webhook |
+| **Changed by the legal review (11 Nov 2026), confirm:** a refund never ends access by itself; a dispute pauses access, then restores it (won) or ends it (lost). No change-of-mind refunds for part-months | refunds page, terms section 4; built into the webhook |
 | ~~Referral programme~~ **Decided: removed** (7 Nov 2026) | done |
 | Legal entity name, ABN, address, support email, governing state, minimum age | `src/lib/business.ts` and the age line in the terms **[Agent or Owner]** |
 | ~~AI tutor~~ **Removed from the reader, 9 November 2026** | nothing to set; the privacy policy no longer mentions Anthropic |
@@ -53,17 +53,23 @@ Test-mode products, prices, keys and webhooks do **not** carry over to live mode
 4. Developers > Webhooks > **Add endpoint** `https://alaskovaeducation.com/api/stripe/webhook`, events:
    `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`,
    `customer.subscription.deleted`, `customer.subscription.paused`, `customer.subscription.resumed`, `invoice.paid`,
-   `invoice.payment_failed`, **`charge.refunded`**, **`charge.dispute.created`** (10 events). Copy its **signing secret** (`whsec_...`).
+   `invoice.payment_failed`, **`charge.dispute.created`**, **`charge.dispute.closed`** (10 events; `charge.refunded` is no longer needed but does no harm). Copy its **signing secret** (`whsec_...`).
 5. Settings > Billing > **Customer portal** (live mode): allow updating payment methods, viewing invoices, and cancelling
    **at the end of the billing period** (the refunds page promises this). Add links to your terms and privacy pages.
 6. Settings > Billing > Subscriptions and emails: turn on emails for failed payments and expiring cards, and Smart
    Retries. Settings > Public details: support email and statement descriptor ("ALASKOVA EDUCATION").
-7. When you refund someone: Payments > the payment > **Refund** the full amount. That is all: the website sees the
-   refund, cancels the subscription in Stripe straight away and ends their access within seconds. A **partial** refund
-   (for example a goodwill credit) does not end access. To end access without refunding, cancel the subscription
-   immediately instead.
-8. Disputes: the website cancels the disputed subscription automatically (owner policy). Stripe emails you; respond in
-   Stripe with the evidence.
+   **Settings > Business > Public details > Terms of service URL: `https://alaskovaeducation.com/legal/terms`.**
+   Required: checkout now shows a "I agree to the Terms" checkbox, and Stripe refuses to open checkout without this URL
+   (students would see "Something went wrong"). Do it in both sandbox and live mode before the release goes live.
+7. Refunds (what the refunds page promises):
+   - **Charged by mistake** (twice, or after cancelling): Payments > the payment > **Refund**. That is all. The
+     subscription carries on: a refund never cancels anything by itself.
+   - **Refund and end the subscription** (an Australian Consumer Law claim, or a refund of the current month you
+     agree to): refund the payment as above, **then** Subscriptions > the subscription > **Cancel subscription >
+     Immediately**. Access ends within seconds.
+8. Disputes: when a customer disputes a payment with their bank, the website **pauses** their access automatically
+   (the library says why). Stripe emails you; respond in Stripe with the evidence. If you win (or the inquiry closes
+   as a warning), access comes back automatically. If you lose, the subscription is cancelled and access ends.
 
 ## 3. Signing key for the book: replace the test key **[Owner]**
 
@@ -99,7 +105,8 @@ The current key was shared in a chat, so it must not be used in production.
    Brand the wording ("Alaskova Education") while you are there.
 5. Google and Microsoft providers: switch the Google OAuth consent screen to "In production", and add the live domain
    to the authorised domains in Google Cloud and to the redirect URIs in the Microsoft Entra app registration.
-6. SQL editor: confirm migrations 0001, 0002, **0003** and **0004** have been run, in that order.
+6. SQL editor: confirm migrations 0001, 0002, 0003, 0004 and **0005** have been run, in that order (a new project:
+   `supabase/setup-new-project.sql`, which now includes 0005).
 7. Database > Backups: the Pro plan keeps daily backups for 7 days; Point-in-Time Recovery is an add-on. The free plan
    has **no** downloadable backups and pauses inactive projects: use Pro for a paying business.
 8. Make yourself admin: `update public.profiles set role='admin' where email='you@example.com';`
@@ -146,14 +153,16 @@ On **this** site set `MODULE_URL_MOLECULAR_ATLAS=https://molecularatlas.alaskova
 - Error tracking (e.g. Sentry) was not added: it sends data to a third party, so it needs your approval and a privacy
   policy line first.
 
-## 9. Handling a deletion request **[Owner]**
+## 9. Account closures **[Owner]**
 
-1. Supabase > `support_requests`, open rows with kind `account_deletion`.
-2. Stripe > Customers > search the email > cancel any active subscription (immediately) and decide on any refund.
-3. Supabase > Authentication > Users > the user > Delete user. This removes their profile, subscription records,
-   and any old referral records automatically.
-4. Email them that it is done; set the request's `status` to `done` and `handled_at` to now.
-Stripe keeps its own billing records, which you need for tax.
+Students close their own account from **My account > Close my account** (legal brief D5). You don't need to do anything:
+- no active subscription: the account is deleted straight away;
+- active subscription: Stripe cancels it at the end of the paid month, and the account is deleted automatically when
+  that happens. Each closure is logged in Supabase > `support_requests` (kind `account_deletion`).
+
+If someone emails asking to be deleted instead: Stripe > Customers > search the email > cancel any active subscription
+(immediately); then Supabase > Authentication > Users > the user > Delete user (this removes their profile and
+subscription records). Email them that it is done. Stripe keeps its own billing records, which you need for tax.
 
 ## 10. Rollback plan
 
