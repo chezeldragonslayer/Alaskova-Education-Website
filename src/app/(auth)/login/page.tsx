@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; book?: string; error?: string }>;
+  searchParams: Promise<{ next?: string; book?: string; error?: string; notice?: string }>;
 }) {
   return <AuthPage mode="login" searchParams={searchParams} />;
 }

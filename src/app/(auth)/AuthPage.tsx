@@ -4,7 +4,7 @@ import { bookPath } from "@/lib/catalogue";
 import { LogoEmblem } from "@/components/Logo";
 import { AuthForm } from "./AuthForm";
 
-type SP = Promise<{ next?: string; book?: string; error?: string }>;
+type SP = Promise<{ next?: string; book?: string; error?: string; notice?: string }>;
 
 const errors: Record<string, string> = {
   callback:
@@ -24,6 +24,11 @@ async function Inner({ mode, searchParams }: { mode: "login" | "register"; searc
       {sp.error && (
         <p role="alert" className="mb-5 rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-800 ring-1 ring-red-200">
           {errors[sp.error] ?? "Something went wrong. Please try again."}
+        </p>
+      )}
+      {sp.notice === "closed" && (
+        <p role="status" className="mb-5 rounded-xl bg-gold-soft px-4 py-3 text-sm font-medium text-navy ring-1 ring-gold/30">
+          Your account has been closed and deleted.
         </p>
       )}
       <AuthForm mode={mode} next={next} />

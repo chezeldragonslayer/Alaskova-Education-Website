@@ -27,6 +27,14 @@ export function AuthForm({ mode, next }: { mode: "login" | "register"; next: str
   return (
     <div>
       <InAppBrowserNotice variant="signin" />
+      <p className="mb-5 text-sm leading-relaxed text-muted">
+        By continuing, you agree to our{" "}
+        <Link href="/legal/terms" className="font-medium text-gold-ink underline underline-offset-4">Terms of service</Link>{" "}
+        and confirm you&rsquo;ve read our{" "}
+        <Link href="/legal/privacy" className="font-medium text-gold-ink underline underline-offset-4">Privacy policy</Link>.
+        To run your account we share your details with service providers such as Supabase, Render and Stripe, some of
+        which store information outside Australia.
+      </p>
       <div className="grid gap-3">
         {providers.map(([p, label]) => (
           <form key={p} action={signInWithProvider}>

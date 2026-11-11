@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { CHECKOUT_KEY_TERMS, CHECKOUT_TERMS_CHECKBOX } from "@/lib/legal";
 import { billingConfigured, env, siteUrl } from "@/lib/env";
 import { bookPath, getBook } from "@/lib/catalogue";
 import { planForBook } from "@/lib/plans";
@@ -74,6 +75,13 @@ export async function POST(request: NextRequest) {
         },
       ],
       subscription_data: { metadata },
+      // Legal brief D2: a required terms checkbox plus the key terms above the Pay button. Stripe needs the Terms URL
+      // set in Dashboard > Settings > Business > Public details, otherwise it refuses to create the session.
+      consent_collection: { terms_of_service: "required" },
+      custom_text: {
+        terms_of_service_acceptance: { message: CHECKOUT_TERMS_CHECKBOX },
+        submit: { message: CHECKOUT_KEY_TERMS },
+      },
       metadata,
       // Redirect is for UX only. Access is granted by the verified webhook, not by this URL.
       success_url: `${site}/dashboard?checkout=success`,

@@ -184,7 +184,7 @@ export function AtlasPricing({ searchParams }: { searchParams?: Promise<Record<s
         {[
           "Full access to all 229 lessons and 10 modules",
           "Practice problems, checkpoints and a final exam",
-          "Learn at your own pace, on phone, tablet or computer",
+          "Learn at your own pace, on phone, tablet or computer (progress saves in the browser you use)",
           "Cancel from your account; keep access until the end of the month you’ve paid for",
           "Subscribe again whenever you need it, for example over the university holidays",
         ].map((t) => (

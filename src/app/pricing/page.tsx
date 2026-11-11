@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 const faqs = [
   { q: "What does the subscription include?", a: "Full online access to Molecular Atlas: every lesson, practice problem and interactive tool, for as long as your subscription is active." },
-  { q: "When am I billed?", a: `${price} (including GST) when you subscribe, then on the same date each month until you cancel.` },
+  { q: "When am I billed?", a: `${price} (including GST) when you subscribe, then on the same date each month (or the last day of the month, if a month has no such date) until you cancel.` },
   { q: "How do I cancel?", a: "From My account, choose Manage billing and cancel in the secure Stripe portal. No emails or phone calls needed. You keep access until the end of the month you’ve paid for." },
   { q: "Can I pause over the holidays?", a: "There’s no pause button, but you can cancel any time and subscribe again whenever you need it." },
   { q: "Is there a free trial?", a: "Not at the moment. You can cancel any time." },

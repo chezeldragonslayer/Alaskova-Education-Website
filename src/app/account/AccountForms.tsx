@@ -1,9 +1,9 @@
 "use client";
 
 import { keepValues } from "@/components/keepValues";
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
 import { Loader2 } from "lucide-react";
-import { requestDeletion, updateName, type AccountState } from "./actions";
+import { closeMyAccount, updateName, type AccountState } from "./actions";
 
 const field =
   "mt-1.5 h-12 w-full rounded-xl bg-white px-4 text-base ring-1 ring-line focus:outline-none focus:ring-2 focus:ring-gold-ink";
@@ -34,19 +34,45 @@ export function NameForm({ name }: { name: string }) {
   );
 }
 
-export function DeleteAccountForm() {
-  const [state, action, pending] = useActionState<AccountState, FormData>(requestDeletion, {});
-  if (state.message) return <p role="status" className="font-medium text-navy-soft">{state.message}</p>;
+/** Close-account button with a confirmation dialog (legal brief D5). `endsAt` is set when a subscription still gives access. */
+export function CloseAccountForm({ endsAt, scheduled }: { endsAt: string | null; scheduled: boolean }) {
+  const [state, action, pending] = useActionState<AccountState, FormData>(closeMyAccount, {});
+  const dialog = useRef<HTMLDialogElement>(null);
+  if (scheduled || state.message) {
+    return (
+      <p role="status" className="font-medium text-navy-soft">
+        {state.message ??
+          `Your account is set to close. You keep access until ${endsAt ?? "the end of your paid period"}, and then your account will be deleted.`}
+      </p>
+    );
+  }
   return (
-    <form action={action} onSubmit={keepValues(action)} className="space-y-3">
-      <label className="flex items-start gap-3 text-sm">
-        <input type="checkbox" name="confirm" className="mt-1 size-4 accent-navy" />
-        <span>I want my Alaskova Education account and its personal information deleted. I understand this can’t be undone.</span>
-      </label>
-      <Status state={state} id="delete-error" />
-      <button disabled={pending} className="inline-flex h-11 items-center gap-2 rounded-xl bg-white px-5 text-sm font-semibold text-red-700 ring-1 ring-red-300 transition-colors hover:bg-red-50 disabled:opacity-60">
-        {pending && <Loader2 className="animate-spin" size={16} aria-hidden />} Request account deletion
+    <div>
+      <Status state={state} id="close-error" />
+      <button type="button" onClick={() => dialog.current?.showModal()}
+        className="inline-flex h-11 items-center gap-2 rounded-xl bg-white px-5 text-sm font-semibold text-red-700 ring-1 ring-red-300 transition-colors hover:bg-red-50">
+        Close my account
       </button>
-    </form>
+      <dialog ref={dialog} aria-labelledby="close-title"
+        className="m-auto w-[min(32rem,calc(100vw-2rem))] rounded-2xl bg-white p-6 text-navy shadow-card backdrop:bg-navy/60">
+        <h3 id="close-title" className="font-display text-xl font-semibold tracking-tight">Close your account?</h3>
+        <p className="mt-3 text-sm leading-relaxed text-muted">
+          {endsAt
+            ? `Closing your account cancels your Molecular Atlas subscription. You won't be charged again. You'll keep access until ${endsAt}, and then your account will be deleted. Notes and progress saved in your browser aren't deleted by us; clear your browser data to remove them.`
+            : "Your account will be deleted straight away. This can't be undone."}
+        </p>
+        <form action={action} onSubmit={() => dialog.current?.close()} className="mt-6 flex flex-wrap gap-3">
+          <input type="hidden" name="confirm" value="close" />
+          <button disabled={pending}
+            className="inline-flex h-11 items-center gap-2 rounded-xl bg-red-700 px-5 text-sm font-semibold text-white transition-colors hover:bg-red-800 disabled:opacity-60">
+            {pending && <Loader2 className="animate-spin" size={16} aria-hidden />} Close my account
+          </button>
+          <button type="button" autoFocus onClick={() => dialog.current?.close()}
+            className="inline-flex h-11 items-center rounded-xl bg-white px-5 text-sm font-semibold text-navy ring-1 ring-line hover:bg-paper">
+            Keep my account
+          </button>
+        </form>
+      </dialog>
+    </div>
   );
 }

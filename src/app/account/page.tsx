@@ -7,9 +7,10 @@ import { authConfigured, billingConfigured } from "@/lib/env";
 import { getUser } from "@/lib/supabase/server";
 import { getSubscriptions } from "@/lib/access";
 import { getBook } from "@/lib/catalogue";
-import { describeSubscription } from "@/lib/security";
+import { describeSubscription, grantsAccess } from "@/lib/security";
 import { displayName } from "@/lib/support";
-import { DeleteAccountForm, NameForm } from "./AccountForms";
+import { CloseAccountForm, NameForm } from "./AccountForms";
+import { pendingClosure } from "@/lib/account-closure";
 
 export const metadata: Metadata = {
   title: "My account",
@@ -34,6 +35,15 @@ async function Account({ searchParams }: { searchParams: SP }) {
   const providers = ((user.app_metadata?.providers as string[] | undefined) ?? [user.app_metadata?.provider ?? "email"])
     .map((p) => providerLabel[p] ?? p);
   const hasPassword = providers.includes(providerLabel.email);
+  // Latest date a subscription still gives access until (for the close-account dialog), and any closure already scheduled.
+  const accessEnds =
+    subs
+      .filter((s) => grantsAccess(s.status, s.current_period_end))
+      .map((s) => s.current_period_end)
+      .filter((d): d is string => Boolean(d))
+      .sort()
+      .at(-1) ?? null;
+  const closing = billingConfigured() ? await pendingClosure(user.id) : false;
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-10 sm:px-8 lg:py-14">
@@ -103,15 +113,16 @@ async function Account({ searchParams }: { searchParams: SP }) {
         )}
       </section>
 
-      <section aria-labelledby="delete" className={`mt-6 ${card}`}>
-        <h2 id="delete" className="font-display text-xl font-semibold tracking-tight">Delete my account</h2>
+      <section aria-labelledby="close" className={`mt-6 ${card}`}>
+        <h2 id="close" className="font-display text-xl font-semibold tracking-tight">Close my account</h2>
         <p className="mt-2 text-sm text-muted">
-          We’ll delete your account and personal information within 30 days, except billing records we must keep for tax
-          purposes (see the <Link href="/legal/privacy" className="text-gold-ink underline underline-offset-4">privacy policy</Link>).
-          {subs.some((s) => describeSubscription(s, fmt).label !== "Ended") &&
-            " Your subscription will be cancelled as part of this. To stop payments straight away, cancel it in Manage billing first."}
+          {accessEnds
+            ? "Closing your account cancels your subscription, so you won’t be charged again. You keep access until the end of the period you’ve paid for, and then your account is deleted."
+            : "Closing your account deletes it straight away."}{" "}
+          We keep billing and tax records as our{" "}
+          <Link href="/legal/privacy" className="text-gold-ink underline underline-offset-4">Privacy policy</Link> describes.
         </p>
-        <div className="mt-4"><DeleteAccountForm /></div>
+        <div className="mt-4"><CloseAccountForm endsAt={accessEnds ? fmt(accessEnds) : null} scheduled={closing} /></div>
       </section>
     </div>
   );

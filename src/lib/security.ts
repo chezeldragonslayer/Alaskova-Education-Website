@@ -70,7 +70,7 @@ export function grantsAccess(
  * book, starting another checkout for the same book would risk charging the customer twice.
  * Only canceled and incomplete_expired are truly finished.
  */
-export const LIVE_STATUSES = ["active", "trialing", "past_due", "unpaid", "paused", "incomplete"] as const;
+export const LIVE_STATUSES = ["active", "trialing", "past_due", "unpaid", "paused", "incomplete", "disputed"] as const;
 export function blocksNewCheckout(statuses: readonly string[]): boolean {
   return statuses.some((s) => (LIVE_STATUSES as readonly string[]).includes(s));
 }
@@ -97,6 +97,12 @@ export function describeSubscription(
       return { label: "Payment pending", detail: "Your first payment hasn’t gone through yet", needsAction: true };
     case "paused":
       return { label: "Paused", detail: "Resume in Manage billing to restore access", needsAction: true };
+    case "disputed":
+      return {
+        label: "Paused",
+        detail: "Your access is paused because a payment is being disputed with your bank. Contact support@alaskovaeducation.com if this is a mistake.",
+        needsAction: true,
+      };
     case "canceled":
       return { label: "Ended", detail: s.current_period_end ? `Ended ${date}` : "Ended", needsAction: false };
     default:

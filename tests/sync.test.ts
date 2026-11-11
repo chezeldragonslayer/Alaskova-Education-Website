@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type Stripe from "stripe";
-import { isFullRefund, processStripeEvent, periodEnd, type SyncDeps, type SubscriptionRow } from "@/lib/stripe/sync";
+import { processStripeEvent, periodEnd, type SyncDeps, type SubscriptionRow } from "@/lib/stripe/sync";
 import { grantsAccess } from "@/lib/security";
 
 const sub = (over: Record<string, unknown> = {}) =>
@@ -28,6 +28,9 @@ function deps(over: Partial<SyncDeps> = {}, current = sub()) {
     userForCustomer: vi.fn(async () => null),
     subscriptionForCharge: vi.fn(async () => "sub_1"),
     cancelSubscriptionNow: vi.fn(async () => {}),
+    setDisputePause: vi.fn(async () => {}),
+    recordCheckoutConsent: vi.fn(async () => {}),
+    completeScheduledClosure: vi.fn(async () => {}),
     retrieveCharge: vi.fn(async () => ({ id: "ch_1", payment_intent: "pi_1" }) as unknown as Stripe.Charge),
     ...over,
   };
@@ -136,56 +139,76 @@ describe("subscription lifecycle from webhooks", () => {
   });
 });
 
-describe("refunds end access immediately (owner policy)", () => {
-  const charge = (over: Record<string, unknown> = {}) =>
-    ({ id: "ch_1", amount: 1199, amount_refunded: 1199, refunded: true, payment_intent: "pi_1", ...over });
-
-  it("a full refund cancels the subscription it paid for, and access ends", async () => {
-    const { d, rows } = deps({}, sub({ status: "canceled" }));
-    await processStripeEvent(evt("charge.refunded", charge()), d);
-    expect(d.subscriptionForCharge).toHaveBeenCalled();
-    expect(d.cancelSubscriptionNow).toHaveBeenCalledWith("sub_1");
-    expect(rows[0].status).toBe("canceled");
-    expect(grantsAccess(rows[0].status, rows[0].current_period_end)).toBe(false);
-  });
-
-  it("a partial refund leaves access alone", async () => {
+describe("refunds never cancel by themselves (legal brief D4)", () => {
+  const charge = { id: "ch_1", amount: 899, amount_refunded: 899, refunded: true, payment_intent: "pi_1" };
+  it("a full refund leaves the subscription and access alone", async () => {
     const { d, rows } = deps();
-    await processStripeEvent(evt("charge.refunded", charge({ amount_refunded: 500, refunded: false })), d);
+    await processStripeEvent(evt("charge.refunded", charge), d);
     expect(d.cancelSubscriptionNow).not.toHaveBeenCalled();
+    expect(d.setDisputePause).not.toHaveBeenCalled();
     expect(rows).toHaveLength(0);
-  });
-
-  it("a refund of a non-subscription payment changes nothing", async () => {
-    const { d } = deps({ subscriptionForCharge: vi.fn(async () => null) });
-    await processStripeEvent(evt("charge.refunded", charge()), d);
-    expect(d.cancelSubscriptionNow).not.toHaveBeenCalled();
-  });
-
-  it("if cancelling fails, the event is not marked done, so Stripe retries it", async () => {
-    const { d } = deps({ cancelSubscriptionNow: vi.fn(async () => { throw new Error("stripe down"); }) });
-    await expect(processStripeEvent(evt("charge.refunded", charge()), d)).rejects.toThrow("stripe down");
-    expect(d.markProcessed).not.toHaveBeenCalled();
-  });
-
-  it("recognises full and partial refunds", () => {
-    expect(isFullRefund({ refunded: true, amount: 1199, amount_refunded: 1199 })).toBe(true);
-    expect(isFullRefund({ refunded: false, amount: 1199, amount_refunded: 1199 })).toBe(true);
-    expect(isFullRefund({ refunded: false, amount: 1199, amount_refunded: 600 })).toBe(false);
+    expect(d.markProcessed).toHaveBeenCalled();
   });
 });
 
-describe("bank disputes end access immediately (owner policy)", () => {
-  it("a dispute cancels the subscription the disputed charge paid for", async () => {
-    const { d, rows } = deps({}, sub({ status: "canceled" }));
-    await processStripeEvent(evt("charge.dispute.created", { id: "dp_1", charge: "ch_1" }), d);
+describe("disputes pause access, then restore or end it (legal brief D4)", () => {
+  const dispute = (status = "needs_response") => ({ id: "dp_1", charge: "ch_1", status });
+
+  it("an opened dispute pauses access to the subscription it paid for", async () => {
+    const { d, rows } = deps({}, sub({ metadata: { user_id: "user-1", book_slug: "molecular-atlas", access_paused: "dispute" } }));
+    await processStripeEvent(evt("charge.dispute.created", dispute()), d);
     expect(d.retrieveCharge).toHaveBeenCalledWith("ch_1");
-    expect(d.cancelSubscriptionNow).toHaveBeenCalledWith("sub_1");
+    expect(d.setDisputePause).toHaveBeenCalledWith("sub_1", true);
+    expect(d.cancelSubscriptionNow).not.toHaveBeenCalled();
+    expect(rows[0].status).toBe("disputed");
     expect(grantsAccess(rows[0].status, rows[0].current_period_end)).toBe(false);
   });
+
+  it("a lost dispute cancels the subscription", async () => {
+    const { d, rows } = deps({}, sub({ status: "canceled" }));
+    await processStripeEvent(evt("charge.dispute.closed", dispute("lost")), d);
+    expect(d.cancelSubscriptionNow).toHaveBeenCalledWith("sub_1");
+    expect(rows[0].status).toBe("canceled");
+  });
+
+  it.each(["won", "warning_closed"])("a dispute closed as %s restores access", async (status) => {
+    const { d, rows } = deps();
+    await processStripeEvent(evt("charge.dispute.closed", dispute(status)), d);
+    expect(d.setDisputePause).toHaveBeenCalledWith("sub_1", false);
+    expect(d.cancelSubscriptionNow).not.toHaveBeenCalled();
+    expect(rows[0].status).toBe("active");
+    expect(grantsAccess(rows[0].status, rows[0].current_period_end)).toBe(true);
+  });
+
+  it("the pause only applies while the subscription would otherwise give access", async () => {
+    const { d, rows } = deps({}, sub({ status: "past_due", metadata: { user_id: "user-1", book_slug: "molecular-atlas", access_paused: "dispute" } }));
+    await processStripeEvent(evt("customer.subscription.updated", sub()), d);
+    expect(rows[0].status).toBe("past_due");
+  });
+
   it("a dispute on a non-subscription payment changes nothing", async () => {
     const { d } = deps({ subscriptionForCharge: vi.fn(async () => null) });
-    await processStripeEvent(evt("charge.dispute.created", { id: "dp_1", charge: "ch_1" }), d);
-    expect(d.cancelSubscriptionNow).not.toHaveBeenCalled();
+    await processStripeEvent(evt("charge.dispute.created", dispute()), d);
+    expect(d.setDisputePause).not.toHaveBeenCalled();
+  });
+
+  it("if pausing fails, the event is not marked done, so Stripe retries it", async () => {
+    const { d } = deps({ setDisputePause: vi.fn(async () => { throw new Error("stripe down"); }) });
+    await expect(processStripeEvent(evt("charge.dispute.created", dispute()), d)).rejects.toThrow("stripe down");
+    expect(d.markProcessed).not.toHaveBeenCalled();
+  });
+});
+
+describe("consent and account closure", () => {
+  it("records the terms checkbox from checkout", async () => {
+    const { d } = deps();
+    const s = { mode: "subscription", customer: "cus_1", client_reference_id: "user-1", subscription: "sub_1", metadata: {}, created: 1_800_000_000, consent: { terms_of_service: "accepted" } };
+    await processStripeEvent(evt("checkout.session.completed", s), d);
+    expect(d.recordCheckoutConsent).toHaveBeenCalledWith("sub_1", new Date(1_800_000_000 * 1000).toISOString());
+  });
+  it("finishes a scheduled account closure when the subscription ends", async () => {
+    const { d } = deps({}, sub({ status: "canceled" }));
+    await processStripeEvent(evt("customer.subscription.deleted", sub()), d);
+    expect(d.completeScheduledClosure).toHaveBeenCalledWith("user-1");
   });
 });

@@ -3,6 +3,7 @@ import type { EmailOtpType } from "@supabase/supabase-js";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { authConfigured, siteUrl } from "@/lib/env";
 import { safeNext } from "@/lib/security";
+import { recordSignupConsent } from "@/lib/consent";
 
 const TYPES: EmailOtpType[] = ["signup", "email", "recovery", "email_change", "invite", "magiclink"];
 
@@ -25,9 +26,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${base}/login?error=callback`, noStore);
   }
   const supabase = await createSupabaseServer();
-  const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
+  const { data, error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
   if (error) {
     return NextResponse.redirect(type === "recovery" ? `${base}/reset-password` : `${base}/login?error=callback`, noStore);
   }
+  if (data.user && (type === "signup" || type === "email")) await recordSignupConsent(data.user);
   return NextResponse.redirect(`${base}${next}`, noStore);
 }

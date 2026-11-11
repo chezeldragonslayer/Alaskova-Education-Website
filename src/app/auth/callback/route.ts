@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { authConfigured, siteUrl } from "@/lib/env";
 import { safeNext } from "@/lib/security";
+import { recordSignupConsent } from "@/lib/consent";
 
 /** OAuth + email-confirmation return point: exchanges the code for a session. */
 export async function GET(request: NextRequest) {
@@ -11,7 +12,8 @@ export async function GET(request: NextRequest) {
   if (!authConfigured() || !code) return NextResponse.redirect(`${base}/login?error=callback`);
 
   const supabase = await createSupabaseServer();
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) return NextResponse.redirect(`${base}/login?error=callback`);
+  if (data.user) await recordSignupConsent(data.user);
   return NextResponse.redirect(`${base}${next}`);
 }

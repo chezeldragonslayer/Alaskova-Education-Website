@@ -10,9 +10,12 @@ import type Stripe from "stripe";
  *  - We re-fetch the subscription from Stripe for every relevant event, so
  *    out-of-order or replayed events can't leave stale state behind.
  *  - Each event id is claimed in `stripe_events`; duplicates are acknowledged and skipped.
- *  - Owner policy: a FULL refund ends access immediately. When a payment is fully refunded (in the Stripe Dashboard or
- *    anywhere else), the subscription it paid for is cancelled at once. Partial refunds leave access alone.
- *  - Owner policy: a bank dispute (chargeback) also ends access immediately, whatever its outcome.
+ *  - Refunds (legal brief D4): a refund NEVER cancels a subscription by itself, so refunding a duplicate or incorrect
+ *    charge leaves paid access alone. To end a subscription with a refund, the owner cancels it in the Stripe
+ *    Dashboard as well (GO-LIVE.md step 2.7).
+ *  - Disputes (legal brief D4): when a payment is disputed, access is paused (status "disputed"). If the dispute is won
+ *    or closed as a warning, access is restored; if it is lost, the subscription is cancelled and access ends.
+ *    The pause is stored on the Stripe subscription (metadata access_paused=dispute), so a re-sync never undoes it.
  */
 export type SubscriptionRow = {
   id: string;
@@ -39,7 +42,16 @@ export type SyncDeps = {
   retrieveCharge(chargeId: string): Promise<Stripe.Charge>;
   /** Cancel a subscription immediately (no-op if it has already ended). */
   cancelSubscriptionNow(subscriptionId: string): Promise<void>;
+  /** Pause (true) or restore (false) access because of a payment dispute. */
+  setDisputePause(subscriptionId: string, paused: boolean): Promise<void>;
+  /** Optional: record that the customer ticked the terms checkbox at checkout (legal brief D2). */
+  recordCheckoutConsent?(subscriptionId: string, acceptedAt: string): Promise<void>;
+  /** Optional: a subscription has ended; delete the account if its owner asked to close it (legal brief D5). */
+  completeScheduledClosure?(userId: string): Promise<void>;
 };
+
+/** Our own status for a subscription whose access is paused while a payment dispute is open. */
+export const DISPUTED = "disputed";
 
 const id = (x: string | { id: string } | null | undefined) =>
   typeof x === "string" ? x : (x?.id ?? null);
@@ -67,7 +79,11 @@ export async function subscriptionToRow(
     user_id: userId,
     book_slug: bookSlug,
     stripe_customer_id: customerId,
-    status: sub.status,
+    // A dispute pauses access only while the subscription would otherwise give access.
+    status:
+      sub.metadata?.access_paused === "dispute" && (sub.status === "active" || sub.status === "trialing")
+        ? DISPUTED
+        : sub.status,
     current_period_end: periodEnd(sub),
     cancel_at_period_end: Boolean(sub.cancel_at_period_end),
     updated_at: now.toISOString(),
@@ -80,11 +96,6 @@ function invoiceSubscriptionId(invoice: Stripe.Invoice): string | null {
   }).parent;
   const legacy = (invoice as unknown as { subscription?: string | { id: string } }).subscription;
   return id(parent?.subscription_details?.subscription) ?? id(legacy);
-}
-
-/** True when the whole charge has been refunded (Stripe sets `refunded` only then). */
-export function isFullRefund(charge: Pick<Stripe.Charge, "refunded" | "amount" | "amount_refunded">): boolean {
-  return Boolean(charge.refunded) || (charge.amount > 0 && charge.amount_refunded >= charge.amount);
 }
 
 export function invoiceSubscription(invoice: Stripe.Invoice): string | null {
@@ -113,14 +124,21 @@ export async function processStripeEvent(
       if (customerId && userId) await deps.linkCustomer(userId, customerId);
       const subId = id(s.subscription as string | { id: string } | null);
       if (subId) await syncSubscription(subId, deps);
+      if (subId && s.consent?.terms_of_service === "accepted" && deps.recordCheckoutConsent) {
+        await deps.recordCheckoutConsent(subId, new Date(s.created * 1000).toISOString());
+      }
       break;
     }
     case "customer.subscription.created":
     case "customer.subscription.updated":
-    case "customer.subscription.deleted":
     case "customer.subscription.paused":
     case "customer.subscription.resumed": {
       await syncSubscription((event.data.object as Stripe.Subscription).id, deps);
+      break;
+    }
+    case "customer.subscription.deleted": {
+      const { row } = await syncSubscription((event.data.object as Stripe.Subscription).id, deps);
+      if (row && deps.completeScheduledClosure) await deps.completeScheduledClosure(row.user_id);
       break;
     }
     case "invoice.paid":
@@ -131,22 +149,22 @@ export async function processStripeEvent(
       await syncSubscription(subId, deps);
       break;
     }
-    case "charge.refunded": {
-      const charge = event.data.object as Stripe.Charge;
-      if (!isFullRefund(charge)) break; // partial refund (e.g. a goodwill credit): access continues
-      const subId = await deps.subscriptionForCharge(charge);
-      if (!subId) break;
-      await deps.cancelSubscriptionNow(subId);
-      await syncSubscription(subId, deps);
-      break;
-    }
-    case "charge.dispute.created": {
+    case "charge.dispute.created":
+    case "charge.dispute.closed": {
       const dispute = event.data.object as Stripe.Dispute;
       const chargeId = typeof dispute.charge === "string" ? dispute.charge : dispute.charge?.id;
       if (!chargeId) break;
       const subId = await deps.subscriptionForCharge(await deps.retrieveCharge(chargeId));
       if (!subId) break;
-      await deps.cancelSubscriptionNow(subId);
+      if (event.type === "charge.dispute.created") {
+        await deps.setDisputePause(subId, true);
+      } else if (dispute.status === "lost") {
+        await deps.cancelSubscriptionNow(subId);
+        await deps.setDisputePause(subId, false);
+      } else {
+        // won, or an inquiry closed as a warning: access comes back
+        await deps.setDisputePause(subId, false);
+      }
       await syncSubscription(subId, deps);
       break;
     }

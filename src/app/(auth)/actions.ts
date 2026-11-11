@@ -6,6 +6,8 @@ import { z } from "zod";
 import { authConfigured, siteUrl } from "@/lib/env";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { clientIp, rateLimit, safeNext } from "@/lib/security";
+import { TERMS_VERSION } from "@/lib/legal";
+import { recordSignupConsent } from "@/lib/consent";
 
 export type FormState = { error?: string; message?: string };
 
@@ -60,12 +62,16 @@ export async function signUp(_: FormState, formData: FormData): Promise<FormStat
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
-      data: { full_name: parsed.data.fullName },
+      // The sign-up notice (legal brief D1) sits above this form; recorded on the profile once the email is confirmed.
+      data: { full_name: parsed.data.fullName, terms_accepted_at: new Date().toISOString(), terms_version: TERMS_VERSION },
       emailRedirectTo: `${siteUrl()}/auth/callback?next=${encodeURIComponent(next)}`,
     },
   });
   if (error) return { error: "We couldn't create that account. Try a different email or sign in." };
-  if (data.session) redirect(next);
+  if (data.session && data.user) {
+    await recordSignupConsent(data.user);
+    redirect(next);
+  }
   // Email confirmation required (or the address already exists): same message either way.
   return { message: "Check your email to confirm your account, then sign in." };
 }

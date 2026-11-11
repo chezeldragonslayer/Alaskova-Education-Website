@@ -1,5 +1,5 @@
 -- Alaskova Education: complete set-up for a NEW, empty Supabase project (November 2026).
--- Same as migrations 0001 + 0003. The referral migrations (0002, 0004) are not needed: that feature was removed.
+-- Same as migrations 0001 + 0003 + 0005. The referral migrations (0002, 0004) are not needed: that feature was removed.
 -- Run once, in Supabase > SQL editor. It fails harmlessly with "already exists" if the project is already set up.
 
 create type public.app_role as enum ('student', 'admin');
@@ -90,3 +90,9 @@ create index support_requests_open_idx on public.support_requests (status, creat
 create index support_requests_user_idx on public.support_requests (user_id, kind);
 alter table public.support_requests enable row level security;
 revoke all on public.support_requests from anon, authenticated;
+
+-- Migration 0005: when the Terms were accepted, and which version (sign-up and checkout).
+alter table public.profiles add column if not exists terms_accepted_at timestamptz;
+alter table public.profiles add column if not exists terms_version text;
+alter table public.subscriptions add column if not exists terms_accepted_at timestamptz;
+alter table public.subscriptions add column if not exists terms_version text;

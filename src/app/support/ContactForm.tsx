@@ -3,6 +3,7 @@
 import { keepValues } from "@/components/keepValues";
 import { useActionState, useSyncExternalStore } from "react";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 import { sendContactMessage, type ContactState } from "./actions";
 
 const field =
@@ -63,6 +64,10 @@ export function ContactForm() {
           {pending && <Loader2 className="animate-spin" size={18} aria-hidden />}
           Send message
         </button>
+        <p className="mt-3 text-xs text-white/70">
+          We use your name, email and message only to reply to you. See our{" "}
+          <Link href="/legal/privacy" className="font-medium text-gold underline underline-offset-4">Privacy policy</Link>.
+        </p>
       </div>
     </form>
   );

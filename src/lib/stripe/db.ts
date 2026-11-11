@@ -2,6 +2,8 @@ import "server-only";
 import { createSupabaseAdmin } from "@/lib/supabase/server";
 import { getStripe } from "./client";
 import { invoiceSubscription, type SyncDeps } from "./sync";
+import { TERMS_VERSION } from "@/lib/legal";
+import { completeScheduledClosure } from "@/lib/account-closure";
 
 /** Real dependencies for the webhook: Stripe API + Supabase (service role). */
 export function realSyncDeps(): SyncDeps {
@@ -31,6 +33,8 @@ export function realSyncDeps(): SyncDeps {
     retrieveSubscription: (id) => stripe.subscriptions.retrieve(id),
     async upsertSubscription(row) {
       const { error } = await db.from("subscriptions").upsert(row, { onConflict: "id" });
+      // 23503 = the account no longer exists (closed and deleted). Nothing to store; don't make Stripe retry for days.
+      if (error?.code === "23503") return console.warn("subscription event for a deleted account", row.id);
       if (error) throw error;
     },
     async linkCustomer(userId, customerId) {
@@ -61,13 +65,28 @@ export function realSyncDeps(): SyncDeps {
       return invoiceSubscription(await stripe.invoices.retrieve(invoiceId));
     },
     retrieveCharge: (chargeId) => stripe.charges.retrieve(chargeId),
+    async setDisputePause(subscriptionId, paused) {
+      // Setting a metadata value to "" removes the key in Stripe.
+      await stripe.subscriptions.update(subscriptionId, { metadata: { access_paused: paused ? "dispute" : "" } });
+    },
+    async recordCheckoutConsent(subscriptionId, acceptedAt) {
+      // Never fail the webhook over the consent record: payment and access matter more. Logged for follow-up.
+      const { error } = await db
+        .from("subscriptions")
+        .update({ terms_accepted_at: acceptedAt, terms_version: TERMS_VERSION })
+        .eq("id", subscriptionId);
+      if (error) console.error("could not record checkout terms consent", subscriptionId, error.message);
+    },
+    async completeScheduledClosure(userId) {
+      await completeScheduledClosure(userId);
+    },
     async cancelSubscriptionNow(subscriptionId) {
       const current = await stripe.subscriptions.retrieve(subscriptionId);
       if (current.status === "canceled" || current.status === "incomplete_expired") return;
       await stripe.subscriptions.cancel(
         subscriptionId,
-        { cancellation_details: { comment: "Payment refunded or disputed: access ended immediately (Alaskova Education policy)." } },
-        { idempotencyKey: `refund-cancel-${subscriptionId}` },
+        { cancellation_details: { comment: "Payment dispute lost: subscription ended (Alaskova Education policy)." } },
+        { idempotencyKey: `dispute-cancel-${subscriptionId}` },
       );
     },
   };
