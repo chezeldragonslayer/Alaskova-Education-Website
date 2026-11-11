@@ -80,6 +80,14 @@ export function realSyncDeps(): SyncDeps {
     async completeScheduledClosure(userId) {
       await completeScheduledClosure(userId);
     },
+    async cancelAtPeriodEnd(subscriptionId) {
+      const current = await stripe.subscriptions.retrieve(subscriptionId);
+      if (current.status === "canceled" || current.status === "incomplete_expired" || current.cancel_at_period_end) return;
+      await stripe.subscriptions.update(subscriptionId, {
+        cancel_at_period_end: true,
+        cancellation_details: { comment: "Payment refunded: access continues to the end of the paid period (Alaskova Education policy)." },
+      });
+    },
     async cancelSubscriptionNow(subscriptionId) {
       const current = await stripe.subscriptions.retrieve(subscriptionId);
       if (current.status === "canceled" || current.status === "incomplete_expired") return;

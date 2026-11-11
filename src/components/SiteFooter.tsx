@@ -50,10 +50,10 @@ export function SiteFooter() {
 
       <div className="relative border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-6 text-xs text-white/60 sm:px-8 md:flex-row md:items-center md:justify-between">
-          <p>© Alaskova Education. All rights reserved.</p>
-          {/* OWNER: fill these in src/lib/business.ts; placeholders show until then. */}
+          <p>© {business.legalEntity}. All rights reserved.</p>
           <p>
-            Alaskova Education is a trading name of {business.legalEntity} · ABN {business.abn}
+            Alaskova Education is operated by {business.legalEntity}, trading as {business.registeredBusinessName} · ABN{" "}
+            {business.abn}
           </p>
         </div>
       </div>

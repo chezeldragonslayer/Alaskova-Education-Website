@@ -10,9 +10,9 @@ import type Stripe from "stripe";
  *  - We re-fetch the subscription from Stripe for every relevant event, so
  *    out-of-order or replayed events can't leave stale state behind.
  *  - Each event id is claimed in `stripe_events`; duplicates are acknowledged and skipped.
- *  - Refunds (legal brief D4): a refund NEVER cancels a subscription by itself, so refunding a duplicate or incorrect
- *    charge leaves paid access alone. To end a subscription with a refund, the owner cancels it in the Stripe
- *    Dashboard as well (GO-LIVE.md step 2.7).
+ *  - Refunds (owner decision, 11 Nov 2026): any refund of a subscription payment cancels that subscription at the END
+ *    of the paid period, so the student keeps access to the end of the month and is never charged again. To end access
+ *    straight away, the owner cancels the subscription immediately in the Stripe Dashboard (GO-LIVE.md step 2.7).
  *  - Disputes (legal brief D4): when a payment is disputed, access is paused (status "disputed"). If the dispute is won
  *    or closed as a warning, access is restored; if it is lost, the subscription is cancelled and access ends.
  *    The pause is stored on the Stripe subscription (metadata access_paused=dispute), so a re-sync never undoes it.
@@ -42,6 +42,8 @@ export type SyncDeps = {
   retrieveCharge(chargeId: string): Promise<Stripe.Charge>;
   /** Cancel a subscription immediately (no-op if it has already ended). */
   cancelSubscriptionNow(subscriptionId: string): Promise<void>;
+  /** Stop renewing a subscription; access continues to the end of the paid period (no-op if it has ended). */
+  cancelAtPeriodEnd(subscriptionId: string): Promise<void>;
   /** Pause (true) or restore (false) access because of a payment dispute. */
   setDisputePause(subscriptionId: string, paused: boolean): Promise<void>;
   /** Optional: record that the customer ticked the terms checkbox at checkout (legal brief D2). */
@@ -146,6 +148,15 @@ export async function processStripeEvent(
       const invoice = event.data.object as Stripe.Invoice;
       const subId = invoiceSubscriptionId(invoice);
       if (!subId) break;
+      await syncSubscription(subId, deps);
+      break;
+    }
+    case "charge.refunded": {
+      const charge = event.data.object as Stripe.Charge;
+      if (!(charge.amount_refunded > 0)) break;
+      const subId = await deps.subscriptionForCharge(charge);
+      if (!subId) break;
+      await deps.cancelAtPeriodEnd(subId);
       await syncSubscription(subId, deps);
       break;
     }

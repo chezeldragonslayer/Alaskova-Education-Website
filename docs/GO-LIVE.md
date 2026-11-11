@@ -13,7 +13,7 @@ Never paste a secret key into a chat, an email, a document or the repository. Pa
 |---|---|
 | ~~Currency and GST~~ **Decided:** A$8.99 per month in AUD, GST included (Alaskova Pty Ltd is GST-registered) | Stripe price A$8.99 AUD; inclusive GST tax rate (step 2.2) |
 | ~~Grace period~~ **Decided: none.** Access pauses as soon as a renewal fails (current behaviour) | done |
-| **Changed by the legal review (11 Nov 2026), confirm:** a refund never ends access by itself; a dispute pauses access, then restores it (won) or ends it (lost). No change-of-mind refunds for part-months | refunds page, terms section 4; built into the webhook |
+| **Decided (11 Nov 2026):** any refund cancels the subscription at the end of the paid month (access continues until then); cancelling it yourself in Stripe ends access immediately; a dispute pauses access, then restores it (won) or ends it (lost). No change-of-mind refunds for part-months | refunds page, terms section 4; built into the webhook |
 | ~~Referral programme~~ **Decided: removed** (7 Nov 2026) | done |
 | Legal entity name, ABN, address, support email, governing state, minimum age | `src/lib/business.ts` and the age line in the terms **[Agent or Owner]** |
 | ~~AI tutor~~ **Removed from the reader, 9 November 2026** | nothing to set; the privacy policy no longer mentions Anthropic |
@@ -53,7 +53,7 @@ Test-mode products, prices, keys and webhooks do **not** carry over to live mode
 4. Developers > Webhooks > **Add endpoint** `https://alaskovaeducation.com/api/stripe/webhook`, events:
    `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`,
    `customer.subscription.deleted`, `customer.subscription.paused`, `customer.subscription.resumed`, `invoice.paid`,
-   `invoice.payment_failed`, **`charge.dispute.created`**, **`charge.dispute.closed`** (10 events; `charge.refunded` is no longer needed but does no harm). Copy its **signing secret** (`whsec_...`).
+   `invoice.payment_failed`, **`charge.refunded`**, **`charge.dispute.created`**, **`charge.dispute.closed`** (11 events). Copy its **signing secret** (`whsec_...`).
 5. Settings > Billing > **Customer portal** (live mode): allow updating payment methods, viewing invoices, and cancelling
    **at the end of the billing period** (the refunds page promises this). Add links to your terms and privacy pages.
 6. Settings > Billing > Subscriptions and emails: turn on emails for failed payments and expiring cards, and Smart
@@ -62,11 +62,10 @@ Test-mode products, prices, keys and webhooks do **not** carry over to live mode
    Required: checkout now shows a "I agree to the Terms" checkbox, and Stripe refuses to open checkout without this URL
    (students would see "Something went wrong"). Do it in both sandbox and live mode before the release goes live.
 7. Refunds (what the refunds page promises):
-   - **Charged by mistake** (twice, or after cancelling): Payments > the payment > **Refund**. That is all. The
-     subscription carries on: a refund never cancels anything by itself.
-   - **Refund and end the subscription** (an Australian Consumer Law claim, or a refund of the current month you
-     agree to): refund the payment as above, **then** Subscriptions > the subscription > **Cancel subscription >
-     Immediately**. Access ends within seconds.
+   - Payments > the payment > **Refund**. That is all: the website sets the subscription to end at the end of the
+     paid month. The student keeps access until then and is never charged again. This applies to every refund,
+     including a charge made by mistake and a partial refund.
+   - To end access **straight away** as well: Subscriptions > the subscription > **Cancel subscription > Immediately**.
 8. Disputes: when a customer disputes a payment with their bank, the website **pauses** their access automatically
    (the library says why). Stripe emails you; respond in Stripe with the evidence. If you win (or the inquiry closes
    as a warning), access comes back automatically. If you lose, the subscription is cancelled and access ends.

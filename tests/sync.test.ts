@@ -29,6 +29,7 @@ function deps(over: Partial<SyncDeps> = {}, current = sub()) {
     subscriptionForCharge: vi.fn(async () => "sub_1"),
     cancelSubscriptionNow: vi.fn(async () => {}),
     setDisputePause: vi.fn(async () => {}),
+    cancelAtPeriodEnd: vi.fn(async () => {}),
     recordCheckoutConsent: vi.fn(async () => {}),
     completeScheduledClosure: vi.fn(async () => {}),
     retrieveCharge: vi.fn(async () => ({ id: "ch_1", payment_intent: "pi_1" }) as unknown as Stripe.Charge),
@@ -98,7 +99,7 @@ describe("processStripeEvent", () => {
 
   it("acknowledges unrelated events", async () => {
     const { d } = deps();
-    expect(await processStripeEvent(evt("charge.refunded", {}), d)).toBe("processed");
+    expect(await processStripeEvent(evt("customer.created", {}), d)).toBe("processed");
     expect(d.markProcessed).toHaveBeenCalled();
   });
 });
@@ -139,15 +140,31 @@ describe("subscription lifecycle from webhooks", () => {
   });
 });
 
-describe("refunds never cancel by themselves (legal brief D4)", () => {
-  const charge = { id: "ch_1", amount: 899, amount_refunded: 899, refunded: true, payment_intent: "pi_1" };
-  it("a full refund leaves the subscription and access alone", async () => {
-    const { d, rows } = deps();
-    await processStripeEvent(evt("charge.refunded", charge), d);
+describe("a refund cancels at the end of the paid period (owner decision, 11 Nov 2026)", () => {
+  const charge = (over: Record<string, unknown> = {}) =>
+    ({ id: "ch_1", amount: 899, amount_refunded: 899, refunded: true, payment_intent: "pi_1", ...over });
+  it("keeps access to the end of the month, then the subscription ends", async () => {
+    const { d, rows } = deps({}, sub({ cancel_at_period_end: true }));
+    await processStripeEvent(evt("charge.refunded", charge()), d);
+    expect(d.cancelAtPeriodEnd).toHaveBeenCalledWith("sub_1");
     expect(d.cancelSubscriptionNow).not.toHaveBeenCalled();
-    expect(d.setDisputePause).not.toHaveBeenCalled();
-    expect(rows).toHaveLength(0);
-    expect(d.markProcessed).toHaveBeenCalled();
+    expect(rows[0]).toMatchObject({ status: "active", cancel_at_period_end: true });
+    expect(grantsAccess(rows[0].status, rows[0].current_period_end, new Date(1_900_000_000 * 1000 - 1000))).toBe(true);
+  });
+  it("applies to a partial refund too", async () => {
+    const { d } = deps();
+    await processStripeEvent(evt("charge.refunded", charge({ amount_refunded: 300, refunded: false })), d);
+    expect(d.cancelAtPeriodEnd).toHaveBeenCalledWith("sub_1");
+  });
+  it("a refund of a non-subscription payment changes nothing", async () => {
+    const { d } = deps({ subscriptionForCharge: vi.fn(async () => null) });
+    await processStripeEvent(evt("charge.refunded", charge()), d);
+    expect(d.cancelAtPeriodEnd).not.toHaveBeenCalled();
+  });
+  it("if Stripe fails, the event is not marked done, so Stripe retries it", async () => {
+    const { d } = deps({ cancelAtPeriodEnd: vi.fn(async () => { throw new Error("stripe down"); }) });
+    await expect(processStripeEvent(evt("charge.refunded", charge()), d)).rejects.toThrow("stripe down");
+    expect(d.markProcessed).not.toHaveBeenCalled();
   });
 });
 

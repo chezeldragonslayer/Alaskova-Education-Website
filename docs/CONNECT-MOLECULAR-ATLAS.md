@@ -74,7 +74,7 @@ Follow `docs/GO-LIVE.md`; this is the order that avoids broken links.
     sign-in updated to the new domain (GO-LIVE step 4).
 22. **Stripe live mode** (GO-LIVE step 2): activate the account; create the live product (A$8.99 monthly); copy the
     live secret key and price id into Render; add the live webhook to `https://alaskovaeducation.com/api/stripe/webhook` with
-    the same **10 events** (including `charge.dispute.created` and `charge.dispute.closed`) and put its signing secret into Render; set up the customer
+    the same **11 events** (including `charge.refunded`, `charge.dispute.created` and `charge.dispute.closed`) and put its signing secret into Render; set up the customer
     portal (cancel at end of billing period).
 23. **Clear the sandbox records** in Supabase (SQL editor), exactly as you did when moving to the sandbox, so sandbox
     customers and subscriptions don't block real ones. Only do this before any real customer has paid.

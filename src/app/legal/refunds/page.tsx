@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 /*
- * DRAFT. Matches the Stripe set-up the site relies on: the Customer Portal cancels at the END of the billing period
+ * In force from 11 November 2026. Matches the Stripe set-up the site relies on: the Customer Portal cancels at the END of the billing period
  * (Stripe Dashboard > Settings > Billing > Customer portal > "Cancel at end of billing period"). If the owner changes that
  * setting, this page must change too. Updated 11 November 2026 from the legal pages implementation brief (B1–B3).
  */
@@ -63,15 +63,15 @@ export default function RefundsPage() {
       <h3>Charges made in error</h3>
       <p>
         If you were charged by mistake (for example, twice for the same month, or after your cancellation took effect),
-        contact us and we will refund the incorrect charge in full. Refunding an incorrect charge doesn&rsquo;t cancel an
-        active subscription.
+        contact us and we will refund the incorrect charge in full. As with any refund, your subscription is then
+        cancelled at the end of the period you have paid for. You can subscribe again at any time.
       </p>
 
-      <h3>When a refund ends your subscription</h3>
+      <h3>What a refund means for your subscription</h3>
       <p>
-        If you end your subscription under the Australian Consumer Law, or we refund your current period at your request,
-        the subscription ends and your access stops when the refund is made. You won&rsquo;t be charged again, and you can
-        subscribe again at any time.
+        When we refund a payment, for any of the reasons above, your subscription is cancelled. You keep access until
+        the end of the period you have paid for, you won&rsquo;t be charged again, and you can subscribe again at any
+        time.
       </p>
 
       <h2>Failed payments</h2>

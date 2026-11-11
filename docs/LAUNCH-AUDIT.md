@@ -149,3 +149,12 @@ Applied parts A (terms), B (refunds), C (privacy) and D1–D6 in order; every "f
 - D3, D6: progress qualifier on the pricing bullet, short-month billing date in the pricing FAQ, contact-form notice.
 - D7 (cancellation email) not built: the site has no email sender of its own. D8 not applicable. D9 on hold until the
   go-live date.
+
+### Go-live (11 November 2026, owner)
+- Legal pages in force from 11 November 2026; draft banner removed; `terms_version` = "11 November 2026".
+- Refunds: owner chose "any refund cancels at the end of the paid period" (webhook `charge.refunded` sets
+  `cancel_at_period_end`); the owner's own cancel in Stripe is immediate. Terms section 4 and the refunds page say so.
+- Privacy: Supabase West EU (Ireland), Render Singapore; account emails sent by Supabase.
+- "Alaskova Education" is not a registered business name; the registered name is "Alaskova". The pages now say
+  "operated by Alaskova Pty Ltd, trading as Alaskova" instead of calling Alaskova Education a trading name.
+

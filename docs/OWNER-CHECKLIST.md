@@ -72,7 +72,7 @@ chat, email or document; only into Render's Environment screen. Details: `GO-LIV
 
 ## 9. Launch day
 - [ ] New signing key with kid alaskova-module-2 (GO-LIVE step 3)
-- [ ] Stripe live mode: A$8.99 incl. GST product, GST tax rate, live keys and price in Render, live webhook (10 events, including charge.dispute.closed), customer portal
+- [ ] Stripe live mode: A$8.99 incl. GST product, GST tax rate, live keys and price in Render, live webhook (11 events, including charge.refunded and charge.dispute.closed), customer portal
 - [ ] Clear sandbox records in Supabase (before any real customer)
 - [ ] Website agent runs the final check against alaskovaeducation.com
 

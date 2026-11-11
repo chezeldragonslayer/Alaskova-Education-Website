@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 };
 
 /*
- * DRAFT. Lists only what the code actually collects (see docs/LAUNCH-AUDIT.md). Update it BEFORE adding analytics,
- * marketing email or cross-device progress sync. A lawyer must review it.
+ * In force from 11 November 2026. Lists only what the code actually collects (see docs/LAUNCH-AUDIT.md). Update it
+ * BEFORE adding analytics, marketing email or cross-device progress sync, or moving data to another region.
  *
  * The Molecular Atlas AI tutor was removed from the reader on 9 November 2026. Nothing is sent to Anthropic any
  * more, so the paragraph describing it and the Anthropic entry in the disclosure list have been deleted. Do not
@@ -21,8 +21,9 @@ export default function PrivacyPage() {
   return (
     <LegalPage eyebrow="Legal" title="Privacy policy">
       <p>
-        This policy explains how <Fact value={business.legalEntity} /> (ABN <Fact value={business.abn} />), trading as
-        Alaskova Education (&ldquo;we&rdquo;), handles personal information. As a small business, we are not currently
+        This policy explains how <Fact value={business.legalEntity} /> (ABN <Fact value={business.abn} />), trading as{" "}
+        {business.registeredBusinessName}, which operates Alaskova Education (&ldquo;we&rdquo;), handles personal
+        information. As a small business, we are not currently
         required to comply with the Privacy Act 1988 (Cth). We have chosen to handle personal information in line with
         the Australian Privacy Principles anyway, and this policy explains how. If the Privacy Act starts to apply to us,
         we will update this policy.
@@ -82,12 +83,11 @@ export default function PrivacyPage() {
       <ul>
         <li>
           <strong>Supabase</strong>: accounts, sign-in and our database, including messages sent through our contact
-          form. Your account data is stored in <Fact value="[TO BE CONFIRMED: Supabase region, e.g. Sydney, Australia]" />.
+          form. Your account data is stored in Ireland (Supabase&rsquo;s West EU region).
         </li>
         <li><strong>Stripe</strong>: payments, invoices and billing emails.</li>
         <li>
-          <strong>Render</strong>: hosting for the website and the reader, in{" "}
-          <Fact value="[TO BE CONFIRMED: Render region, e.g. Singapore]" />. Render sends all website traffic through
+          <strong>Render</strong>: hosting for the website and the reader, in Singapore. Render sends all website traffic through
           Cloudflare to protect against attacks, so Cloudflare handles technical information such as your IP address.
         </li>
         <li><strong>Supabase</strong>: sending account emails such as sign-up confirmation and password resets.</li>
@@ -95,7 +95,7 @@ export default function PrivacyPage() {
       </ul>
       <p>
         This means your information is likely to be stored or processed outside Australia, including in the United
-        States<Fact value="[TO BE CONFIRMED: , and any other country from the regions above]" />. We use established
+        States, Ireland and Singapore. We use established
         providers that publish privacy and security commitments, but overseas providers may not be bound by laws
         equivalent to the Australian Privacy Principles. We do not sell your personal information. We may also disclose
         information where the law requires it.

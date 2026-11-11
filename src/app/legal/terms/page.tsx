@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 /*
- * DRAFT. Written to match how the site actually works (Stripe monthly subscriptions, cancel at period end through the
+ * In force from 11 November 2026. Written to match how the site actually works (Stripe monthly subscriptions, cancel at period end through the
  * Stripe billing portal). Updated 11 November 2026 from the owner's legal pages implementation brief (items A1–A11).
  * Keep the checkout key-terms text (src/lib/legal.ts) consistent with sections 3, 4 and 8.
  */
@@ -21,8 +21,8 @@ export default function TermsPage() {
     <LegalPage eyebrow="Legal" title="Terms of service">
       <p>
         These terms apply when you create an account with or subscribe through Alaskova Education. Alaskova Education
-        is a trading name of <Fact value={business.legalEntity} /> (ABN <Fact value={business.abn} />)
-        (&ldquo;we&rdquo;, &ldquo;us&rdquo;). By creating an account or subscribing
+        is operated by <Fact value={business.legalEntity} /> (ABN <Fact value={business.abn} />), trading as{" "}
+        {business.registeredBusinessName} (&ldquo;we&rdquo;, &ldquo;us&rdquo;). By creating an account or subscribing
         you agree to these terms. Our <Link href="/legal/privacy">Privacy policy</Link> explains how we handle your
         personal information.
       </p>
@@ -76,10 +76,10 @@ export default function TermsPage() {
       <h2>4. Cancelling</h2>
       <p>
         You can cancel at any time from <Link href="/account">My account</Link> using Manage billing. Cancelling stops
-        future payments. You keep access until the end of the period you have already paid for. If we refund your
-        current period because you end the subscription under the Australian Consumer Law, or at your request, the
-        subscription ends and your access stops when the refund is made. Refunding a duplicate or incorrect charge does
-        not end your subscription. If you dispute a payment with your bank, we may pause your access while the dispute
+        future payments. You keep access until the end of the period you have already paid for. If we refund a payment
+        (for example because you end the subscription under the Australian Consumer Law, because you were charged in
+        error, or at your request), your subscription is cancelled: you keep access until the end of the period you
+        have paid for, and you won&rsquo;t be charged again. If you dispute a payment with your bank, we may pause your access while the dispute
         is open, and if the payment is reversed, the subscription it paid for ends. See{" "}
         <Link href="/legal/refunds">Cancellation and refunds</Link> for details.
       </p>
