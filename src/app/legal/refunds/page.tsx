@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 /*
  * DRAFT. Matches the Stripe set-up the site relies on: the Customer Portal cancels at the END of the billing period
  * (Stripe Dashboard > Settings > Billing > Customer portal > "Cancel at end of billing period"). If the owner changes that
- * setting, this page must change too. A lawyer must review it before launch.
+ * setting, this page must change too. Updated 11 November 2026 from the legal pages implementation brief (B1–B3).
  */
 export default function RefundsPage() {
   return (
@@ -29,24 +29,50 @@ export default function RefundsPage() {
       </p>
 
       <h2>Refunds</h2>
+      <h3>Your rights under the Australian Consumer Law</h3>
+      <p>
+        Our services come with guarantees that cannot be excluded under the Australian Consumer Law. These rights apply
+        whether or not you have already used the textbook, and nothing on this page or in our{" "}
+        <Link href="/legal/terms">Terms of service</Link> limits them.
+      </p>
       <ul>
         <li>
-          Because you keep access for the rest of the paid month after cancelling, we do not normally refund part-months
-          when you change your mind.
+          If there is a major failure with the service, you can cancel and get a refund for the unused part of the period
+          you paid for, or keep your subscription and get compensation for its drop in value. A major failure includes a
+          problem that would have stopped a reasonable person subscribing if they had known about it, or one that makes
+          the service substantially unfit for its normal purpose and that we can&rsquo;t fix easily and within a
+          reasonable time.
         </li>
         <li>
-          If you were charged by mistake (for example twice for the same textbook, or after you cancelled), contact us and
-          we will refund the incorrect charge.
+          If the problem is not a major failure, you can ask us to fix it. If we don&rsquo;t fix it within a reasonable
+          time, you can cancel and get a refund for the unused part of the period you paid for.
         </li>
-        <li>
-          If the service has a problem we cannot fix, you have rights under the Australian Consumer Law, including a
-          refund in the case of a major failure. These rights are not affected by anything on this page.
-        </li>
-        <li>
-          If we refund a payment in full, the subscription it paid for is cancelled and your access to the textbook ends
-          straight away. You are not charged again. You can subscribe again at any time.
-        </li>
+        <li>You may also be entitled to compensation for other reasonably foreseeable loss or damage caused by the problem.</li>
       </ul>
+      <p>
+        To use these rights, contact us as described under <a href="#how-to-ask">&ldquo;How to ask for a refund&rdquo;</a>.
+      </p>
+
+      <h3>Change of mind</h3>
+      <p>
+        You can cancel at any time and keep access until the end of the month you have paid for. Because of this, we
+        don&rsquo;t refund the rest of the month if you simply change your mind. This doesn&rsquo;t affect your rights
+        under the Australian Consumer Law.
+      </p>
+
+      <h3>Charges made in error</h3>
+      <p>
+        If you were charged by mistake (for example, twice for the same month, or after your cancellation took effect),
+        contact us and we will refund the incorrect charge in full. Refunding an incorrect charge doesn&rsquo;t cancel an
+        active subscription.
+      </p>
+
+      <h3>When a refund ends your subscription</h3>
+      <p>
+        If you end your subscription under the Australian Consumer Law, or we refund your current period at your request,
+        the subscription ends and your access stops when the refund is made. You won&rsquo;t be charged again, and you can
+        subscribe again at any time.
+      </p>
 
       <h2>Failed payments</h2>
       <p>
@@ -54,17 +80,18 @@ export default function RefundsPage() {
         paused while the payment is overdue and returns as soon as it succeeds. You can update your card at any time from Manage billing.
       </p>
 
-      <h2>How to ask for a refund</h2>
+      <h2 id="how-to-ask" className="scroll-mt-24">How to ask for a refund</h2>
       <p>
         Email <SupportEmail /> (or use the <Link href="/support#contact">contact form</Link>) from the address you
         subscribed with, and tell us the date of the charge. We aim to reply within{" "}
         2 business days. Approved refunds go back to the card you
-        paid with and usually appear within 5 to 10 business days.
+        paid with and usually appear within 5 to 10 business days. If that card has been cancelled or has expired, tell
+        us and we will arrange another way to refund you.
       </p>
       <p>
-        Please contact us before disputing a charge with your bank; we can usually fix billing problems faster. If a
-        charge is disputed, the subscription it paid for is cancelled and access ends straight away while the dispute is
-        resolved.
+        Please contact us before disputing a charge with your bank; we can usually fix billing problems faster. If you
+        dispute a charge, we may pause your access while the dispute is open. If the dispute is decided in your favour,
+        the subscription that charge paid for ends. If it is withdrawn or decided in our favour, your access is restored.
       </p>
     </LegalPage>
   );
