@@ -15,11 +15,22 @@ export function SupportEmail() {
   );
 }
 
-export function LegalPage({ eyebrow, title, children }: { eyebrow: string; title: string; children: ReactNode }) {
+export function LegalPage({
+  eyebrow,
+  title,
+  updated = business.legalUpdated,
+  children,
+}: {
+  eyebrow: string;
+  title: string;
+  /** Defaults to the shared legal date; a page changed on its own passes its own date. */
+  updated?: string;
+  children: ReactNode;
+}) {
   return (
     <>
       <PageHero eyebrow={eyebrow} title={title}>
-        Last updated: <Fact value={business.legalUpdated} />
+        Last updated: <Fact value={updated} />
       </PageHero>
       <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:py-16">
         <div className="legal">{children}</div>

@@ -23,6 +23,8 @@ export const business = {
   /** Date the legal pages came into force / were last updated (update whenever the text changes). Also saved as
    *  terms_version with every acceptance (src/lib/legal.ts). */
   legalUpdated: "11 November 2026",
+  /** Privacy policy's own "Last updated" date (12 Nov 2026: account emails now sent by Resend). */
+  privacyUpdated: "12 November 2026",
 } as const;
 
 /** True once the owner has filled in a value (used to decide whether to show a mailto link). */

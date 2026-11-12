@@ -19,7 +19,7 @@ export const metadata: Metadata = {
  */
 export default function PrivacyPage() {
   return (
-    <LegalPage eyebrow="Legal" title="Privacy policy">
+    <LegalPage eyebrow="Legal" title="Privacy policy" updated={business.privacyUpdated}>
       <p>
         This policy explains how <Fact value={business.legalEntity} /> (ABN <Fact value={business.abn} />), trading as{" "}
         {business.registeredBusinessName}, which operates Alaskova Education (&ldquo;we&rdquo;), handles personal
@@ -90,7 +90,7 @@ export default function PrivacyPage() {
           <strong>Render</strong>: hosting for the website and the reader, in Singapore. Render sends all website traffic through
           Cloudflare to protect against attacks, so Cloudflare handles technical information such as your IP address.
         </li>
-        <li><strong>Supabase</strong>: sending account emails such as sign-up confirmation and password resets.</li>
+        <li><strong>Resend</strong>: sending account emails such as sign-up confirmation and password resets. Resend receives your email address and the content of those emails.</li>
         <li><strong>Google or Microsoft</strong>: only if you choose to sign in with them.</li>
       </ul>
       <p>
