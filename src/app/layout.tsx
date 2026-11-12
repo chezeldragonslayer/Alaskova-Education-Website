@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
+import { SiteHeaderWithSession } from "@/components/SiteHeaderWithSession";
 import "@fontsource-variable/inter";
 import "@fontsource-variable/noto-serif/wdth.css";
 import "./globals.css";
@@ -39,7 +41,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        <SiteHeader />
+        {/* Static "Sign in" header first; the signed-in version streams in (needs the request's cookies). */}
+        <Suspense fallback={<SiteHeader />}>
+          <SiteHeaderWithSession />
+        </Suspense>
         <main id="main" className="flex-1">
           {children}
         </main>

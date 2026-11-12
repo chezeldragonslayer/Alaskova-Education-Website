@@ -10,7 +10,8 @@ import { HomeLink } from "./Logo";
 import { ButtonLink } from "./ui/Button";
 import { primaryNav } from "@/lib/nav";
 
-export function SiteHeader() {
+/** `signedIn` swaps "Sign in" for "My account" (see SiteHeaderWithSession). */
+export function SiteHeader({ signedIn = false }: { signedIn?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -74,8 +75,8 @@ export function SiteHeader() {
           <ButtonLink href="/dashboard" variant="ghost" prefetch={false} className="hidden xl:inline-flex">
             My library
           </ButtonLink>
-          <ButtonLink href="/login" variant="ghost">
-            Sign in
+          <ButtonLink href={signedIn ? "/account" : "/login"} variant="ghost" prefetch={false}>
+            {signedIn ? "My account" : "Sign in"}
           </ButtonLink>
           <ButtonLink href="/molecular-atlas#start">Start learning</ButtonLink>
         </div>
@@ -126,8 +127,8 @@ export function SiteHeader() {
                 <ButtonLink href="/molecular-atlas#start" size="lg" onClick={() => setOpen(false)}>
                   Start learning
                 </ButtonLink>
-                <ButtonLink href="/login" variant="secondary" size="lg" onClick={() => setOpen(false)}>
-                  Sign in
+                <ButtonLink href={signedIn ? "/account" : "/login"} variant="secondary" size="lg" prefetch={false} onClick={() => setOpen(false)}>
+                  {signedIn ? "My account" : "Sign in"}
                 </ButtonLink>
                 <ButtonLink href="/dashboard" variant="ghost" size="lg" prefetch={false} onClick={() => setOpen(false)}>
                   My library
