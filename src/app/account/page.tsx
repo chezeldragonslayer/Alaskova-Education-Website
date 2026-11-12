@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CreditCard, KeyRound } from "lucide-react";
+import { CreditCard, KeyRound, LogOut } from "lucide-react";
 import { authConfigured, billingConfigured } from "@/lib/env";
 import { getUser } from "@/lib/supabase/server";
 import { getSubscriptions } from "@/lib/access";
@@ -47,11 +47,20 @@ async function Account({ searchParams }: { searchParams: SP }) {
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-10 sm:px-8 lg:py-14">
-      <p className="eyebrow">My account</p>
-      <h1 className="h2 mt-2">Account settings</h1>
-      <p className="mt-2 text-muted">
-        <Link href="/dashboard" className="font-semibold text-gold-ink underline underline-offset-4">Back to my library</Link>
-      </p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="eyebrow">My account</p>
+          <h1 className="h2 mt-2">Account settings</h1>
+          <p className="mt-2 text-muted">
+            <Link href="/dashboard" className="font-semibold text-gold-ink underline underline-offset-4">Back to my library</Link>
+          </p>
+        </div>
+        <form action="/auth/signout" method="post">
+          <button className="inline-flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-semibold text-navy-soft ring-1 ring-line transition-colors hover:bg-paper-2">
+            <LogOut size={16} aria-hidden /> Sign out
+          </button>
+        </form>
+      </div>
 
       {sp.password === "updated" && (
         <p role="status" className="mt-6 rounded-2xl bg-gold/10 px-5 py-4 text-sm font-semibold text-navy-soft ring-1 ring-gold/30">
