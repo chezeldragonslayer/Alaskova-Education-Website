@@ -185,7 +185,7 @@ export default function HomePage() {
         <div className="mt-10"><ComingSoonGrid limit={3} showAll={false} /></div>
         <div className="mt-8 flex flex-wrap gap-3">
           <ButtonLink href="/modules#coming-soon" variant="secondary">See all planned modules</ButtonLink>
-          <ButtonLink href={instagramUrl} variant="ghost">Follow @alaskova for release updates</ButtonLink>
+          <ButtonLink href={instagramUrl} variant="ghost">Follow @alaskova.education for release updates</ButtonLink>
         </div>
       </section>
 

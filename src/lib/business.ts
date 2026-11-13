@@ -19,7 +19,7 @@ export const business = {
   /** State or territory whose law governs the terms (e.g. "New South Wales"). */
   governingState: "New South Wales",
   /** Business Instagram account (never a personal account). */
-  instagram: "alaskova",
+  instagram: "alaskova.education",
   /** Date the legal pages came into force / were last updated (update whenever the text changes). Also saved as
    *  terms_version with every acceptance (src/lib/legal.ts). */
   legalUpdated: "11 November 2026",

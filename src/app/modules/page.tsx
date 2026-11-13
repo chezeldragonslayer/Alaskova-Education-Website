@@ -66,7 +66,7 @@ export default function ModulesPage() {
               </p>
             </div>
             <ButtonLink href={instagramUrl}>
-              Follow @alaskova on Instagram
+              Follow @alaskova.education on Instagram
             </ButtonLink>
           </div>
         </div>

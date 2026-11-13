@@ -60,7 +60,7 @@ chat, email or document; only into Render's Environment screen. Details: `GO-LIV
 
 ## 7. Website agent builds (REPOSITIONING-PLAN.md)
 - [ ] New homepage ("Built by a pharmacy student, for pharmacy students")
-- [ ] Molecular Atlas page, modules page, coming-soon page ("Follow @alaskova for release updates")
+- [ ] Molecular Atlas page, modules page, coming-soon page ("Follow @alaskova.education for release updates")
 - [ ] Full About & mission page (founder section already live)
 - [ ] /start page for the Instagram bio link, with Instagram-browser tips
 - [ ] Private "came from Instagram" note on new accounts (plus one privacy-policy line); no analytics

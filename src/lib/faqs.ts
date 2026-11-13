@@ -28,6 +28,6 @@ export const atlasFaqs = [
   },
   {
     q: "Are other modules available?",
-    a: "Not yet. Molecular Atlas is the only module available today. Others are in planning; follow @alaskova on Instagram for release updates.",
+    a: "Not yet. Molecular Atlas is the only module available today. Others are in planning; follow @alaskova.education on Instagram for release updates.",
   },
 ];
